@@ -35,4 +35,15 @@
  *
  */
 
-int main(void) { return 0; }
+#include <iostream>
+
+#include "version.h"
+
+int main(void) {
+    std::cout << "BorASM - Advanced Assembly Language Processor" << std::endl;
+    std::cout << "Version: " << BorASM::Version::GetCompleteVersionInfo() << std::endl;
+    std::cout << "Build Type: " << BorASM::Version::BUILD_TYPE << std::endl;
+    std::cout << std::endl;
+
+    return 0;
+}

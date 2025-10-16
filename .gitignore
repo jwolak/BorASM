@@ -63,3 +63,6 @@ build/
 
 # binaries
 binaries/
+
+# Auto-generated version header
+include/version.h

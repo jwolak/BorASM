@@ -15,9 +15,30 @@ set(Magenta "${Esc}[35m")
 set(ColourReset "${Esc}[m")
 
 #-------------------------------------------------------------------------------
-#                                Project settings
+#                                Project settings & Version Management
 #-------------------------------------------------------------------------------
-set (PROJECT_VERSION 0.0.1)
+# Include version management
+include(${CMAKE_SOURCE_DIR}/cmake/version.cmake)
+
+# Extract version from package.json
+extract_version_from_json(
+    ${CMAKE_SOURCE_DIR}/package.json 
+    PROJECT_VERSION_MAJOR
+    PROJECT_VERSION_MINOR 
+    PROJECT_VERSION_PATCH
+)
+
+# Set project version
+set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
+
+# Generate version header
+set(VERSION_HEADER_FILE "${CMAKE_SOURCE_DIR}/include/version.h")
+generate_version_header(
+    ${PROJECT_VERSION_MAJOR}
+    ${PROJECT_VERSION_MINOR}
+    ${PROJECT_VERSION_PATCH}
+    ${VERSION_HEADER_FILE}
+)
 
 set (OUTPUT_BINARY_NAME BorASM.x64)
 message(STATUS "Version: " ${PROJECT_VERSION})
@@ -81,7 +102,7 @@ endif()
 set(PROJECT_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 message(STATUS "Set include directory: " ${PROJECT_INCLUDE})
 include_directories(
-    ${PROJECT_SRC_DIR}/include
+    ${PROJECT_INCLUDE}
 )
 
 #-------------------------------------------------------------------------------

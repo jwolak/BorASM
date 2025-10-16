@@ -4,19 +4,18 @@
  */
 
 #include <gtest/gtest.h>
+
 #include <string>
 
 // Basic test example
-TEST(BorASMTest, BasicAssertion)
-{
+TEST(BorASMTest, BasicAssertion) {
     EXPECT_EQ(7 * 6, 42);
     EXPECT_TRUE(true);
     EXPECT_FALSE(false);
 }
 
 // String test example
-TEST(BorASMTest, StringTest)
-{
+TEST(BorASMTest, StringTest) {
     std::string project_name = "BorASM";
     EXPECT_EQ(project_name.length(), 6);
     EXPECT_NE(project_name, "");
@@ -24,8 +23,7 @@ TEST(BorASMTest, StringTest)
 }
 
 // Math operations test
-TEST(BorASMTest, MathOperations)
-{
+TEST(BorASMTest, MathOperations) {
     EXPECT_GT(10, 5);
     EXPECT_LT(3, 8);
     EXPECT_GE(10, 10);
@@ -33,17 +31,14 @@ TEST(BorASMTest, MathOperations)
 }
 
 // Test fixture example
-class BorASMTestFixture : public ::testing::Test
-{
-protected:
-    void SetUp() override
-    {
+class BorASMTestFixture : public ::testing::Test {
+  protected:
+    void SetUp() override {
         test_value = 42;
         project_name = "BorASM";
     }
 
-    void TearDown() override
-    {
+    void TearDown() override {
         // Cleanup if needed
     }
 
@@ -51,15 +46,13 @@ protected:
     std::string project_name;
 };
 
-TEST_F(BorASMTestFixture, FixtureTest)
-{
+TEST_F(BorASMTestFixture, FixtureTest) {
     EXPECT_EQ(test_value, 42);
     EXPECT_GT(test_value, 0);
     EXPECT_EQ(project_name, "BorASM");
 }
 
-TEST_F(BorASMTestFixture, ProjectNameTest)
-{
+TEST_F(BorASMTestFixture, ProjectNameTest) {
     EXPECT_FALSE(project_name.empty());
     EXPECT_EQ(project_name.size(), 6);
     EXPECT_NE(project_name.find("ASM"), std::string::npos);

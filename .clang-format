@@ -107,3 +107,4 @@ KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep: 1
 ReflowComments: true
 FixNamespaceComments: true
+NamespaceIndentation: All

@@ -6,7 +6,7 @@ class CmdArgumentsParser {
     CmdArgumentsParser(int argc, char* argv[]);
     ~CmdArgumentsParser();
     void PrintHelp() const;
-    void PrintVersion() const;
+    void PrintVersionInfo() const;
     void Parse();
 
   private:

@@ -19,7 +19,7 @@ set(ColourReset "${Esc}[m")
 #-------------------------------------------------------------------------------
 set (PROJECT_VERSION 0.0.1)
 
-set (OUTPUT_BINARY_NAME BorASM)
+set (OUTPUT_BINARY_NAME BorASM.x64)
 message(STATUS "Version: " ${PROJECT_VERSION})
 message(STATUS "Binary name: " ${OUTPUT_BINARY_NAME})
 message(STATUS "Processing CMakeLists.txt for: " ${PROJECT_NAME} " " ${PROJECT_VERSION})

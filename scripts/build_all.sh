@@ -185,18 +185,18 @@ build_project() {
         
         # Copy binary to binaries directory
         # Binary is now built in the build directory itself
-        if [ -f "$build_dir/BorASM" ]; then
-            cp "$build_dir/BorASM" "$bin_dir/BorASM"
-            print_success "Binary copied to: $bin_dir/BorASM"
+        if [ -f "$build_dir/BorASM.x64" ]; then
+            cp "$build_dir/BorASM.x64" "$bin_dir/BorASM.x64"
+            print_success "Binary copied to: $bin_dir/BorASM.x64"
             
             # Create version info file
             create_version_info "$build_type" "$bin_dir"
         else
-            print_warning "Binary not found at: $build_dir/BorASM"
+            print_warning "Binary not found at: $build_dir/BorASM.x64"
             # Try alternative locations
-            if [ -f "$PROJECT_ROOT/BorASM" ]; then
-                cp "$PROJECT_ROOT/BorASM" "$bin_dir/BorASM"
-                print_success "Binary found and copied from: $PROJECT_ROOT/BorASM"
+            if [ -f "$PROJECT_ROOT/BorASM.x64" ]; then
+                cp "$PROJECT_ROOT/BorASM.x64" "$bin_dir/BorASM.x64"
+                print_success "Binary found and copied from: $PROJECT_ROOT/BorASM.x64"
                 create_version_info "$build_type" "$bin_dir"
             else
                 print_error "Binary not found in any expected location"
@@ -228,7 +228,7 @@ Git Branch: $(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "Unknown")
 Git Commit: $(git rev-parse --short HEAD 2>/dev/null || echo "Unknown")
 Built by: $(whoami)
 
-Binary Location: $bin_dir/BorASM
+Binary Location: $bin_dir/BorASM.x64
 EOF
     
     print_info "Build info saved to: $info_file"
@@ -242,24 +242,24 @@ show_build_summary() {
     print_section "BUILD SUMMARY"
     
     if [ "$debug_built" = true ]; then
-        echo -e "${GREEN}✓${NC} Debug build:   ${YELLOW}$DEBUG_BIN_DIR/BorASM${NC}"
-        if [ -f "$DEBUG_BIN_DIR/BorASM" ]; then
-            local debug_size=$(du -h "$DEBUG_BIN_DIR/BorASM" | cut -f1)
+        echo -e "${GREEN}✓${NC} Debug build:   ${YELLOW}$DEBUG_BIN_DIR/BorASM.x64${NC}"
+        if [ -f "$DEBUG_BIN_DIR/BorASM.x64" ]; then
+            local debug_size=$(du -h "$DEBUG_BIN_DIR/BorASM.x64" | cut -f1)
             echo -e "  Size: $debug_size"
         fi
     fi
     
     if [ "$release_built" = true ]; then
-        echo -e "${GREEN}✓${NC} Release build: ${YELLOW}$RELEASE_BIN_DIR/BorASM${NC}"
-        if [ -f "$RELEASE_BIN_DIR/BorASM" ]; then
-            local release_size=$(du -h "$RELEASE_BIN_DIR/BorASM" | cut -f1)
+        echo -e "${GREEN}✓${NC} Release build: ${YELLOW}$RELEASE_BIN_DIR/BorASM.x64${NC}"
+        if [ -f "$RELEASE_BIN_DIR/BorASM.x64" ]; then
+            local release_size=$(du -h "$RELEASE_BIN_DIR/BorASM.x64" | cut -f1)
             echo -e "  Size: $release_size"
         fi
     fi
     
     echo ""
-    echo -e "To run Debug:   ${CYAN}$DEBUG_BIN_DIR/BorASM${NC}"
-    echo -e "To run Release: ${CYAN}$RELEASE_BIN_DIR/BorASM${NC}"
+    echo -e "To run Debug:   ${CYAN}$DEBUG_BIN_DIR/BorASM.x64${NC}"
+    echo -e "To run Release: ${CYAN}$RELEASE_BIN_DIR/BorASM.x64${NC}"
 }
 
 # Function to show build info

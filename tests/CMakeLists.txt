@@ -8,7 +8,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # Test project settings
-set(TEST_PROJECT_NAME "BorASM-Tests")
+set(TEST_PROJECT_NAME "BorASM-Tests.x64")
 message(STATUS "${Green}Configuring tests: ${TEST_PROJECT_NAME}${ColourReset}")
 
 #-------------------------------------------------------------------------------

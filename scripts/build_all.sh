@@ -283,12 +283,16 @@ show_usage() {
     echo "  debug       Build only Debug version"
     echo "  release     Build only Release version"
     echo "  all         Build both Debug and Release versions (default)"
+    echo "  test        Build and run unit tests (Debug only)"
     echo ""
     echo "Options:"
     echo "  -c, --clean     Clean build directories before building"
     echo "  -h, --help      Show this help message"
     echo "  -v, --verbose   Enable verbose output"
     echo "  --info          Show build configuration and exit"
+    echo "  --tests         Build and run unit tests (Debug only)"
+    echo "  --suite NAME    Run only tests from suite NAME (with test/--tests)"
+    echo "  --test NAME     Run only test NAME from suite (with --suite)"
     echo ""
     echo "Examples:"
     echo "  $0                    # Build both Debug and Release"
@@ -296,6 +300,67 @@ show_usage() {
     echo "  $0 release            # Build only Release version"
     echo "  $0 --clean all        # Clean and build both versions"
     echo "  $0 --verbose debug    # Build Debug with verbose output"
+    echo "  $0 test               # Build and run unit tests (Debug only)"
+    echo "  $0 --tests            # Build and run unit tests (Debug only)"
+    echo "  $0 test --suite MySuite         # Run only tests from suite MySuite"
+    echo "  $0 test --suite MySuite --test MyTest   # Run only MyTest from suite MySuite"
+}
+
+# Function to build and run unit tests (Debug only)
+build_and_run_tests() {
+    local suite_name=""
+    local test_name=""
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --suite)
+                suite_name="$2"
+                shift 2
+                ;;
+            --test)
+                test_name="$2"
+                shift 2
+                ;;
+            *)
+                shift
+                ;;
+        esac
+    done
+    print_subsection "Building and running unit tests (Debug)"
+    mkdir -p "$DEBUG_BUILD_DIR"
+    cd "$DEBUG_BUILD_DIR"
+    print_info "Configuring CMake for Debug with tests enabled..."
+    cmake -DCMAKE_BUILD_TYPE=Debug -DPROJECT_TESTS=ON "$PROJECT_ROOT"
+    if [ $? -ne 0 ]; then
+        print_error "CMake configuration for tests failed"
+        exit 1
+    fi
+    NPROC=$(nproc)
+    print_info "Building tests using $NPROC CPU cores..."
+    make -j$NPROC
+    if [ $? -ne 0 ]; then
+        print_error "Test build failed!"
+        exit 1
+    fi
+    # Try to run tests using ctest or test binary
+    local test_bin="$DEBUG_BUILD_DIR/tests/bin/BorASM-Tests.x64"
+    if [ -f "$test_bin" ]; then
+        if [ -n "$suite_name" ] && [ -n "$test_name" ]; then
+            print_info "Running test suite: $suite_name, test: $test_name"
+            "$test_bin" --gtest_filter="${suite_name}.${test_name}"
+        elif [ -n "$suite_name" ]; then
+            print_info "Running test suite: $suite_name"
+            "$test_bin" --gtest_filter="${suite_name}.*"
+        else
+            print_info "Running all tests"
+            "$test_bin"
+        fi
+    elif command_exists ctest; then
+        print_info "Running tests with ctest..."
+        ctest --output-on-failure
+    else
+        print_warning "Test binary not found and ctest not available."
+    fi
+    print_success "Unit tests completed."
 }
 
 # Main execution
@@ -304,6 +369,8 @@ main() {
     local CLEAN_BUILD=false
     local VERBOSE=false
     local SHOW_INFO=false
+    local RUN_TESTS=false
+    local TEST_ARGS=()
     
     # Parse command line arguments
     while [[ $# -gt 0 ]]; do
@@ -311,6 +378,15 @@ main() {
             debug|release|all)
                 BUILD_TYPE="$1"
                 shift
+                ;;
+            test|--tests)
+                RUN_TESTS=true
+                shift
+                # Przekaż pozostałe argumenty do testów
+                while [[ $# -gt 0 && $1 != debug && $1 != release && $1 != all && $1 != test && $1 != --tests && $1 != -c && $1 != --clean && $1 != -v && $1 != --verbose && $1 != --info && $1 != -h && $1 != --help ]]; do
+                    TEST_ARGS+=("$1")
+                    shift
+                done
                 ;;
             -c|--clean)
                 CLEAN_BUILD=true
@@ -335,7 +411,12 @@ main() {
                 ;;
         esac
     done
-    
+
+    if [ "$RUN_TESTS" = true ]; then
+        build_and_run_tests "${TEST_ARGS[@]}"
+        exit $?
+    fi
+
     # Show info and exit if requested
     if [ "$SHOW_INFO" = true ]; then
         show_build_info

@@ -51,6 +51,28 @@ namespace cmd {
     }
 
     void ArgumentsParserLogic::ListAvailableInstructions() const {
-        // Implementation to list instructions
+        std::cout << "Available instructions:\n";
+        std::cout << "\nArithmetic instructions (0x00-0x07):\n";
+        std::cout << "  ADD   0x00   Add:        ADD reg, reg/imm\n";
+        std::cout << "  SUB   0x01   Subtract:   SUB reg, reg/imm\n";
+        std::cout << "  AND   0x02   And:        AND reg, reg/imm\n";
+        std::cout << "  OR    0x03   Or:         OR reg, reg/imm\n";
+        std::cout << "  XOR   0x04   Xor:        XOR reg, reg/imm\n";
+        std::cout << "  MOV   0x05   Move:       MOV reg, reg/imm\n";
+        std::cout << "  SHL   0x06   Shift left: SHL reg, reg/imm\n";
+        std::cout << "  SHR   0x07   Shift right:SHR reg, reg/imm\n";
+
+        std::cout << "\nJump instructions (0x08-0x0E):\n";
+        std::cout << "  JMP   0x08   Unconditional jump\n";
+        std::cout << "  JZ    0x09   Jump if zero\n";
+        std::cout << "  JNZ   0x0A   Jump if not zero\n";
+        std::cout << "  JC    0x0B   Jump if carry\n";
+        std::cout << "  JNC   0x0C   Jump if not carry\n";
+        std::cout << "  JN    0x0D   Jump if negative\n";
+        std::cout << "  JNN   0x0E   Jump if not negative\n";
+
+        std::cout << "\nSpecial instructions:\n";
+        std::cout << "  CMP   0x0F   Compare\n";
+        std::cout << "  HALT  0xFF   Halt execution\n";
     }
 }  // namespace cmd

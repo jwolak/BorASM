@@ -46,15 +46,19 @@ namespace cmd {
 
     std::optional<std::string> ArgumentsParserLogic::GetInputFileName(const char* optarg) const {
         if (optarg) {
+            std::cout << "Input file name: " << optarg << std::endl;
             return std::string(optarg);
         }
+        std::cerr << "[ERROR] Input file name argument is null" << std::endl;
         return std::nullopt;
     }
 
     std::optional<std::string> ArgumentsParserLogic::GetOutputFileName(const char* optarg) const {
         if (optarg) {
+            std::cout << "Output file name: " << optarg << std::endl;
             return std::string(optarg);
         }
+        std::cerr << "[ERROR] Output file name argument is null" << std::endl;
         return std::nullopt;
     }
 

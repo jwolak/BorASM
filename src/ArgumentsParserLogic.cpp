@@ -1,5 +1,7 @@
 #include "ArgumentsParserLogic.h"
 
+#include <spdlog/spdlog.h>
+
 #include <iostream>
 
 #include "version.h"
@@ -33,6 +35,12 @@ namespace cmd {
 
     bool ArgumentsParserLogic::EnableDebugMode() const {
         std::cout << "Debug mode enabled" << std::endl;
+        try {
+            spdlog::set_level(spdlog::level::debug);
+        } catch (const std::exception& e) {
+            std::cerr << "Error enabling debug mode: " << e.what() << std::endl;
+            return false;
+        }
         return true;
     }
 

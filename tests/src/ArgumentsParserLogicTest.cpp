@@ -30,6 +30,12 @@ namespace arguments_parser_logic_test {
                    "  BorASM -i code.asm -o code.bin\n";
         }
 
+        std::string GetExpectedVersionPrint() {
+            return std::string(BorASM::Version::GetVersionString()) + "\n" + BorASM::Version::GetFullVersionString() + "\n" +
+                   BorASM::Version::GetCompleteVersionInfo() + "\n" + std::string(BorASM::Version::BUILD_TYPE) + "\n" + "Is version at least 0.1.0? " +
+                   (BorASM::Version::IsVersionAtLeast(0, 1, 0) ? "true" : "false") + "\n";
+        }
+
         cmd::ArgumentsParserLogic argument_parser_logic_;
     };
 
@@ -39,5 +45,21 @@ namespace arguments_parser_logic_test {
         std::string output = testing::internal::GetCapturedStdout();
 
         EXPECT_EQ(output, GetExpectedHelpPrint());
+    }
+
+    TEST_F(ArgumentsParserLogicTest, PrintVersion_And_Returned_Content_Is_As_Expected) {
+        testing::internal::CaptureStdout();
+        argument_parser_logic_.PrintVersionInfo();
+        std::string output = testing::internal::GetCapturedStdout();
+
+        EXPECT_EQ(output, GetExpectedVersionPrint());
+    }
+
+    TEST_F(ArgumentsParserLogicTest, EnableDebugModeTest) {
+        testing::internal::CaptureStdout();
+        bool result = argument_parser_logic_.EnableDebugMode();
+        std::string output = testing::internal::GetCapturedStdout();
+        EXPECT_TRUE(result);
+        EXPECT_NE(output.find("Debug mode enabled"), std::string::npos);
     }
 }  // namespace arguments_parser_logic_test

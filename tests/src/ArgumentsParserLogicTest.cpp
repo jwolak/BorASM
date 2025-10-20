@@ -31,9 +31,9 @@ namespace arguments_parser_logic_test {
         }
 
         std::string GetExpectedVersionPrint() {
-            return std::string(BorASM::Version::GetVersionString()) + "\n" + BorASM::Version::GetFullVersionString() + "\n" +
-                   BorASM::Version::GetCompleteVersionInfo() + "\n" + std::string(BorASM::Version::BUILD_TYPE) + "\n" + "Is version at least 0.1.0? " +
-                   (BorASM::Version::IsVersionAtLeast(0, 1, 0) ? "true" : "false") + "\n";
+            return std::string("Version: ") + BorASM::Version::GetVersionString() + "\n" + "Full Version: " + BorASM::Version::GetFullVersionString() + "\n" +
+                   "Complete Version: " + BorASM::Version::GetCompleteVersionInfo() + "\n" + "Build Type: " + BorASM::Version::BUILD_TYPE + "\n" +
+                   "Is version at least 0.1.0 ? " + (BorASM::Version::IsVersionAtLeast(0, 1, 0) ? "[Yes]" : "[No]") + "\n";
         }
 
         cmd::ArgumentsParserLogic argument_parser_logic_;

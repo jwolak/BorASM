@@ -26,6 +26,8 @@ namespace cmd {
 
         int opt;
         int longindex;
+        bool inputSet = false;
+        bool outputSet = false;
         while ((opt = getopt_long(m_argc, m_argv, "hvdi:o:l", longopts, &longindex)) != -1) {
             switch (opt) {
                 case 'h':
@@ -43,6 +45,7 @@ namespace cmd {
                         std::cerr << "Invalid input file name provided." << std::endl;
                         return false;
                     }
+                    inputSet = true;
                     break;
                 case 'o':
                     cmd_arguments->output_file_path = argument_parser_logic_->GetOutputFileName(optarg);
@@ -50,6 +53,7 @@ namespace cmd {
                         std::cerr << "Invalid output file name provided." << std::endl;
                         return false;
                     }
+                    outputSet = true;
                     break;
                 case 'l':
                     argument_parser_logic_->ListAvailableInstructions();
@@ -60,6 +64,12 @@ namespace cmd {
                 default:
                     break;
             }
+        }
+
+        if (!inputSet || !outputSet) {
+            std::cerr << "\n[ERROR] Both -i <input_file> and -o <output_file> options are required.\n\n";
+            argument_parser_logic_->PrintHelp();
+            return false;
         }
 
         return true;

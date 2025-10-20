@@ -37,13 +37,15 @@
 
 #include <iostream>
 
+#include "CmdArgumentsParser.h"
 #include "version.h"
 
-int main(void) {
-    std::cout << "BorASM - Advanced Assembly Language Processor" << std::endl;
-    std::cout << "Version: " << BorASM::Version::GetCompleteVersionInfo() << std::endl;
-    std::cout << "Build Type: " << BorASM::Version::BUILD_TYPE << std::endl;
-    std::cout << std::endl;
+int main(int argc, char* argv[]) {
+    cmd::CmdArgumentsParser cmd_arguments_parser(argc, argv);
+    if (!cmd_arguments_parser.Parse()) {
+        std::cerr << "Failed to parse command line arguments." << std::endl;
+        return 1;
+    }
 
     return 0;
 }

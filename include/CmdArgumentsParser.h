@@ -9,7 +9,7 @@ namespace cmd {
       public:
         CmdArgumentsParser(int argc, char* argv[]);
         ~CmdArgumentsParser();
-        void Parse();
+        bool Parse();
 
       private:
         int m_argc;

@@ -98,6 +98,7 @@ if(TEST_SOURCES AND (GTEST_FOUND OR GTest_FOUND))
         PRIVATE
         ${GTEST_LIBRARIES}
         ${GTEST_MAIN_LIBRARIES}
+        gmock
         Threads::Threads
         ${TEST_LOGGER_LIBS_PATH}
         rt

@@ -25,4 +25,15 @@ namespace cmd_arguments_parser_test {
         mocks::ArgumentsParserLogicMock* argument_parser_logic_mock;
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic;
     };
+
+    TEST_F(CmdArgumentsParserTest, Arguments_Number_Less_Than_Two_Should_Return_False) {
+        testing::internal::CaptureStderr();
+        auto cmd_arguments = std::make_shared<cmd::CmdArguments>();
+        EXPECT_CALL(*argument_parser_logic_mock, PrintHelp()).Times(1);
+        bool result = cmd_arguments_parser_with_injected_logic.Parse(cmd_arguments);
+        std::string output = testing::internal::GetCapturedStderr();
+
+        EXPECT_FALSE(result);
+        EXPECT_NE(output.find("No arguments provided!"), std::string::npos);
+    }
 }  // namespace cmd_arguments_parser_test

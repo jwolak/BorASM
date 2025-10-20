@@ -13,7 +13,12 @@
 
 namespace assembly_engine {
 
-    AssemblyEngine::AssemblyEngine() : file_handler_{std::make_unique<FileHandler>()} {}
+    AssemblyEngine::AssemblyEngine()
+        : file_handler_{std::make_unique<FileHandler>()},
+          line_handler_{std::make_unique<CharacterStringLineHandler>()},
+          machineCode{},
+          labels{},
+          labelReferences{} {}
 
     bool AssemblyEngine::Assemble(const std::string& input_file, const std::string& output_file) {
         spdlog::trace("[AssemblyEngine] Assemble() called with input_file: {0}, output_file: {1} [{2}:{3}]", input_file, output_file, __FILENAME__, __LINE__);
@@ -45,17 +50,26 @@ namespace assembly_engine {
         spdlog::trace("[AssemblyEngine] Starting assembly process... [{0}:{1}]", __FILENAME__, __LINE__);
         spdlog::debug("[AssemblyEngine] First pass - label detection... [{0}:{1}]", __FILENAME__, __LINE__);
         while (std::getline(file, line)) {
-            lineNumber++;
-            // line = cleanLine(line);
+            ++lineNumber;
+            spdlog::debug("[AssemblyEngine] Processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            line = line_handler_->CleanLineWhitespaces(line);
+            tools::PrintGreenOKMessage("Cleaned line " + std::to_string(lineNumber) + ": " + line);
+            line = line_handler_->RemoveLineComments(line);
+            tools::PrintGreenOKMessage("Removed comments from line " + std::to_string(lineNumber) + ": " + line);
 
-            // if (line.empty()) continue;
+            spdlog::debug("[AssemblyEngine] Check if line {0}: {1} [{2}:{3}] is empty", lineNumber, line, __FILENAME__, __LINE__);
+            if (line.empty()) {
+                spdlog::debug("[AssemblyEngine] Line: {0} [{1}:{2}] is empty", lineNumber, line, __FILENAME__, __LINE__);
+                continue;
+            }
 
-            // // Sprawdź czy to label
-            // if (line.back() == ':') {
-            //     std::string labelName = line.substr(0, line.length() - 1);
-            //     labels[labelName] = machineCode.size();
-            //     continue;
-            // }
+            spdlog::debug("[AssemblyEngine] Check if line {0}: {1} [{2}:{3}] is a label", lineNumber, line, __FILENAME__, __LINE__);
+            if (line.back() == ':') {
+                spdlog::debug("[AssemblyEngine] Line: {0} [{1}:{2}] is a label", lineNumber, line, __FILENAME__, __LINE__);
+                std::string labelName = line.substr(0, line.length() - 1);
+                labels[labelName] = machineCode.size();
+                continue;
+            }
 
             // // Tymczasowo asembluj aby poznać rozmiar
             // std::vector<std::string> tokens = tokenize(line);

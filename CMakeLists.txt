@@ -129,6 +129,7 @@ set (SOURCE_LIST
     ${PROJECT_SRC_DIR}/Tools.cpp
     ${PROJECT_SRC_DIR}/AssemblyEngine.cpp
     ${PROJECT_SRC_DIR}/FileHandler.cpp
+    ${PROJECT_SRC_DIR}/CharacterStringLineHandler.cpp
 )
 message(STATUS "\n *********** Source files list *********** \n")
 foreach(src_file IN LISTS SOURCE_LIST)

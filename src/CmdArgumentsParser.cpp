@@ -72,7 +72,6 @@ namespace cmd {
 
         if (!inputSet || !outputSet) {
             tools::PrintRedErrorMessage("Both -i <input_file> and -o <output_file> options are required.\n");
-            argument_parser_logic_->PrintHelp();
             return false;
         }
 

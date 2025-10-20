@@ -41,13 +41,14 @@
 #include "BorAsm.h"
 #include "CmdArguments.h"
 #include "CmdArgumentsParser.h"
+#include "Tools.h"
 #include "version.h"
 
 int main(int argc, char* argv[]) {
     auto cmd_arguments = std::make_shared<cmd::CmdArguments>();
     cmd::CmdArgumentsParser cmd_arguments_parser(argc, argv);
     if (!cmd_arguments_parser.Parse(cmd_arguments)) {
-        std::cerr << "\n\n[ERROR] Failed to parse command line arguments.\n" << std::endl;
+        tools::PrintRedErrorMessage("Failed to parse command line arguments.");
         return 1;
     }
 

@@ -26,11 +26,11 @@ namespace cmd {
     }
 
     void ArgumentsParserLogic::PrintVersionInfo() const {
-        std::cout << BorASM::Version::GetVersionString() << std::endl;
-        std::cout << BorASM::Version::GetFullVersionString() << std::endl;
-        std::cout << BorASM::Version::GetCompleteVersionInfo() << std::endl;
-        std::cout << BorASM::Version::BUILD_TYPE << std::endl;
-        std::cout << "Is version at least 0.1.0? " << (BorASM::Version::IsVersionAtLeast(0, 1, 0) ? "true" : "false") << std::endl;
+        std::cout << "Version: " << BorASM::Version::GetVersionString() << std::endl;
+        std::cout << "Full Version: " << BorASM::Version::GetFullVersionString() << std::endl;
+        std::cout << "Complete Version: " << BorASM::Version::GetCompleteVersionInfo() << std::endl;
+        std::cout << "Build Type: " << BorASM::Version::BUILD_TYPE << std::endl;
+        std::cout << "Is version at least 0.1.0 ? " << (BorASM::Version::IsVersionAtLeast(0, 1, 0) ? "[Yes]" : "[No]") << std::endl;
     }
 
     bool ArgumentsParserLogic::EnableDebugMode() const {

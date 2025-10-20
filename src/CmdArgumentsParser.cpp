@@ -27,15 +27,18 @@ namespace cmd {
 
         int opt;
         int longindex;
-        bool inputSet = false;
-        bool outputSet = false;
+        bool input_set = false;
+        bool output_set = false;
+        bool help_of_info_shown = false;
         while ((opt = getopt_long(m_argc, m_argv, "hvdi:o:l", longopts, &longindex)) != -1) {
             switch (opt) {
                 case 'h':
                     argument_parser_logic_->PrintHelp();
+                    help_of_info_shown = true;
                     break;
                 case 'v':
                     argument_parser_logic_->PrintVersionInfo();
+                    help_of_info_shown = true;
                     break;
                 case 'd':
                     argument_parser_logic_->EnableDebugMode();
@@ -48,7 +51,7 @@ namespace cmd {
                         return false;
                     }
                     tools::PrintGreenOKMessage("Input file name set to: " + *cmd_arguments->input_file_path);
-                    inputSet = true;
+                    input_set = true;
                     break;
                 case 'o':
                     cmd_arguments->output_file_path = argument_parser_logic_->GetOutputFileName(optarg);
@@ -57,10 +60,11 @@ namespace cmd {
                         return false;
                     }
                     tools::PrintGreenOKMessage("Output file name set to: " + *cmd_arguments->output_file_path);
-                    outputSet = true;
+                    output_set = true;
                     break;
                 case 'l':
                     argument_parser_logic_->ListAvailableInstructions();
+                    help_of_info_shown = true;
                     break;
                 case '?':
                     tools::PrintRedErrorMessage("Unknown option or missing argument. Use -h or --help for help.\n");
@@ -70,7 +74,7 @@ namespace cmd {
             }
         }
 
-        if (!inputSet || !outputSet) {
+        if ((!input_set || !output_set) && !help_of_info_shown) {
             tools::PrintRedErrorMessage("Both -i <input_file> and -o <output_file> options are required.\n");
             return false;
         }

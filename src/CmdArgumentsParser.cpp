@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include "Tools.h"
 #include "version.h"
 
 namespace cmd {
@@ -19,7 +20,7 @@ namespace cmd {
         };
 
         if (m_argc < 2) {
-            std::cerr << "\n[ERROR] No arguments provided!\n\n";
+            tools::PrintRedErrorMessage("No arguments provided!\n\n");
             argument_parser_logic_->PrintHelp();
             return false;
         }
@@ -38,28 +39,31 @@ namespace cmd {
                     break;
                 case 'd':
                     argument_parser_logic_->EnableDebugMode();
+                    tools::PrintYellowWarningMessage("Debug mode enabled.");
                     break;
                 case 'i':
                     cmd_arguments->input_file_path = argument_parser_logic_->GetInputFileName(optarg);
                     if (cmd_arguments->input_file_path == std::nullopt) {
-                        std::cerr << "Invalid input file name provided." << std::endl;
+                        tools::PrintRedErrorMessage("Invalid input file name provided.\n");
                         return false;
                     }
+                    tools::PrintGreenOKMessage("Input file name set to: " + *cmd_arguments->input_file_path);
                     inputSet = true;
                     break;
                 case 'o':
                     cmd_arguments->output_file_path = argument_parser_logic_->GetOutputFileName(optarg);
                     if (cmd_arguments->output_file_path == std::nullopt) {
-                        std::cerr << "Invalid output file name provided." << std::endl;
+                        tools::PrintRedErrorMessage("Invalid output file name provided.\n");
                         return false;
                     }
+                    tools::PrintGreenOKMessage("Output file name set to: " + *cmd_arguments->output_file_path);
                     outputSet = true;
                     break;
                 case 'l':
                     argument_parser_logic_->ListAvailableInstructions();
                     break;
                 case '?':
-                    std::cerr << "Unknown option or missing argument. Use -h or --help for help." << std::endl;
+                    tools::PrintRedErrorMessage("Unknown option or missing argument. Use -h or --help for help.\n");
                     break;
                 default:
                     break;
@@ -67,11 +71,12 @@ namespace cmd {
         }
 
         if (!inputSet || !outputSet) {
-            std::cerr << "\n[ERROR] Both -i <input_file> and -o <output_file> options are required.\n\n";
+            tools::PrintRedErrorMessage("Both -i <input_file> and -o <output_file> options are required.\n");
             argument_parser_logic_->PrintHelp();
             return false;
         }
 
+        tools::PrintGreenOKMessage("Command line arguments parsed successfully.");
         return true;
     }
 }  // namespace cmd

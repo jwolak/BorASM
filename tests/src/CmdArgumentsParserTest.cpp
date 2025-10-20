@@ -24,10 +24,7 @@ namespace cmd_arguments_parser_test {
 
     class CmdArgumentsParserTest : public ::testing::Test {
       public:
-        CmdArgumentsParserTest()
-            : cmd_arguments{std::make_shared<cmd::CmdArguments>()},
-              argument_parser_logic_mock{new mocks::ArgumentsParserLogicMock},
-              cmd_arguments_parser_with_injected_logic(1, nullptr, std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock)) {}
+        CmdArgumentsParserTest() : cmd_arguments{std::make_shared<cmd::CmdArguments>()}, argument_parser_logic_mock{new mocks::ArgumentsParserLogicMock} {}
 
         void SetUp() override { optind = 0; }
 
@@ -35,12 +32,15 @@ namespace cmd_arguments_parser_test {
 
         std::shared_ptr<cmd::CmdArguments> cmd_arguments;
         mocks::ArgumentsParserLogicMock* argument_parser_logic_mock;
-        CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic;
     };
 
     TEST_F(CmdArgumentsParserTest, Arguments_Number_Less_Than_Two_Should_Return_False) {
         testing::internal::CaptureStderr();
+        const char* argv[] = {"program"};
         EXPECT_CALL(*argument_parser_logic_mock, PrintHelp()).Times(1);
+        int argc = sizeof(argv) / sizeof(argv[0]);
+        CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic =
+            CmdArgumentsParserWithInjectedLogic(argc, const_cast<char**>(argv), std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
         bool result = cmd_arguments_parser_with_injected_logic.Parse(cmd_arguments);
         std::string output = testing::internal::GetCapturedStderr();
 
@@ -49,7 +49,6 @@ namespace cmd_arguments_parser_test {
     }
 
     TEST_F(CmdArgumentsParserTest, Print_Help_Option_Should_Invoke_PrintHelp_And_Return_True) {
-        mocks::ArgumentsParserLogicMock* argument_parser_logic_mock = new mocks::ArgumentsParserLogicMock;
         const char* argv[] = {"program", "--help"};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic =
@@ -62,7 +61,6 @@ namespace cmd_arguments_parser_test {
     }
 
     TEST_F(CmdArgumentsParserTest, Print_Help_Option_Should_Invoke_PrintVersionInfo_And_Return_True) {
-        mocks::ArgumentsParserLogicMock* argument_parser_logic_mock = new mocks::ArgumentsParserLogicMock;
         const char* argv[] = {"program", "--version"};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
@@ -75,7 +73,6 @@ namespace cmd_arguments_parser_test {
     }
 
     TEST_F(CmdArgumentsParserTest, Enable_Debug_Option_Should_Invoke_EnableDebugMode_And_Return_True) {
-        mocks::ArgumentsParserLogicMock* argument_parser_logic_mock = new mocks::ArgumentsParserLogicMock;
         const char* argv[] = {"program", "--debug", "--input", kInputFileName, "--output", kOutputFileName};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
@@ -90,7 +87,6 @@ namespace cmd_arguments_parser_test {
     }
 
     TEST_F(CmdArgumentsParserTest, Provide_Valid_Input_And_Output_Files_And_Return_True) {
-        mocks::ArgumentsParserLogicMock* argument_parser_logic_mock = new mocks::ArgumentsParserLogicMock;
         const char* argv[] = {"program", "--input", kInputFileName, "--output", kOutputFileName};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
@@ -104,7 +100,6 @@ namespace cmd_arguments_parser_test {
     }
 
     TEST_F(CmdArgumentsParserTest, Provide_Only_Input_File_And_Return_False) {
-        mocks::ArgumentsParserLogicMock* argument_parser_logic_mock = new mocks::ArgumentsParserLogicMock;
         const char* argv[] = {"program", "--input", kInputFileName};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
@@ -118,7 +113,6 @@ namespace cmd_arguments_parser_test {
     }
 
     TEST_F(CmdArgumentsParserTest, Provide_Only_Output_File_And_Return_False) {
-        mocks::ArgumentsParserLogicMock* argument_parser_logic_mock = new mocks::ArgumentsParserLogicMock;
         const char* argv[] = {"program", "--output", kOutputFileName};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
@@ -132,7 +126,6 @@ namespace cmd_arguments_parser_test {
     }
 
     TEST_F(CmdArgumentsParserTest, Print_List_Option_Should_Invoke_ListAvailableInstructions_And_Return_True) {
-        mocks::ArgumentsParserLogicMock* argument_parser_logic_mock = new mocks::ArgumentsParserLogicMock;
         const char* argv[] = {"program", "--list"};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic =
@@ -145,7 +138,6 @@ namespace cmd_arguments_parser_test {
     }
 
     TEST_F(CmdArgumentsParserTest, Provide_Valid_Input_And_Output_Files_And_Values_In_CmdArguments_Are_Set) {
-        mocks::ArgumentsParserLogicMock* argument_parser_logic_mock = new mocks::ArgumentsParserLogicMock;
         const char* argv[] = {"program", "--input", kInputFileName, "--output", kOutputFileName};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =

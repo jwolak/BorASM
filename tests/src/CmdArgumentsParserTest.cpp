@@ -138,4 +138,19 @@ namespace cmd_arguments_parser_test {
         EXPECT_TRUE(result);
     }
 
+    TEST_F(CmdArgumentsParserTest, Provide_Valid_Input_And_Output_Files_And_Values_In_CmdArguments_Are_Set) {
+        auto cmd_arguments = std::make_shared<cmd::CmdArguments>();
+        mocks::ArgumentsParserLogicMock* argument_parser_logic_mock = new mocks::ArgumentsParserLogicMock;
+        const char* argv[] = {"program", "--input", "input.asm", "--output", "output.bin"};
+        CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
+            CmdArgumentsParserWithInjectedLogic(5, const_cast<char**>(argv), std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
+
+        EXPECT_CALL(*argument_parser_logic_mock, GetInputFileName("input.asm")).Times(1).WillOnce(testing::Return("input.asm"));
+        EXPECT_CALL(*argument_parser_logic_mock, GetOutputFileName("output.bin")).Times(1).WillOnce(testing::Return("output.bin"));
+        cmd_arguments_parser_with_injected_logic2.Parse(cmd_arguments);
+
+        EXPECT_EQ(cmd_arguments->input_file_path.value(), "input.asm");
+        EXPECT_EQ(cmd_arguments->output_file_path.value(), "output.bin");
+    }
+
 }  // namespace cmd_arguments_parser_test

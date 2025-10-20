@@ -36,4 +36,18 @@ namespace cmd_arguments_parser_test {
         EXPECT_FALSE(result);
         EXPECT_NE(output.find("No arguments provided!"), std::string::npos);
     }
+
+    TEST_F(CmdArgumentsParserTest, Print_Help_Option_Should_Invoke_PrintHelp_And_Return_True) {
+        auto cmd_arguments = std::make_shared<cmd::CmdArguments>();
+        mocks::ArgumentsParserLogicMock* argument_parser_logic_mock = new mocks::ArgumentsParserLogicMock;
+        const char* argv[] = {"program", "--help"};
+        CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic =
+            CmdArgumentsParserWithInjectedLogic(2, const_cast<char**>(argv), std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
+
+        EXPECT_CALL(*argument_parser_logic_mock, PrintHelp()).Times(1);
+        bool result = cmd_arguments_parser_with_injected_logic.Parse(cmd_arguments);
+
+        EXPECT_TRUE(result);
+    }
+
 }  // namespace cmd_arguments_parser_test

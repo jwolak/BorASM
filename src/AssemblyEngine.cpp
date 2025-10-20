@@ -28,34 +28,34 @@ namespace assembly_engine {
         tools::PrintGreenOKMessage("Successfully opened input file: " + input_file);
 
         std::ifstream& file = file_handler_->GetFileStream();
-        // std::string line;
-        // int lineNumber = 0;
+        std::string line;
+        int lineNumber = 0;
 
-        // // Pierwsza przebiega - znajdź labels
-        // while (std::getline(file, line)) {
-        //     lineNumber++;
-        //     line = cleanLine(line);
+        // Pierwsza przebiega - znajdź labels
+        while (std::getline(file, line)) {
+            // lineNumber++;
+            // line = cleanLine(line);
 
-        //     if (line.empty()) continue;
+            // if (line.empty()) continue;
 
-        //     // Sprawdź czy to label
-        //     if (line.back() == ':') {
-        //         std::string labelName = line.substr(0, line.length() - 1);
-        //         labels[labelName] = machineCode.size();
-        //         continue;
-        //     }
+            // // Sprawdź czy to label
+            // if (line.back() == ':') {
+            //     std::string labelName = line.substr(0, line.length() - 1);
+            //     labels[labelName] = machineCode.size();
+            //     continue;
+            // }
 
-        //     // Tymczasowo asembluj aby poznać rozmiar
-        //     std::vector<std::string> tokens = tokenize(line);
-        //     if (!tokens.empty()) {
-        //         try {
-        //             size_t sizeBefore = machineCode.size();
-        //             assembleInstruction(tokens);
-        //         } catch (const std::exception& e) {
-        //             std::cerr << "Error on line " << lineNumber << ": " << e.what() << std::endl;
-        //         }
-        //     }
-        // }
+            // // Tymczasowo asembluj aby poznać rozmiar
+            // std::vector<std::string> tokens = tokenize(line);
+            // if (!tokens.empty()) {
+            //     try {
+            //         size_t sizeBefore = machineCode.size();
+            //         assembleInstruction(tokens);
+            //     } catch (const std::exception& e) {
+            //         std::cerr << "Error on line " << lineNumber << ": " << e.what() << std::endl;
+            //     }
+            // }
+        }
 
         // // Reset dla drugiej przebiegłości
         // file.clear();

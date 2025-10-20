@@ -16,6 +16,7 @@ namespace assembly_engine {
     AssemblyEngine::AssemblyEngine()
         : file_handler_{std::make_unique<FileHandler>()},
           line_handler_{std::make_unique<CharacterStringLineHandler>()},
+          instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machineCode)},
           machineCode{},
           labels{},
           labelReferences{} {}
@@ -80,7 +81,7 @@ namespace assembly_engine {
                 try {
                     size_t size_before = machineCode.size();
                     spdlog::debug("[AssemblyEngine] Machine code size before assembling instruction: {0} [{1}:{2}]", size_before, __FILENAME__, __LINE__);
-                    // assembleInstruction(tokens);
+                    instructions_assembler_core_->AssembleInstruction(tokens);
                 } catch (const std::exception& e) {
                     spdlog::error("[AssemblyEngine] Error on line {0}: {1} [{2}:{3}]", lineNumber, e.what(), __FILENAME__, __LINE__);
                     tools::PrintRedErrorMessage("Error on line " + std::to_string(lineNumber) + ": " + e.what());

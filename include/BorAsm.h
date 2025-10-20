@@ -7,7 +7,7 @@
 namespace borasm {
     class BorAsm {
       public:
-        BorAsm(std::shared_ptr<cmd::CmdArguments> cmd_arguments);
+        explicit BorAsm(std::shared_ptr<cmd::CmdArguments> cmd_arguments);
 
       private:
         std::shared_ptr<cmd::CmdArguments> cmd_arguments_;

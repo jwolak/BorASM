@@ -3,13 +3,14 @@
 #include <memory>
 
 #include "ArgumentsParserLogic.h"
+#include "CmdArguments.h"
 
 namespace cmd {
     class CmdArgumentsParser {
       public:
         CmdArgumentsParser(int argc, char* argv[]);
         ~CmdArgumentsParser();
-        bool Parse();
+        bool Parse(std::shared_ptr<CmdArguments> cmd_arguments);
 
       private:
         int m_argc;

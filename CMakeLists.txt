@@ -123,6 +123,7 @@ message(STATUS "Set source directory: " ${PROJECT_SRC_DIR})
 #-------------------------------------------------------------------------------
 set (SOURCE_LIST
 	${PROJECT_SRC_DIR}/main.cpp
+    ${PROJECT_SRC_DIR}/BorAsm.cpp
     ${PROJECT_SRC_DIR}/CmdArgumentsParser.cpp
     ${PROJECT_SRC_DIR}/ArgumentsParserLogic.cpp
 )

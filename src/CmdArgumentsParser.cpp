@@ -12,11 +12,17 @@ namespace cmd {
 
     CmdArgumentsParser::~CmdArgumentsParser() {}
 
-    void CmdArgumentsParser::Parse() {
+    bool CmdArgumentsParser::Parse(std::shared_ptr<CmdArguments> cmd_arguments) {
         static struct option longopts[] = {
             {"help", no_argument, NULL, 'h'},        {"version", no_argument, NULL, 'v'},      {"debug", no_argument, NULL, 'd'},
             {"input", required_argument, NULL, 'i'}, {"output", required_argument, NULL, 'o'}, {"list", no_argument, NULL, 'l'},
         };
+
+        if (m_argc < 2) {
+            std::cerr << "\n[ERROR] No arguments provided!\n\n";
+            argument_parser_logic_->PrintHelp();
+            return false;
+        }
 
         int opt;
         int longindex;
@@ -32,10 +38,18 @@ namespace cmd {
                     argument_parser_logic_->EnableDebugMode();
                     break;
                 case 'i':
-                    argument_parser_logic_->GetInputFileName(optarg);
+                    cmd_arguments->input_file_path = argument_parser_logic_->GetInputFileName(optarg);
+                    if (cmd_arguments->input_file_path == std::nullopt) {
+                        std::cerr << "Invalid input file name provided." << std::endl;
+                        return false;
+                    }
                     break;
                 case 'o':
-                    argument_parser_logic_->GetOutputFileName(optarg);
+                    cmd_arguments->output_file_path = argument_parser_logic_->GetOutputFileName(optarg);
+                    if (cmd_arguments->output_file_path == std::nullopt) {
+                        std::cerr << "Invalid output file name provided." << std::endl;
+                        return false;
+                    }
                     break;
                 case 'l':
                     argument_parser_logic_->ListAvailableInstructions();
@@ -47,5 +61,7 @@ namespace cmd {
                     break;
             }
         }
+
+        return true;
     }
 }  // namespace cmd

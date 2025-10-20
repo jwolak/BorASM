@@ -45,7 +45,6 @@ namespace assembly_engine {
         std::string line{};
         int lineNumber = 0;
 
-        // Pierwsza przebiega - znajdź labels
         tools::PrintGreenOKMessage("Starting assembly process...");
         spdlog::trace("[AssemblyEngine] Starting assembly process... [{0}:{1}]", __FILENAME__, __LINE__);
         spdlog::debug("[AssemblyEngine] First pass - label detection... [{0}:{1}]", __FILENAME__, __LINE__);
@@ -71,16 +70,23 @@ namespace assembly_engine {
                 continue;
             }
 
-            // // Tymczasowo asembluj aby poznać rozmiar
-            // std::vector<std::string> tokens = tokenize(line);
-            // if (!tokens.empty()) {
-            //     try {
-            //         size_t sizeBefore = machineCode.size();
-            //         assembleInstruction(tokens);
-            //     } catch (const std::exception& e) {
-            //         std::cerr << "Error on line " << lineNumber << ": " << e.what() << std::endl;
-            //     }
-            // }
+            spdlog::debug("[AssemblyEngine] Tokenizing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            std::vector<std::string> tokens = line_handler_->TokenizeLine(line);
+            spdlog::debug("[AssemblyEngine] Tokenized line {0}: {1} into {2} tokens [{3}:{4}]", lineNumber, line, tokens.size(), __FILENAME__, __LINE__);
+
+            spdlog::debug("[AssemblyEngine] Check if tokens are not empty for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            if (!tokens.empty()) {
+                spdlog::debug("[AssemblyEngine] Tokens are not empty for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+                try {
+                    size_t size_before = machineCode.size();
+                    spdlog::debug("[AssemblyEngine] Machine code size before assembling instruction: {0} [{1}:{2}]", size_before, __FILENAME__, __LINE__);
+                    // assembleInstruction(tokens);
+                } catch (const std::exception& e) {
+                    spdlog::error("[AssemblyEngine] Error on line {0}: {1} [{2}:{3}]", lineNumber, e.what(), __FILENAME__, __LINE__);
+                    tools::PrintRedErrorMessage("Error on line " + std::to_string(lineNumber) + ": " + e.what());
+                    return false;
+                }
+            }
         }
 
         // // Reset dla drugiej przebiegłości

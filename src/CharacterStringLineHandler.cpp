@@ -1,6 +1,7 @@
 #include "CharacterStringLineHandler.h"
 
 #include <cstdint>
+#include <sstream>
 #include <string>
 
 namespace assembly_engine {
@@ -58,6 +59,23 @@ namespace assembly_engine {
             return static_cast<uint8_t>(std::stoul(num, nullptr, 16));
         }
         return static_cast<uint8_t>(std::stoul(num));
+    }
+
+    std::vector<std::string> CharacterStringLineHandler::TokenizeLine(const std::string& line) const {
+        std::vector<std::string> tokens;
+        std::istringstream iss(line);
+        std::string token;
+
+        while (iss >> token) {
+            if (!token.empty() && token.back() == ',') {
+                token.pop_back();
+            }
+            if (!token.empty()) {
+                tokens.push_back(token);
+            }
+        }
+
+        return tokens;
     }
 
 }  // namespace assembly_engine

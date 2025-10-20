@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 namespace assembly_engine {
     class CharacterStringLineHandler {
@@ -11,5 +12,6 @@ namespace assembly_engine {
         std::string RemoveLineComments(const std::string& line) const;
         bool IsNumber(const std::string& string_number) const;
         uint8_t ConvertStringToNumber(const std::string& string_number) const;
+        std::vector<std::string> TokenizeLine(const std::string& line) const;
     };
 }  // namespace assembly_engine

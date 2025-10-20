@@ -8,6 +8,7 @@ namespace borasm {
     class BorAsm {
       public:
         explicit BorAsm(std::shared_ptr<cmd::CmdArguments> cmd_arguments);
+        bool StartProcessing();
 
       private:
         std::shared_ptr<cmd::CmdArguments> cmd_arguments_;

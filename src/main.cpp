@@ -53,6 +53,11 @@ int main(int argc, char* argv[]) {
     }
 
     borasm::BorAsm bor_asm(cmd_arguments);
+    if (!bor_asm.StartProcessing()) {
+        tools::PrintRedErrorMessage("Assembling failed.");
+        return 1;
+    }
 
+    tools::PrintGreenOKMessage("Assembling completed successfully.");
     return 0;
 }

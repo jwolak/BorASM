@@ -9,8 +9,10 @@ namespace cmd {
     class CmdArgumentsParser {
       public:
         CmdArgumentsParser(int argc, char* argv[]);
-        ~CmdArgumentsParser();
         bool Parse(std::shared_ptr<CmdArguments> cmd_arguments);
+
+      protected:
+        CmdArgumentsParser(int argc, char* argv[], std::unique_ptr<IArgumentsParserLogic> argument_parser_logic);
 
       private:
         int m_argc;

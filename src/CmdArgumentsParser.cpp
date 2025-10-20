@@ -3,6 +3,7 @@
 #include <getopt.h>
 
 #include <iostream>
+#include <memory>
 
 #include "Tools.h"
 #include "version.h"
@@ -11,7 +12,9 @@ namespace cmd {
     CmdArgumentsParser::CmdArgumentsParser(int argc, char* argv[])
         : m_argc(argc), m_argv(argv), argument_parser_logic_(std::make_unique<ArgumentsParserLogic>()) {}
 
-    CmdArgumentsParser::~CmdArgumentsParser() {}
+    /* For tests purpose only */
+    CmdArgumentsParser::CmdArgumentsParser(int argc, char* argv[], std::unique_ptr<IArgumentsParserLogic> argument_parser_logic)
+        : m_argc(argc), m_argv(argv), argument_parser_logic_(std::move(argument_parser_logic)) {}
 
     bool CmdArgumentsParser::Parse(std::shared_ptr<CmdArguments> cmd_arguments) {
         static struct option longopts[] = {

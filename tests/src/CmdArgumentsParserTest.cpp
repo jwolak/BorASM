@@ -5,6 +5,8 @@
 #include "ArgumentsParserLogicMock.h"
 #include "CmdArgumentsParser.h"
 
+extern int optind;
+
 namespace cmd_arguments_parser_test {
 
     class CmdArgumentsParserWithInjectedLogic : public cmd::CmdArgumentsParser {
@@ -18,7 +20,8 @@ namespace cmd_arguments_parser_test {
         CmdArgumentsParserTest()
             : argument_parser_logic_mock{new mocks::ArgumentsParserLogicMock},
               cmd_arguments_parser_with_injected_logic(1, nullptr, std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock)) {}
-        void SetUp() override {}
+
+        void SetUp() override { optind = 0; }
 
         void TearDown() override {}
 
@@ -46,6 +49,21 @@ namespace cmd_arguments_parser_test {
 
         EXPECT_CALL(*argument_parser_logic_mock, PrintHelp()).Times(1);
         bool result = cmd_arguments_parser_with_injected_logic.Parse(cmd_arguments);
+
+        EXPECT_TRUE(result);
+    }
+
+    TEST_F(CmdArgumentsParserTest, Print_Help_Option_Should_Invoke_PrintVersionInfo_And_Return_True) {
+        auto cmd_arguments = std::make_shared<cmd::CmdArguments>();
+        mocks::ArgumentsParserLogicMock* argument_parser_logic_mock = new mocks::ArgumentsParserLogicMock;
+        char arg0[] = "program";
+        char arg1[] = "--version";
+        char* argv[] = {arg0, arg1};
+        CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
+            CmdArgumentsParserWithInjectedLogic(2, argv, std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
+
+        EXPECT_CALL(*argument_parser_logic_mock, PrintVersionInfo()).Times(1);
+        bool result = cmd_arguments_parser_with_injected_logic2.Parse(cmd_arguments);
 
         EXPECT_TRUE(result);
     }

@@ -1,7 +1,11 @@
 #pragma once
 
+#include <cstdint>
+#include <map>
 #include <memory>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include "FileHandler.h"
 
@@ -13,5 +17,8 @@ namespace assembly_engine {
 
       private:
         std::unique_ptr<FileHandler> file_handler_;
+        std::vector<uint8_t> machineCode;
+        std::map<std::string, uint16_t> labels;
+        std::vector<std::pair<int, std::string>> labelReferences;
     };
 }  // namespace assembly_engine

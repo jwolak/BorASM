@@ -27,13 +27,25 @@ namespace assembly_engine {
         spdlog::trace("[AssemblyEngine] Successfully opened input file: {0} [{1}:{2}]", input_file, __FILENAME__, __LINE__);
         tools::PrintGreenOKMessage("Successfully opened input file: " + input_file);
 
+        spdlog::debug("[AssemblyEngine] Get file stream [{0}:{1}]", __FILENAME__, __LINE__);
         std::ifstream& file = file_handler_->GetFileStream();
-        std::string line;
+
+        if (!file) {
+            tools::PrintRedErrorMessage("Input file stream is not valid.");
+            spdlog::error("[AssemblyEngine] Input file stream is not valid. [{0}:{1}]", __FILENAME__, __LINE__);
+            return false;
+        }
+
+        spdlog::trace("[AssemblyEngine] Clear line and reset linse number [{0}:{1}]", __FILENAME__, __LINE__);
+        std::string line{};
         int lineNumber = 0;
 
         // Pierwsza przebiega - znajdź labels
+        tools::PrintGreenOKMessage("Starting assembly process...");
+        spdlog::trace("[AssemblyEngine] Starting assembly process... [{0}:{1}]", __FILENAME__, __LINE__);
+        spdlog::debug("[AssemblyEngine] First pass - label detection... [{0}:{1}]", __FILENAME__, __LINE__);
         while (std::getline(file, line)) {
-            // lineNumber++;
+            lineNumber++;
             // line = cleanLine(line);
 
             // if (line.empty()) continue;

@@ -57,6 +57,7 @@ set(TEST_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/ThirdParty/logger/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/mocks
 )
 
 # Add system GTest includes if found

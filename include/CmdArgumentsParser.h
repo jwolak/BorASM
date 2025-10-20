@@ -15,6 +15,6 @@ namespace cmd {
       private:
         int m_argc;
         char** m_argv;
-        std::unique_ptr<ArgumentsParserLogic> argument_parser_logic_;
+        std::unique_ptr<IArgumentsParserLogic> argument_parser_logic_;
     };
 }  // namespace cmd

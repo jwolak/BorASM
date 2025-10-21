@@ -10,8 +10,8 @@
 
 namespace assembly_engine {
 
-    InstructionsAssemblerCore::InstructionsAssemblerCore(std::vector<uint8_t>& machineCode, std::vector<std::pair<int, std::string>>& labelReferences)
-        : machineCode(machineCode), labelReferences(labelReferences), character_string_line_handler_(std::make_unique<CharacterStringLineHandler>()) {}
+    InstructionsAssemblerCore::InstructionsAssemblerCore(std::vector<uint8_t>& machine_code_, std::vector<std::pair<int, std::string>>& labelReferences)
+        : machine_code_(machine_code_), labelReferences(labelReferences), character_string_line_handler_(std::make_unique<CharacterStringLineHandler>()) {}
 
     void InstructionsAssemblerCore::AssembleInstruction(const std::vector<std::string>& tokens) {
         spdlog::trace("[InstructionsAssemblerCore] AssembleInstruction() called with {0} tokens [{1}:{2}]", tokens.size(), __FILENAME__, __LINE__);
@@ -41,7 +41,7 @@ namespace assembly_engine {
         spdlog::debug("[InstructionsAssemblerCore] Checking for HALT instruction [{0}:{1}]", __FILENAME__, __LINE__);
         if (mnemonic == "HALT") {
             spdlog::debug("[InstructionsAssemblerCore] HALT instruction found [{0}:{1}]", __FILENAME__, __LINE__);
-            machineCode.push_back(0xFF);
+            machine_code_.push_back(0xFF);
             spdlog::debug("[InstructionsAssemblerCore] HALT instruction assembled and added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
             return;
         }
@@ -56,20 +56,20 @@ namespace assembly_engine {
             }
 
             spdlog::debug("[InstructionsAssemblerCore] Assembling jump instruction [{0}:{1}]", __FILENAME__, __LINE__);
-            machineCode.push_back(opcode << 4);  // Upper 4 bits = opcode
+            machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
             spdlog::debug("[InstructionsAssemblerCore] Jump instruction assembled and added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
 
             spdlog::debug("[InstructionsAssemblerCore] Processing jump address/token: {0} [{1}:{2}]", tokens[1], __FILENAME__, __LINE__);
             if (character_string_line_handler_->IsNumber(tokens[1])) {
                 spdlog::debug("[InstructionsAssemblerCore] Jump address is a number [{0}:{1}]", __FILENAME__, __LINE__);
-                machineCode.push_back(character_string_line_handler_->ConvertStringToNumber(tokens[1]));
+                machine_code_.push_back(character_string_line_handler_->ConvertStringToNumber(tokens[1]));
                 spdlog::debug("[InstructionsAssemblerCore] Jump address added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
             } else {
                 // Label - remember for later resolution
                 spdlog::debug("[InstructionsAssemblerCore] Jump address is a label, adding to label references [{0}:{1}]", __FILENAME__, __LINE__);
-                labelReferences.push_back({machineCode.size(), tokens[1]});
+                labelReferences.push_back({machine_code_.size(), tokens[1]});
                 spdlog::debug("[InstructionsAssemblerCore] Placeholder added for jump address [{0}:{1}]", __FILENAME__, __LINE__);
-                machineCode.push_back(0x00);  // Placeholder
+                machine_code_.push_back(0x00);  // Placeholder
             }
             spdlog::debug("[InstructionsAssemblerCore] Jump instruction assembled and added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
             tools::PrintGreenOKMessage("Jump instruction assembled successfully.");
@@ -98,7 +98,7 @@ namespace assembly_engine {
             uint8_t instruction = (opcode << 4) | (reg << 2);  // [4-bit opcode][2-bit reg][2-bit unused]
             spdlog::debug("[InstructionsAssemblerCore] Shift instruction byte: {0} [{1}:{2}]", static_cast<int>(instruction), __FILENAME__, __LINE__);
 
-            machineCode.push_back(instruction);
+            machine_code_.push_back(instruction);
             spdlog::debug("[InstructionsAssemblerCore] Shift instruction added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
 
             tools::PrintGreenOKMessage("Shift instruction added to machine code successfully.");
@@ -134,8 +134,8 @@ namespace assembly_engine {
             uint8_t instruction = (opcode << 4) | (destReg << 2) | immediate;  // [4-bit opcode][2-bit dest][2-bit imm_flag]
             spdlog::debug("[InstructionsAssemblerCore] Instruction byte with immediate: {0} [{1}:{2}]", static_cast<int>(instruction), __FILENAME__, __LINE__);
 
-            machineCode.push_back(instruction);
-            machineCode.push_back(immediate);
+            machine_code_.push_back(instruction);
+            machine_code_.push_back(immediate);
             spdlog::debug("[InstructionsAssemblerCore] Instruction with immediate added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
         } else {
             // Register to register
@@ -150,7 +150,7 @@ namespace assembly_engine {
                           __LINE__);
             uint8_t instruction = (opcode << 4) | (destReg << 2) | srcReg;
             spdlog::debug("[InstructionsAssemblerCore] Instruction byte with register: {0} [{1}:{2}]", static_cast<int>(instruction), __FILENAME__, __LINE__);
-            machineCode.push_back(instruction);
+            machine_code_.push_back(instruction);
             spdlog::debug("[InstructionsAssemblerCore] Instruction with register added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
         }
 

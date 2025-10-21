@@ -10,11 +10,11 @@
 namespace assembly_engine {
     class InstructionsAssemblerCore {
       public:
-        InstructionsAssemblerCore(std::vector<uint8_t>& machineCode, std::vector<std::pair<int, std::string>>& labelReferences);
+        InstructionsAssemblerCore(std::vector<uint8_t>& machine_code_, std::vector<std::pair<int, std::string>>& labelReferences);
         void AssembleInstruction(const std::vector<std::string>& tokens);
 
       private:
-        std::vector<uint8_t>& machineCode;
+        std::vector<uint8_t>& machine_code_;
         std::vector<std::pair<int, std::string>>& labelReferences;
         std::unique_ptr<CharacterStringLineHandler> character_string_line_handler_;
     };

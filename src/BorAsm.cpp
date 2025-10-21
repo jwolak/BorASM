@@ -31,4 +31,9 @@ namespace borasm {
         assembly_engine_->PrintMachineCode();
     }
 
+    void BorAsm::SaveMachineCodeToFile(const std::string& output_file) const {
+        spdlog::trace("[BorAsm] SaveMachineCodeToFile() called with output_file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
+        assembly_engine_->SaveMachineCodeToFile(output_file);
+    }
+
 }  // namespace borasm

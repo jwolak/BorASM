@@ -11,6 +11,7 @@ namespace borasm {
         explicit BorAsm(std::shared_ptr<cmd::CmdArguments> cmd_arguments);
         bool StartProcessing();
         void PrintMachineCode() const;
+        void SaveMachineCodeToFile(const std::string& output_file) const;
 
       private:
         std::shared_ptr<cmd::CmdArguments> cmd_arguments_;

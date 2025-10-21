@@ -158,6 +158,8 @@ namespace assembly_engine {
     }
 
     void AssemblyEngine::PrintMachineCode() const {
+        spdlog::trace("[AssemblyEngine] PrintMachineCode() called [{0}:{1}]", __FILENAME__, __LINE__);
+
         std::cout << "Machine Code:" << std::endl;
         for (size_t i = 0; i < machineCode.size(); i++) {
             std::cout << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << static_cast<int>(machineCode[i]);
@@ -170,6 +172,17 @@ namespace assembly_engine {
         if (machineCode.size() % 8 != 0) {
             std::cout << std::endl;
         }
+    }
+
+    void AssemblyEngine::SaveMachineCodeToFile(const std::string& output_file) const {
+        spdlog::trace("[AssemblyEngine] SaveMachineCodeToFile() called with output_file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
+
+        std::ofstream file(output_file);
+        for (uint8_t byte : machineCode) {
+            file << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << static_cast<int>(byte) << std::endl;
+        }
+        file.close();
+        tools::PrintGreenOKMessage("Machine code saved to file: " + output_file);
     }
 
 }  // namespace assembly_engine

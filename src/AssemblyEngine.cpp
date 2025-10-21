@@ -16,10 +16,10 @@ namespace assembly_engine {
     AssemblyEngine::AssemblyEngine()
         : file_handler_{std::make_unique<FileHandler>()},
           line_handler_{std::make_unique<CharacterStringLineHandler>()},
-          instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machine_code_, labelReferences)},
+          instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machine_code_, label_references_)},
           machine_code_{},
           labels{},
-          labelReferences{} {}
+          label_references_{} {}
 
     bool AssemblyEngine::Assemble(const std::string& input_file, const std::string& output_file) {
         spdlog::trace("[AssemblyEngine] Assemble() called with input_file: {0}, output_file: {1} [{2}:{3}]", input_file, output_file, __FILENAME__, __LINE__);
@@ -136,7 +136,7 @@ namespace assembly_engine {
 
         // Resolve references to labels
         spdlog::debug("[AssemblyEngine] Resolving label references... [{0}:{1}]", __FILENAME__, __LINE__);
-        for (auto& ref : labelReferences) {
+        for (auto& ref : label_references_) {
             spdlog::trace("[AssemblyEngine] Resolving label reference: {0} [{1}:{2}]", ref.second, __FILENAME__, __LINE__);
             if (labels.find(ref.second) != labels.end()) {
                 machine_code_[ref.first] = static_cast<uint8_t>(labels[ref.second]);

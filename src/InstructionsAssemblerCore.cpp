@@ -10,8 +10,8 @@
 
 namespace assembly_engine {
 
-    InstructionsAssemblerCore::InstructionsAssemblerCore(std::vector<uint8_t>& machine_code_, std::vector<std::pair<int, std::string>>& labelReferences)
-        : machine_code_(machine_code_), labelReferences(labelReferences), character_string_line_handler_(std::make_unique<CharacterStringLineHandler>()) {}
+    InstructionsAssemblerCore::InstructionsAssemblerCore(std::vector<uint8_t>& machine_code, std::vector<std::pair<int, std::string>>& label_references)
+        : machine_code_(machine_code), label_references_(label_references), character_string_line_handler_(std::make_unique<CharacterStringLineHandler>()) {}
 
     void InstructionsAssemblerCore::AssembleInstruction(const std::vector<std::string>& tokens) {
         spdlog::trace("[InstructionsAssemblerCore] AssembleInstruction() called with {0} tokens [{1}:{2}]", tokens.size(), __FILENAME__, __LINE__);
@@ -67,7 +67,7 @@ namespace assembly_engine {
             } else {
                 // Label - remember for later resolution
                 spdlog::debug("[InstructionsAssemblerCore] Jump address is a label, adding to label references [{0}:{1}]", __FILENAME__, __LINE__);
-                labelReferences.push_back({machine_code_.size(), tokens[1]});
+                label_references_.push_back({machine_code_.size(), tokens[1]});
                 spdlog::debug("[InstructionsAssemblerCore] Placeholder added for jump address [{0}:{1}]", __FILENAME__, __LINE__);
                 machine_code_.push_back(0x00);  // Placeholder
             }

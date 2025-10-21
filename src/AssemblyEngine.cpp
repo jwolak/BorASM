@@ -16,10 +16,10 @@ namespace assembly_engine {
     AssemblyEngine::AssemblyEngine()
         : file_handler_{std::make_unique<FileHandler>()},
           line_handler_{std::make_unique<CharacterStringLineHandler>()},
-          instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machine_code_, label_references_)},
           machine_code_{},
-          labels{},
-          label_references_{} {}
+          labels_{},
+          label_references_{},
+          instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machine_code_, label_references_)} {}
 
     bool AssemblyEngine::Assemble(const std::string& input_file, const std::string& output_file) {
         spdlog::trace("[AssemblyEngine] Assemble() called with input_file: {0}, output_file: {1} [{2}:{3}]", input_file, output_file, __FILENAME__, __LINE__);
@@ -67,7 +67,7 @@ namespace assembly_engine {
             if (line.back() == ':') {
                 spdlog::debug("[AssemblyEngine] Line: {0} [{1}:{2}] is a label", lineNumber, line, __FILENAME__, __LINE__);
                 std::string labelName = line.substr(0, line.length() - 1);
-                labels[labelName] = machine_code_.size();
+                labels_[labelName] = machine_code_.size();
                 continue;
             }
 
@@ -138,9 +138,9 @@ namespace assembly_engine {
         spdlog::debug("[AssemblyEngine] Resolving label references... [{0}:{1}]", __FILENAME__, __LINE__);
         for (auto& ref : label_references_) {
             spdlog::trace("[AssemblyEngine] Resolving label reference: {0} [{1}:{2}]", ref.second, __FILENAME__, __LINE__);
-            if (labels.find(ref.second) != labels.end()) {
-                machine_code_[ref.first] = static_cast<uint8_t>(labels[ref.second]);
-                spdlog::debug("[AssemblyEngine] Resolved label {0} to address {1} [{2}:{3}]", ref.second, labels[ref.second], __FILENAME__, __LINE__);
+            if (labels_.find(ref.second) != labels_.end()) {
+                machine_code_[ref.first] = static_cast<uint8_t>(labels_[ref.second]);
+                spdlog::debug("[AssemblyEngine] Resolved label {0} to address {1} [{2}:{3}]", ref.second, labels_[ref.second], __FILENAME__, __LINE__);
             } else {
                 spdlog::error("[AssemblyEngine] Undefined label: {0} [{1}:{2}]", ref.second, __FILENAME__, __LINE__);
                 tools::PrintRedErrorMessage("Undefined label: " + ref.second);

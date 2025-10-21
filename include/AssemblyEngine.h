@@ -22,9 +22,9 @@ namespace assembly_engine {
       private:
         std::unique_ptr<FileHandler> file_handler_;
         std::unique_ptr<CharacterStringLineHandler> line_handler_;
-        std::unique_ptr<InstructionsAssemblerCore> instructions_assembler_core_;
         std::vector<uint8_t> machine_code_;
-        std::map<std::string, uint16_t> labels;
+        std::map<std::string, uint16_t> labels_;
         std::vector<std::pair<int, std::string>> label_references_;
+        std::unique_ptr<InstructionsAssemblerCore> instructions_assembler_core_;
     };
 }  // namespace assembly_engine

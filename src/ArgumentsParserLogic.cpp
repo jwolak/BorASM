@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "Tools.h"
 #include "spdlog/spdlog.h"
 #include "version.h"
 
@@ -9,6 +10,8 @@ namespace cmd {
     ArgumentsParserLogic::ArgumentsParserLogic() {}
 
     void ArgumentsParserLogic::PrintHelp() const {
+        spdlog::debug("[ArgumentsParserLogic] Printing help information");
+
         std::cout << "BorASM - Assembler CLI\n"
                   << "Version: " << BorASM::Version::GetVersionString() << "\n"
                   << "\nUsage:\n"
@@ -25,6 +28,8 @@ namespace cmd {
     }
 
     void ArgumentsParserLogic::PrintVersionInfo() const {
+        spdlog::debug("[ArgumentsParserLogic] Printing version information");
+
         std::cout << "Version: " << BorASM::Version::GetVersionString() << std::endl;
         std::cout << "Full Version: " << BorASM::Version::GetFullVersionString() << std::endl;
         std::cout << "Complete Version: " << BorASM::Version::GetCompleteVersionInfo() << std::endl;
@@ -33,17 +38,23 @@ namespace cmd {
     }
 
     bool ArgumentsParserLogic::EnableDebugMode() const {
-        std::cout << "Debug mode enabled" << std::endl;
+        tools::PrintYellowWarningMessage("Enabling debug mode...");
         try {
             spdlog::set_level(spdlog::level::debug);
         } catch (const std::exception& e) {
             std::cerr << "Error enabling debug mode: " << e.what() << std::endl;
+            tools::PrintRedErrorMessage("Failed to enable debug mode.");
             return false;
         }
+
+        spdlog::debug("[ArgumentsParserLogic] Debug mode activated [{0}:{1}]", __FILENAME__, __LINE__);
+        tools::PrintGreenOKMessage("Debug mode enabled successfully.");
         return true;
     }
 
     std::optional<std::string> ArgumentsParserLogic::GetInputFileName(const char* optarg) const {
+        spdlog::debug("[ArgumentsParserLogic] Retrieving input file name");
+
         if (optarg) {
             std::cout << "Input file name: " << optarg << std::endl;
             return std::string(optarg);
@@ -53,6 +64,8 @@ namespace cmd {
     }
 
     std::optional<std::string> ArgumentsParserLogic::GetOutputFileName(const char* optarg) const {
+        spdlog::debug("[ArgumentsParserLogic] Retrieving output file name");
+
         if (optarg) {
             std::cout << "Output file name: " << optarg << std::endl;
             return std::string(optarg);
@@ -62,6 +75,8 @@ namespace cmd {
     }
 
     void ArgumentsParserLogic::ListAvailableInstructions() const {
+        spdlog::debug("[ArgumentsParserLogic] Listing available instructions...");
+
         std::cout << "Available instructions:\n";
         std::cout << "\nArithmetic instructions (0x00-0x07):\n";
         std::cout << "  ADD   0x00   Add:        ADD reg, reg/imm\n";

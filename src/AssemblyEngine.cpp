@@ -177,21 +177,21 @@ namespace assembly_engine {
     bool AssemblyEngine::SaveMachineCodeToFile(const std::string& output_file) const {
         spdlog::trace("[AssemblyEngine] SaveMachineCodeToFile() called with output_file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
 
-        spdlog::trace("[AssemblyEngine] Trying to open input file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
+        spdlog::trace("[AssemblyEngine] Trying to open output file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
         if (!file_handler_->OpenFileToWrite(output_file)) {
-            tools::PrintRedErrorMessage("Failed to open input file: " + output_file);
-            spdlog::error("[AssemblyEngine] Failed to open input file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
+            tools::PrintRedErrorMessage("Failed to open output file: " + output_file);
+            spdlog::error("[AssemblyEngine] Failed to open output file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
             return false;
         }
-        spdlog::trace("[AssemblyEngine] Successfully opened input file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
-        tools::PrintGreenOKMessage("Successfully opened input file: " + output_file);
+        spdlog::trace("[AssemblyEngine] Successfully opened output file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
+        tools::PrintGreenOKMessage("Successfully opened output file: " + output_file);
 
-        spdlog::debug("[AssemblyEngine] Get file stream [{0}:{1}]", __FILENAME__, __LINE__);
+        spdlog::debug("[AssemblyEngine] Get file to write stream [{0}:{1}]", __FILENAME__, __LINE__);
         std::ofstream& file = file_handler_->GetFileToWriteStream();
 
         if (!file) {
-            tools::PrintRedErrorMessage("Input file stream is not valid.");
-            spdlog::error("[AssemblyEngine] Input file stream is not valid. [{0}:{1}]", __FILENAME__, __LINE__);
+            tools::PrintRedErrorMessage("Output file stream is not valid.");
+            spdlog::error("[AssemblyEngine] Output file stream is not valid. [{0}:{1}]", __FILENAME__, __LINE__);
             return false;
         }
 

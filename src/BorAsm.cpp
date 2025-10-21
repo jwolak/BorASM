@@ -11,7 +11,7 @@ namespace borasm {
         : cmd_arguments_(cmd_arguments), assembly_engine_(std::make_unique<assembly_engine::AssemblyEngine>()) {}
 
     /* For testing purposes only */
-    BorAsm::BorAsm(std::shared_ptr<cmd::CmdArguments> cmd_arguments, std::unique_ptr<assembly_engine::AssemblyEngine> assembly_engine)
+    BorAsm::BorAsm(std::shared_ptr<cmd::CmdArguments> cmd_arguments, std::unique_ptr<assembly_engine::IAssemblyEngine> assembly_engine)
         : cmd_arguments_(cmd_arguments), assembly_engine_(std::move(assembly_engine)) {}
 
     bool BorAsm::StartProcessing() {

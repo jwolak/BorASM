@@ -9,15 +9,16 @@
 
 #include "CharacterStringLineHandler.h"
 #include "FileHandler.h"
+#include "IAssemblyEngine.h"
 #include "InstructionsAssemblerCore.h"
 
 namespace assembly_engine {
-    class AssemblyEngine {
+    class AssemblyEngine : public IAssemblyEngine {
       public:
         AssemblyEngine();
-        bool Assemble(const std::string& input_file, const std::string& output_file);
-        void PrintMachineCode() const;
-        bool SaveMachineCodeToFile(const std::string& output_file) const;
+        bool Assemble(const std::string& input_file, const std::string& output_file) override;
+        void PrintMachineCode() const override;
+        bool SaveMachineCodeToFile(const std::string& output_file) const override;
 
       private:
         std::unique_ptr<FileHandler> file_handler_;

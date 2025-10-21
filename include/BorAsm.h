@@ -12,10 +12,10 @@ namespace borasm {
         bool StartProcessing();
 
       protected:
-        BorAsm(std::shared_ptr<cmd::CmdArguments> cmd_arguments, std::unique_ptr<assembly_engine::AssemblyEngine> assembly_engine);
+        BorAsm(std::shared_ptr<cmd::CmdArguments> cmd_arguments, std::unique_ptr<assembly_engine::IAssemblyEngine> assembly_engine);
 
       private:
         std::shared_ptr<cmd::CmdArguments> cmd_arguments_;
-        std::unique_ptr<assembly_engine::AssemblyEngine> assembly_engine_;
+        std::unique_ptr<assembly_engine::IAssemblyEngine> assembly_engine_;
     };
 }  // namespace borasm

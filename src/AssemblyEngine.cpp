@@ -16,7 +16,7 @@ namespace assembly_engine {
     AssemblyEngine::AssemblyEngine()
         : file_handler_{std::make_unique<FileHandler>()},
           line_handler_{std::make_unique<CharacterStringLineHandler>()},
-          instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machineCode)},
+          instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machineCode, labelReferences)},
           machineCode{},
           labels{},
           labelReferences{} {}

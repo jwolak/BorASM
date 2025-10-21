@@ -1,8 +1,7 @@
 #include "FileHandler.h"
 
-#include <spdlog/spdlog.h>
-
 #include "Tools.h"
+#include "spdlog/spdlog.h"
 
 namespace assembly_engine {
     FileHandler::FileHandler() {}

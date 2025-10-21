@@ -1,9 +1,8 @@
 #include "ArgumentsParserLogic.h"
 
-#include <spdlog/spdlog.h>
-
 #include <iostream>
 
+#include "spdlog/spdlog.h"
 #include "version.h"
 
 namespace cmd {

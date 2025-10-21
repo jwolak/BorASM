@@ -1,7 +1,5 @@
 #include "AssemblyEngine.h"
 
-#include <spdlog/spdlog.h>
-
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -11,6 +9,7 @@
 #include <vector>
 
 #include "Tools.h"
+#include "spdlog/spdlog.h"
 
 namespace assembly_engine {
 

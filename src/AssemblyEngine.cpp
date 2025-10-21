@@ -34,7 +34,7 @@ namespace assembly_engine {
         tools::PrintGreenOKMessage("Successfully opened input file: " + input_file);
 
         spdlog::debug("[AssemblyEngine] Get file stream [{0}:{1}]", __FILENAME__, __LINE__);
-        std::ifstream& file = file_handler_->GetFileStream();
+        std::ifstream& file = file_handler_->GetFileToReadStream();
 
         if (!file) {
             tools::PrintRedErrorMessage("Input file stream is not valid.");

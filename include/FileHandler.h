@@ -14,7 +14,7 @@ namespace assembly_engine {
         FileHandler& operator=(FileHandler&& other) noexcept;
         bool OpenFileToRead(const std::string& file_path);
         bool OpenFileToWrite(const std::string& file_path);
-        std::ifstream& GetFileStream();
+        std::ifstream& GetFileToReadStream();
         std::ofstream& GetFileToWriteStream();
 
       private:

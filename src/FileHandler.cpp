@@ -56,8 +56,8 @@ namespace assembly_engine {
         return file_to_read_.is_open();
     }
 
-    std::ifstream& FileHandler::GetFileStream() {
-        spdlog::trace("[FileHandler] GetFileStream() called [{0}:{1}]", __FILENAME__, __LINE__);
+    std::ifstream& FileHandler::GetFileToReadStream() {
+        spdlog::trace("[FileHandler] GetFileToReadStream() called [{0}:{1}]", __FILENAME__, __LINE__);
         return file_to_read_;
     }
 

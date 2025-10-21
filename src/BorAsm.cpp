@@ -23,17 +23,22 @@ namespace borasm {
 
         tools::PrintGreenOKMessage("Assembly process completed successfully.");
         spdlog::trace("[BorAsm] Assembly process completed successfully [{0}:{1}]", __FILENAME__, __LINE__);
-        return true;
-    }
 
-    void BorAsm::PrintMachineCode() const {
         spdlog::trace("[BorAsm] PrintMachineCode() called [{0}:{1}]", __FILENAME__, __LINE__);
         assembly_engine_->PrintMachineCode();
-    }
 
-    void BorAsm::SaveMachineCodeToFile(const std::string& output_file) const {
-        spdlog::trace("[BorAsm] SaveMachineCodeToFile() called with output_file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
-        assembly_engine_->SaveMachineCodeToFile(output_file);
-    }
+        spdlog::trace("[BorAsm] SaveMachineCodeToFile() called with output_file: {0} [{1}:{2}]", cmd_arguments_->output_file_path.value(), __FILENAME__,
+                      __LINE__);
+        if (!assembly_engine_->SaveMachineCodeToFile(cmd_arguments_->output_file_path.value())) {
+            tools::PrintRedErrorMessage("Failed to save machine code to file.");
+            spdlog::error("[BorAsm] Failed to save machine code to file: {0} [{1}:{2}]", cmd_arguments_->output_file_path.value(), __FILENAME__, __LINE__);
+            return false;
+        }
+        tools::PrintGreenOKMessage("Machine code saved to file successfully.");
+        spdlog::trace("[BorAsm] Machine code saved to file successfully [{0}:{1}]", __FILENAME__, __LINE__);
 
+        spdlog::trace("[BorAsm] StartProcessing() completed successfully [{0}:{1}]", __FILENAME__, __LINE__);
+        tools::PrintGreenOKMessage("Assembly processing finished successfully.");
+        return true;
+    }
 }  // namespace borasm

@@ -11,6 +11,9 @@ namespace borasm {
         explicit BorAsm(std::shared_ptr<cmd::CmdArguments> cmd_arguments);
         bool StartProcessing();
 
+      protected:
+        BorAsm(std::shared_ptr<cmd::CmdArguments> cmd_arguments, std::unique_ptr<assembly_engine::AssemblyEngine> assembly_engine);
+
       private:
         std::shared_ptr<cmd::CmdArguments> cmd_arguments_;
         std::unique_ptr<assembly_engine::AssemblyEngine> assembly_engine_;

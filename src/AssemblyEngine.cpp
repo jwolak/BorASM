@@ -88,40 +88,71 @@ namespace assembly_engine {
                     return false;
                 }
             }
+            spdlog::debug("[AssemblyEngine] Finished processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            tools::PrintGreenOKMessage("Finished processing line " + std::to_string(lineNumber) + ": " + line);
         }
 
-        // // Reset dla drugiej przebiegłości
-        // file.clear();
-        // file.seekg(0, std::ios::beg);
-        // machineCode.clear();
-        // lineNumber = 0;
+        // Reset for the second pass
+        spdlog::trace("[AssemblyEngine] Reset file stream and internal states for second pass [{0}:{1}]", __FILENAME__, __LINE__);
+        spdlog::debug("[AssemblyEngine] Clearing file stream state [{0}:{1}]", __FILENAME__, __LINE__);
+        file.clear();
+        spdlog::debug("[AssemblyEngine] Seek to beginning of file [{0}:{1}]", __FILENAME__, __LINE__);
+        file.seekg(0, std::ios::beg);
+        spdlog::debug("[AssemblyEngine] Clearing machine code and reset line number [{0}:{1}]", __FILENAME__, __LINE__);
+        machineCode.clear();
+        spdlog::debug("[AssemblyEngine] Clearing line number [{0}:{1}]", __FILENAME__, __LINE__);
+        lineNumber = 0;
 
-        // // Druga przebiega - właściwa asemblacja
-        // while (std::getline(file, line)) {
-        //     lineNumber++;
-        //     line = cleanLine(line);
+        // Second pass - actual assembly
+        while (std::getline(file, line)) {
+            lineNumber++;
+            spdlog::debug("[AssemblyEngine] Processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            line = line_handler_->CleanLineWhitespaces(line);
+            tools::PrintGreenOKMessage("Cleaned line " + std::to_string(lineNumber) + ": " + line);
+            line = line_handler_->RemoveLineComments(line);
+            tools::PrintGreenOKMessage("Removed comments from line " + std::to_string(lineNumber) + ": " + line);
 
-        //     if (line.empty() || line.back() == ':') continue;
+            spdlog::debug("[AssemblyEngine] Check if line {0}: {1} [{2}:{3}] is empty or a label", lineNumber, line, __FILENAME__, __LINE__);
+            if (line.empty() || line.back() == ':') {
+                spdlog::debug("[AssemblyEngine] Line: {0} [{1}:{2}] is empty or a label", lineNumber, line, __FILENAME__, __LINE__);
+                continue;
+            }
 
-        //     std::vector<std::string> tokens = tokenize(line);
-        //     if (!tokens.empty()) {
-        //         try {
-        //             assembleInstruction(tokens);
-        //         } catch (const std::exception& e) {
-        //             std::cerr << "Error on line " << lineNumber << ": " << e.what() << std::endl;
-        //         }
-        //     }
-        // }
+            spdlog::debug("[AssemblyEngine] Tokenizing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            std::vector<std::string> tokens = line_handler_->TokenizeLine(line);
+            if (!tokens.empty()) {
+                try {
+                    spdlog::debug("[AssemblyEngine] Assembling instruction for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+                    instructions_assembler_core_->AssembleInstruction(tokens);
+                } catch (const std::exception& e) {
+                    spdlog::error("[AssemblyEngine] Error on line {0}: {1} [{2}:{3}]", lineNumber, e.what(), __FILENAME__, __LINE__);
+                    tools::PrintRedErrorMessage("Error on line " + std::to_string(lineNumber) + ": " + e.what());
+                    return false;
+                }
+            }
+            spdlog::debug("[AssemblyEngine] Finished processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            tools::PrintGreenOKMessage("Finished processing line " + std::to_string(lineNumber) + ": " + line);
+        }
 
-        // // Rozwiąż referencje do labels
-        // for (auto& ref : labelReferences) {
-        //     if (labels.find(ref.second) != labels.end()) {
-        //         machineCode[ref.first] = static_cast<uint8_t>(labels[ref.second]);
-        //     } else {
-        //         std::cerr << "Undefined label: " << ref.second << std::endl;
-        //     }
-        // }
+        // Resolve references to labels
+        spdlog::debug("[AssemblyEngine] Resolving label references... [{0}:{1}]", __FILENAME__, __LINE__);
+        for (auto& ref : labelReferences) {
+            spdlog::trace("[AssemblyEngine] Resolving label reference: {0} [{1}:{2}]", ref.second, __FILENAME__, __LINE__);
+            if (labels.find(ref.second) != labels.end()) {
+                machineCode[ref.first] = static_cast<uint8_t>(labels[ref.second]);
+                spdlog::debug("[AssemblyEngine] Resolved label {0} to address {1} [{2}:{3}]", ref.second, labels[ref.second], __FILENAME__, __LINE__);
+            } else {
+                spdlog::error("[AssemblyEngine] Undefined label: {0} [{1}:{2}]", ref.second, __FILENAME__, __LINE__);
+                tools::PrintRedErrorMessage("Undefined label: " + ref.second);
+                return false;
+            }
+        }
 
-        // file.close();
+        spdlog::debug("[AssemblyEngine] Closing file stream [{0}:{1}]", __FILENAME__, __LINE__);
+        file.close();
+
+        spdlog::debug("[AssemblyEngine] Assembly process completed successfully [{0}:{1}]", output_file, __FILENAME__, __LINE__);
+        tools::PrintGreenOKMessage("Assembly process completed successfully.");
+        return true;
     }
 }  // namespace assembly_engine

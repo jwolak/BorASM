@@ -57,7 +57,9 @@ int main(int argc, char* argv[]) {
         tools::PrintRedErrorMessage("Assembling failed.");
         return 1;
     }
-
     tools::PrintGreenOKMessage("Assembling completed successfully.");
+
+    bor_asm.PrintMachineCode();
+
     return 0;
 }

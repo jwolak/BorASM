@@ -25,4 +25,10 @@ namespace borasm {
         spdlog::trace("[BorAsm] Assembly process completed successfully [{0}:{1}]", __FILENAME__, __LINE__);
         return true;
     }
+
+    void BorAsm::PrintMachineCode() const {
+        spdlog::trace("[BorAsm] PrintMachineCode() called [{0}:{1}]", __FILENAME__, __LINE__);
+        assembly_engine_->PrintMachineCode();
+    }
+
 }  // namespace borasm

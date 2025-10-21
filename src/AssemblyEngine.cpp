@@ -3,6 +3,7 @@
 #include <spdlog/spdlog.h>
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -155,4 +156,20 @@ namespace assembly_engine {
         tools::PrintGreenOKMessage("Assembly process completed successfully.");
         return true;
     }
+
+    void AssemblyEngine::PrintMachineCode() const {
+        std::cout << "Machine Code:" << std::endl;
+        for (size_t i = 0; i < machineCode.size(); i++) {
+            std::cout << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << static_cast<int>(machineCode[i]);
+            if ((i + 1) % 8 == 0) {
+                std::cout << std::endl;
+            } else {
+                std::cout << " ";
+            }
+        }
+        if (machineCode.size() % 8 != 0) {
+            std::cout << std::endl;
+        }
+    }
+
 }  // namespace assembly_engine

@@ -59,6 +59,7 @@ int main(int argc, char* argv[]) {
     }
     tools::PrintGreenOKMessage("Assembling completed successfully.");
 
+    tools::PrintGreenOKMessage("Print machine code");
     bor_asm.PrintMachineCode();
 
     return 0;

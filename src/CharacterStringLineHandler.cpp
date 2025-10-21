@@ -86,7 +86,6 @@ namespace assembly_engine {
         for (size_t i = start; i < string_number.length(); i++) {
             if (!std::isdigit(string_number[i])) {
                 spdlog::debug("[CharacterStringLineHandler] Invalid decimal digit found: {0} [{1}:{2}]", string_number[i], __FILENAME__, __LINE__);
-                tools::PrintRedErrorMessage("Invalid decimal digit found.");
                 return false;
             }
         }

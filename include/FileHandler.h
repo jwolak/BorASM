@@ -18,7 +18,7 @@ namespace assembly_engine {
         std::ofstream& GetFileToWriteStream();
 
       private:
-        std::ifstream file;
+        std::ifstream file_to_read_;
         std::ofstream file_to_write_;
     };
 }  // namespace assembly_engine

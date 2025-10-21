@@ -46,7 +46,7 @@ namespace assembly_engine {
 
         spdlog::debug("[FileHandler] Attempting to open file... [{0}:{1}]", __FILENAME__, __LINE__);
         try {
-            file_to_read_.open(file_path, std::ios::in | std::ios::out | std::ios::binary);
+            file_to_read_.open(file_path, std::ios::in | std::ios::binary);
         } catch (const std::exception& e) {
             spdlog::error("[FileHandler] Failed to open file [{0}:{1}]: {2}", __FILENAME__, __LINE__, e.what());
             return false;

@@ -38,11 +38,11 @@ namespace cmd {
                 case 'h':
                     argument_parser_logic_->PrintHelp();
                     help_of_info_shown = true;
-                    break;
+                    return false;
                 case 'v':
                     argument_parser_logic_->PrintVersionInfo();
                     help_of_info_shown = true;
-                    break;
+                    return false;
                 case 'd':
                     argument_parser_logic_->EnableDebugMode();
                     tools::PrintYellowWarningMessage("Debug mode enabled.");

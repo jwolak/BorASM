@@ -17,7 +17,7 @@ namespace assembly_engine {
         AssemblyEngine();
         bool Assemble(const std::string& input_file, const std::string& output_file);
         void PrintMachineCode() const;
-        void SaveMachineCodeToFile(const std::string& output_file) const;
+        bool SaveMachineCodeToFile(const std::string& output_file) const;
 
       private:
         std::unique_ptr<FileHandler> file_handler_;

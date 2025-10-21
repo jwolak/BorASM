@@ -16,6 +16,12 @@ namespace assembly_engine {
             file.close();
         }
         spdlog::debug("[FileHandler] File closed... [{0}:{1}]", __FILENAME__, __LINE__);
+
+        if (file_to_write_.is_open()) {
+            spdlog::debug("[FileHandler] Closing file to write... [{0}:{1}]", __FILENAME__, __LINE__);
+            file_to_write_.close();
+        }
+        spdlog::debug("[FileHandler] File to write closed... [{0}:{1}]", __FILENAME__, __LINE__);
     }
 
     FileHandler& FileHandler::operator=(FileHandler&& other_file_holder) noexcept {
@@ -54,6 +60,26 @@ namespace assembly_engine {
     std::ifstream& FileHandler::GetFileStream() {
         spdlog::trace("[FileHandler] GetFileStream() called [{0}:{1}]", __FILENAME__, __LINE__);
         return file;
+    }
+
+    bool FileHandler::OpenFileToWrite(const std::string& file_path) {
+        spdlog::trace("[FileHandler] OpenFileToWrite() called with file_path: {0} [{1}:{2}]", file_path, __FILENAME__, __LINE__);
+
+        spdlog::debug("[FileHandler] Attempting to open file to write... [{0}:{1}]", __FILENAME__, __LINE__);
+        try {
+            file_to_write_.open(file_path, std::ios::out | std::ios::binary);
+        } catch (const std::exception& e) {
+            spdlog::error("[FileHandler] Failed to open file to write [{0}:{1}]: {2}", __FILENAME__, __LINE__, e.what());
+            return false;
+        }
+
+        spdlog::debug("[FileHandler] File to write opened successfully... [{0}:{1}]", __FILENAME__, __LINE__);
+        return file_to_write_.is_open();
+    }
+
+    std::ofstream& FileHandler::GetFileToWriteStream() {
+        spdlog::trace("[FileHandler] GetFileToWriteStream() called [{0}:{1}]", __FILENAME__, __LINE__);
+        return file_to_write_;
     }
 
 }  // namespace assembly_engine

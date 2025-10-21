@@ -174,15 +174,34 @@ namespace assembly_engine {
         }
     }
 
-    void AssemblyEngine::SaveMachineCodeToFile(const std::string& output_file) const {
+    bool AssemblyEngine::SaveMachineCodeToFile(const std::string& output_file) const {
         spdlog::trace("[AssemblyEngine] SaveMachineCodeToFile() called with output_file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
 
-        std::ofstream file(output_file);
+        spdlog::trace("[AssemblyEngine] Trying to open input file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
+        if (!file_handler_->OpenFileToWrite(output_file)) {
+            tools::PrintRedErrorMessage("Failed to open input file: " + output_file);
+            spdlog::error("[AssemblyEngine] Failed to open input file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
+            return false;
+        }
+        spdlog::trace("[AssemblyEngine] Successfully opened input file: {0} [{1}:{2}]", output_file, __FILENAME__, __LINE__);
+        tools::PrintGreenOKMessage("Successfully opened input file: " + output_file);
+
+        spdlog::debug("[AssemblyEngine] Get file stream [{0}:{1}]", __FILENAME__, __LINE__);
+        std::ofstream& file = file_handler_->GetFileToWriteStream();
+
+        if (!file) {
+            tools::PrintRedErrorMessage("Input file stream is not valid.");
+            spdlog::error("[AssemblyEngine] Input file stream is not valid. [{0}:{1}]", __FILENAME__, __LINE__);
+            return false;
+        }
+
         for (uint8_t byte : machineCode) {
             file << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << static_cast<int>(byte) << std::endl;
         }
         file.close();
         tools::PrintGreenOKMessage("Machine code saved to file: " + output_file);
+
+        return true;
     }
 
 }  // namespace assembly_engine

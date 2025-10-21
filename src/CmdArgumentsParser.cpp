@@ -68,7 +68,7 @@ namespace cmd {
                 case 'l':
                     argument_parser_logic_->ListAvailableInstructions();
                     help_of_info_shown = true;
-                    break;
+                    return false;
                 case '?':
                     tools::PrintRedErrorMessage("Unknown option or missing argument. Use -h or --help for help.\n");
                     break;

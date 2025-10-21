@@ -75,8 +75,6 @@ namespace cmd {
     }
 
     void ArgumentsParserLogic::ListAvailableInstructions() const {
-        spdlog::debug("[ArgumentsParserLogic] Listing available instructions...");
-
         std::cout << "Available instructions:\n";
         std::cout << "\nArithmetic instructions (0x00-0x07):\n";
         std::cout << "  ADD   0x00   Add:        ADD reg, reg/imm\n";

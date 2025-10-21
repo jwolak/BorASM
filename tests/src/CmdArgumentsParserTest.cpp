@@ -46,24 +46,24 @@ namespace cmd_arguments_parser_test {
         EXPECT_NE(output.find("No arguments provided!"), std::string::npos);
     }
 
-    TEST_F(CmdArgumentsParserTest, Print_Help_Option_Should_Invoke_PrintHelp_And_Return_True) {
+    TEST_F(CmdArgumentsParserTest, Print_Help_Option_Should_Invoke_PrintHelp_And_Return_False) {
         const char* argv[] = {"program", "--help"};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic =
             CmdArgumentsParserWithInjectedLogic(argc, const_cast<char**>(argv), std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
         EXPECT_CALL(*argument_parser_logic_mock, PrintHelp()).Times(1);
 
-        EXPECT_TRUE(cmd_arguments_parser_with_injected_logic.Parse(cmd_arguments));
+        EXPECT_FALSE(cmd_arguments_parser_with_injected_logic.Parse(cmd_arguments));
     }
 
-    TEST_F(CmdArgumentsParserTest, Print_Help_Option_Should_Invoke_PrintVersionInfo_And_Return_True) {
+    TEST_F(CmdArgumentsParserTest, Print_Version_Option_Should_Invoke_PrintVersionInfo_And_Return_False) {
         const char* argv[] = {"program", "--version"};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
             CmdArgumentsParserWithInjectedLogic(argc, const_cast<char**>(argv), std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
         EXPECT_CALL(*argument_parser_logic_mock, PrintVersionInfo()).Times(1);
 
-        EXPECT_TRUE(cmd_arguments_parser_with_injected_logic2.Parse(cmd_arguments));
+        EXPECT_FALSE(cmd_arguments_parser_with_injected_logic2.Parse(cmd_arguments));
     }
 
     TEST_F(CmdArgumentsParserTest, Enable_Debug_Option_Should_Invoke_EnableDebugMode_And_Return_True) {
@@ -115,14 +115,14 @@ namespace cmd_arguments_parser_test {
         EXPECT_FALSE(cmd_arguments_parser_with_injected_logic2.Parse(cmd_arguments));
     }
 
-    TEST_F(CmdArgumentsParserTest, Print_List_Option_Should_Invoke_ListAvailableInstructions_And_Return_True) {
+    TEST_F(CmdArgumentsParserTest, Print_List_Option_Should_Invoke_ListAvailableInstructions_And_Return_False) {
         const char* argv[] = {"program", "--list"};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic =
             CmdArgumentsParserWithInjectedLogic(argc, const_cast<char**>(argv), std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
         EXPECT_CALL(*argument_parser_logic_mock, ListAvailableInstructions()).Times(1);
 
-        EXPECT_TRUE(cmd_arguments_parser_with_injected_logic.Parse(cmd_arguments));
+        EXPECT_FALSE(cmd_arguments_parser_with_injected_logic.Parse(cmd_arguments));
     }
 
     TEST_F(CmdArgumentsParserTest, Provide_Valid_Input_And_Output_Files_And_Values_In_CmdArguments_Are_Set) {

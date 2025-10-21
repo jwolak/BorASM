@@ -25,4 +25,13 @@ namespace borasm_test {
         std::shared_ptr<cmd::CmdArguments> cmd_arguments;
         BorAsmWithInjectedAssemblyEngine borasm_with_injected_assembly_engine;
     };
+
+    TEST_F(BorAsmTest, Try_To_Start_Processing_But_Assembly_Fails_And_False_Returned) { ASSERT_FALSE(borasm_with_injected_assembly_engine.StartProcessing()); }
+
+    TEST_F(BorAsmTest, Try_To_Start_Processing_But_Save_Machine_Code_To_File_Fails_And_False_Returned) {
+        ASSERT_FALSE(borasm_with_injected_assembly_engine.StartProcessing());
+    }
+
+    TEST_F(BorAsmTest, Start_Processing_Successfully_And_Returns_True) { ASSERT_TRUE(borasm_with_injected_assembly_engine.StartProcessing()); }
+
 }  // namespace borasm_test

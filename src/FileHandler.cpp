@@ -41,12 +41,12 @@ namespace assembly_engine {
         return *this;
     }
 
-    bool FileHandler::OpenFile(const std::string& file_path, std::ios::openmode mode) {
-        spdlog::trace("[FileHandler] OpenFile() called with file_path: {0}, mode: {1} [{2}:{3}]", file_path, static_cast<int>(mode), __FILENAME__, __LINE__);
+    bool FileHandler::OpenFileToRead(const std::string& file_path) {
+        spdlog::trace("[FileHandler] OpenFile() called with file_path: {0} [{1}:{2}]", file_path, __FILENAME__, __LINE__);
 
         spdlog::debug("[FileHandler] Attempting to open file... [{0}:{1}]", __FILENAME__, __LINE__);
         try {
-            file_to_read_.open(file_path, mode);
+            file_to_read_.open(file_path, std::ios::in | std::ios::out | std::ios::binary);
         } catch (const std::exception& e) {
             spdlog::error("[FileHandler] Failed to open file [{0}:{1}]: {2}", __FILENAME__, __LINE__, e.what());
             return false;

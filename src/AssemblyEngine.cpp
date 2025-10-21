@@ -25,7 +25,7 @@ namespace assembly_engine {
         spdlog::trace("[AssemblyEngine] Assemble() called with input_file: {0}, output_file: {1} [{2}:{3}]", input_file, output_file, __FILENAME__, __LINE__);
 
         spdlog::trace("[AssemblyEngine] Trying to open input file: {0} [{1}:{2}]", input_file, __FILENAME__, __LINE__);
-        if (!file_handler_->OpenFile(input_file, std::ios::in | std::ios::binary)) {
+        if (!file_handler_->OpenFileToRead(input_file)) {
             tools::PrintRedErrorMessage("Failed to open input file: " + input_file);
             spdlog::error("[AssemblyEngine] Failed to open input file: {0} [{1}:{2}]", input_file, __FILENAME__, __LINE__);
             return false;

@@ -55,7 +55,6 @@ namespace assembly_engine {
         tools::PrintGreenOKMessage("Starting assembly process...");
         spdlog::trace("[AssemblyEngine] Starting assembly process... [{0}:{1}]", __FILENAME__, __LINE__);
         spdlog::debug("[AssemblyEngine] First pass - label detection... [{0}:{1}]", __FILENAME__, __LINE__);
-
         if (!labels_detector_->DetectLabels(file, line)) {
             spdlog::error("[AssemblyEngine] Label detection failed [{0}:{1}]", __FILENAME__, __LINE__);
             return false;

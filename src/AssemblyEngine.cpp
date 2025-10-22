@@ -16,19 +16,21 @@ namespace assembly_engine {
     AssemblyEngine::AssemblyEngine()
         : file_handler_{std::make_unique<FileHandler>()},
           line_handler_{std::make_unique<CharacterStringLineHandler>()},
+          instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machine_code_, label_references_)},
           machine_code_{},
           labels_{},
           label_references_{},
-          instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machine_code_, label_references_)} {}
+    {}
 
     /* For testing purposes */
-    AssemblyEngine::AssemblyEngine(std::unique_ptr<IFileHandler> file_handler, std::unique_ptr<ICharacterStringLineHandler> line_handler)
+    AssemblyEngine::AssemblyEngine(std::unique_ptr<IFileHandler> file_handler, std::unique_ptr<ICharacterStringLineHandler> line_handler,
+                                   std::unique_ptr<IInstructionsAssemblerCore> instructions_assembler_core)
         : file_handler_{std::move(file_handler)},
           line_handler_{std::move(line_handler)},
+          instructions_assembler_core_{std::move(instructions_assembler_core)},
           machine_code_{},
           labels_{},
-          label_references_{},
-          instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machine_code_, label_references_)} {}
+          label_references_{} {}
 
     bool AssemblyEngine::Assemble(const std::string& input_file, const std::string& output_file) {
         spdlog::trace("[AssemblyEngine] Assemble() called with input_file: {0}, output_file: {1} [{2}:{3}]", input_file, output_file, __FILENAME__, __LINE__);

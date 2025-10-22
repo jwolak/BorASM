@@ -21,14 +21,15 @@ namespace assembly_engine {
         bool SaveMachineCodeToFile(const std::string& output_file) const override;
 
       protected:
-        AssemblyEngine(std::unique_ptr<IFileHandler> file_handler, std::unique_ptr<ICharacterStringLineHandler> line_handler);
+        AssemblyEngine(std::unique_ptr<IFileHandler> file_handler, std::unique_ptr<ICharacterStringLineHandler> line_handler,
+                       std::unique_ptr<IInstructionsAssemblerCore> instructions_assembler_core);
 
       private:
         std::unique_ptr<IFileHandler> file_handler_;
         std::unique_ptr<ICharacterStringLineHandler> line_handler_;
+        std::unique_ptr<IInstructionsAssemblerCore> instructions_assembler_core_;
         std::vector<uint8_t> machine_code_;
         std::map<std::string, uint16_t> labels_;
         std::vector<std::pair<int, std::string>> label_references_;
-        std::unique_ptr<InstructionsAssemblerCore> instructions_assembler_core_;
     };
 }  // namespace assembly_engine

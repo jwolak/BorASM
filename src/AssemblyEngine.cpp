@@ -73,35 +73,40 @@ namespace assembly_engine {
         lineNumber = 0;
 
         // Second pass - actual assembly
-        while (std::getline(file, line)) {
-            lineNumber++;
-            spdlog::debug("[AssemblyEngine] Processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-            line = line_handler_->CleanLineWhitespaces(line);
-            tools::PrintGreenOKMessage("Cleaned line " + std::to_string(lineNumber) + ": " + line);
-            line = line_handler_->RemoveLineComments(line);
-            tools::PrintGreenOKMessage("Removed comments from line " + std::to_string(lineNumber) + ": " + line);
-
-            spdlog::debug("[AssemblyEngine] Check if line {0}: {1} [{2}:{3}] is empty or a label", lineNumber, line, __FILENAME__, __LINE__);
-            if (line.empty() || line.back() == ':') {
-                spdlog::debug("[AssemblyEngine] Line: {0} [{1}:{2}] is empty or a label", lineNumber, line, __FILENAME__, __LINE__);
-                continue;
-            }
-
-            spdlog::debug("[AssemblyEngine] Tokenizing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-            std::vector<std::string> tokens = line_handler_->TokenizeLine(line);
-            if (!tokens.empty()) {
-                try {
-                    spdlog::debug("[AssemblyEngine] Assembling instruction for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-                    instructions_assembler_core_->AssembleInstruction(tokens);
-                } catch (const std::exception& e) {
-                    spdlog::error("[AssemblyEngine] Error on line {0}: {1} [{2}:{3}]", lineNumber, e.what(), __FILENAME__, __LINE__);
-                    tools::PrintRedErrorMessage("Error on line " + std::to_string(lineNumber) + ": " + e.what());
-                    return false;
-                }
-            }
-            spdlog::debug("[AssemblyEngine] Finished processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-            tools::PrintGreenOKMessage("Finished processing line " + std::to_string(lineNumber) + ": " + line);
+        spdlog::debug("[AssemblyEngine] Second pass - actual assembly... [{0}:{1}]", __FILENAME__, __LINE__);
+        if (!code_analyzer_->Tokenize(file, line)) {
+            spdlog::error("[AssemblyEngine] Tokenization and assembly failed [{0}:{1}]", __FILENAME__, __LINE__);
+            return false;
         }
+        // while (std::getline(file, line)) {
+        //     lineNumber++;
+        //     spdlog::debug("[AssemblyEngine] Processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+        //     line = line_handler_->CleanLineWhitespaces(line);
+        //     tools::PrintGreenOKMessage("Cleaned line " + std::to_string(lineNumber) + ": " + line);
+        //     line = line_handler_->RemoveLineComments(line);
+        //     tools::PrintGreenOKMessage("Removed comments from line " + std::to_string(lineNumber) + ": " + line);
+
+        //     spdlog::debug("[AssemblyEngine] Check if line {0}: {1} [{2}:{3}] is empty or a label", lineNumber, line, __FILENAME__, __LINE__);
+        //     if (line.empty() || line.back() == ':') {
+        //         spdlog::debug("[AssemblyEngine] Line: {0} [{1}:{2}] is empty or a label", lineNumber, line, __FILENAME__, __LINE__);
+        //         continue;
+        //     }
+
+        //     spdlog::debug("[AssemblyEngine] Tokenizing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+        //     std::vector<std::string> tokens = line_handler_->TokenizeLine(line);
+        //     if (!tokens.empty()) {
+        //         try {
+        //             spdlog::debug("[AssemblyEngine] Assembling instruction for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+        //             instructions_assembler_core_->AssembleInstruction(tokens);
+        //         } catch (const std::exception& e) {
+        //             spdlog::error("[AssemblyEngine] Error on line {0}: {1} [{2}:{3}]", lineNumber, e.what(), __FILENAME__, __LINE__);
+        //             tools::PrintRedErrorMessage("Error on line " + std::to_string(lineNumber) + ": " + e.what());
+        //             return false;
+        //         }
+        //     }
+        //     spdlog::debug("[AssemblyEngine] Finished processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+        //     tools::PrintGreenOKMessage("Finished processing line " + std::to_string(lineNumber) + ": " + line);
+        // }
 
         // Resolve references to labels
         spdlog::debug("[AssemblyEngine] Resolving label references... [{0}:{1}]", __FILENAME__, __LINE__);

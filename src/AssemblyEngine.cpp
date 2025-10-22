@@ -45,12 +45,6 @@ namespace assembly_engine {
         spdlog::debug("[AssemblyEngine] Get file stream [{0}:{1}]", __FILENAME__, __LINE__);
         std::ifstream& file = file_handler_->GetFileToReadStream();
 
-        if (!file) {
-            tools::PrintRedErrorMessage("Input file stream is not valid.");
-            spdlog::error("[AssemblyEngine] Input file stream is not valid. [{0}:{1}]", __FILENAME__, __LINE__);
-            return false;
-        }
-
         spdlog::trace("[AssemblyEngine] Clear line and reset linse number [{0}:{1}]", __FILENAME__, __LINE__);
         std::string line{};
         int lineNumber = 0;

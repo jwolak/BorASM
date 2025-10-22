@@ -11,6 +11,7 @@
 #include "FileHandler.h"
 #include "IAssemblyEngine.h"
 #include "InstructionsAssemblerCore.h"
+#include "LabelsDetector.h"
 
 namespace assembly_engine {
     class AssemblyEngine : public IAssemblyEngine {
@@ -27,9 +28,10 @@ namespace assembly_engine {
       private:
         std::unique_ptr<IFileHandler> file_handler_;
         std::unique_ptr<ICharacterStringLineHandler> line_handler_;
-        std::unique_ptr<IInstructionsAssemblerCore> instructions_assembler_core_;
         std::vector<uint8_t> machine_code_;
         std::map<std::string, uint16_t> labels_;
         std::vector<std::pair<int, std::string>> label_references_;
+        std::unique_ptr<IInstructionsAssemblerCore> instructions_assembler_core_;
+        std::unique_ptr<LabelsDetector> labels_detector_;
     };
 }  // namespace assembly_engine

@@ -12,7 +12,7 @@ namespace assembly_engine {
     class LabelsDetector {
       public:
         LabelsDetector(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels, std::vector<std::pair<int, std::string>>& label_references);
-        bool DetectLabels(std::ifstream& file, const std::string& line);
+        bool DetectLabels(std::ifstream& file, std::string& line);
 
       protected:
         LabelsDetector(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels, std::vector<std::pair<int, std::string>>& label_references,

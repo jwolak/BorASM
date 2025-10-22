@@ -21,7 +21,7 @@ namespace assembly_engine {
         bool SaveMachineCodeToFile(const std::string& output_file) const override;
 
       private:
-        std::unique_ptr<FileHandler> file_handler_;
+        std::unique_ptr<IFileHandler> file_handler_;
         std::unique_ptr<CharacterStringLineHandler> line_handler_;
         std::vector<uint8_t> machine_code_;
         std::map<std::string, uint16_t> labels_;

@@ -113,4 +113,20 @@ namespace assembly_engine {
         return true;
     }
 
+    bool CodeAnalyzer::ResolveLabelReferences() {
+        for (auto& ref : label_references_) {
+            spdlog::trace("[AssemblyEngine] Resolving label reference: {0} [{1}:{2}]", ref.second, __FILENAME__, __LINE__);
+            if (labels_.find(ref.second) != labels_.end()) {
+                machine_code_[ref.first] = static_cast<uint8_t>(labels_[ref.second]);
+                spdlog::debug("[AssemblyEngine] Resolved label {0} to address {1} [{2}:{3}]", ref.second, labels_[ref.second], __FILENAME__, __LINE__);
+            } else {
+                spdlog::error("[AssemblyEngine] Undefined label: {0} [{1}:{2}]", ref.second, __FILENAME__, __LINE__);
+                tools::PrintRedErrorMessage("Undefined label: " + ref.second);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }  // namespace assembly_engine

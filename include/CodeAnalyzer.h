@@ -14,6 +14,7 @@ namespace assembly_engine {
         CodeAnalyzer(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels, std::vector<std::pair<int, std::string>>& label_references);
         bool DetectLabels(std::ifstream& file, std::string& line);
         bool Tokenize(std::ifstream& file, std::string& line);
+        bool ResolveLabelReferences();
 
       protected:
         CodeAnalyzer(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels, std::vector<std::pair<int, std::string>>& label_references,

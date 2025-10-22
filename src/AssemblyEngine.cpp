@@ -48,9 +48,8 @@ namespace assembly_engine {
         spdlog::debug("[AssemblyEngine] Get file stream [{0}:{1}]", __FILENAME__, __LINE__);
         std::ifstream& file = file_handler_->GetFileToReadStream();
 
-        spdlog::trace("[AssemblyEngine] Clear line and reset linse number [{0}:{1}]", __FILENAME__, __LINE__);
+        spdlog::trace("[AssemblyEngine] Clear line and reset line number [{0}:{1}]", __FILENAME__, __LINE__);
         std::string line{};
-        int lineNumber = 0;
 
         tools::PrintGreenOKMessage("Starting assembly process...");
         spdlog::trace("[AssemblyEngine] Starting assembly process... [{0}:{1}]", __FILENAME__, __LINE__);
@@ -70,7 +69,6 @@ namespace assembly_engine {
         spdlog::debug("[AssemblyEngine] Clearing machine code and reset line number [{0}:{1}]", __FILENAME__, __LINE__);
         machine_code_.clear();
         spdlog::debug("[AssemblyEngine] Clearing line number [{0}:{1}]", __FILENAME__, __LINE__);
-        lineNumber = 0;
 
         // Second pass - actual assembly
         spdlog::debug("[AssemblyEngine] Second pass - actual assembly... [{0}:{1}]", __FILENAME__, __LINE__);
@@ -78,48 +76,12 @@ namespace assembly_engine {
             spdlog::error("[AssemblyEngine] Tokenization and assembly failed [{0}:{1}]", __FILENAME__, __LINE__);
             return false;
         }
-        // while (std::getline(file, line)) {
-        //     lineNumber++;
-        //     spdlog::debug("[AssemblyEngine] Processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-        //     line = line_handler_->CleanLineWhitespaces(line);
-        //     tools::PrintGreenOKMessage("Cleaned line " + std::to_string(lineNumber) + ": " + line);
-        //     line = line_handler_->RemoveLineComments(line);
-        //     tools::PrintGreenOKMessage("Removed comments from line " + std::to_string(lineNumber) + ": " + line);
-
-        //     spdlog::debug("[AssemblyEngine] Check if line {0}: {1} [{2}:{3}] is empty or a label", lineNumber, line, __FILENAME__, __LINE__);
-        //     if (line.empty() || line.back() == ':') {
-        //         spdlog::debug("[AssemblyEngine] Line: {0} [{1}:{2}] is empty or a label", lineNumber, line, __FILENAME__, __LINE__);
-        //         continue;
-        //     }
-
-        //     spdlog::debug("[AssemblyEngine] Tokenizing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-        //     std::vector<std::string> tokens = line_handler_->TokenizeLine(line);
-        //     if (!tokens.empty()) {
-        //         try {
-        //             spdlog::debug("[AssemblyEngine] Assembling instruction for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-        //             instructions_assembler_core_->AssembleInstruction(tokens);
-        //         } catch (const std::exception& e) {
-        //             spdlog::error("[AssemblyEngine] Error on line {0}: {1} [{2}:{3}]", lineNumber, e.what(), __FILENAME__, __LINE__);
-        //             tools::PrintRedErrorMessage("Error on line " + std::to_string(lineNumber) + ": " + e.what());
-        //             return false;
-        //         }
-        //     }
-        //     spdlog::debug("[AssemblyEngine] Finished processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-        //     tools::PrintGreenOKMessage("Finished processing line " + std::to_string(lineNumber) + ": " + line);
-        // }
 
         // Resolve references to labels
         spdlog::debug("[AssemblyEngine] Resolving label references... [{0}:{1}]", __FILENAME__, __LINE__);
-        for (auto& ref : label_references_) {
-            spdlog::trace("[AssemblyEngine] Resolving label reference: {0} [{1}:{2}]", ref.second, __FILENAME__, __LINE__);
-            if (labels_.find(ref.second) != labels_.end()) {
-                machine_code_[ref.first] = static_cast<uint8_t>(labels_[ref.second]);
-                spdlog::debug("[AssemblyEngine] Resolved label {0} to address {1} [{2}:{3}]", ref.second, labels_[ref.second], __FILENAME__, __LINE__);
-            } else {
-                spdlog::error("[AssemblyEngine] Undefined label: {0} [{1}:{2}]", ref.second, __FILENAME__, __LINE__);
-                tools::PrintRedErrorMessage("Undefined label: " + ref.second);
-                return false;
-            }
+        if (!code_analyzer_->ResolveLabelReferences()) {
+            spdlog::error("[AssemblyEngine] Resolving label references failed [{0}:{1}]", __FILENAME__, __LINE__);
+            return false;
         }
 
         spdlog::debug("[AssemblyEngine] Closing file stream [{0}:{1}]", __FILENAME__, __LINE__);

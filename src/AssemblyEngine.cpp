@@ -19,8 +19,7 @@ namespace assembly_engine {
           instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machine_code_, label_references_)},
           machine_code_{},
           labels_{},
-          label_references_{},
-    {}
+          label_references_{} {}
 
     /* For testing purposes */
     AssemblyEngine::AssemblyEngine(std::unique_ptr<IFileHandler> file_handler, std::unique_ptr<ICharacterStringLineHandler> line_handler,

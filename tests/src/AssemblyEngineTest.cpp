@@ -3,6 +3,7 @@
 #include "AssemblyEngine.h"
 #include "CharacterStringLineHandlerMock.h"
 #include "FileHandlerMock.h"
+#include "InstructionsAssemblerCoreMock.h"
 
 namespace assembly_engine_test {
 
@@ -15,8 +16,9 @@ namespace assembly_engine_test {
     class AssemblyEngineWithInjectedMocks : public assembly_engine::AssemblyEngine {
       public:
         AssemblyEngineWithInjectedMocks(std::unique_ptr<assembly_engine::IFileHandler> file_handler,
-                                        std::unique_ptr<assembly_engine::ICharacterStringLineHandler> line_handler)
-            : AssemblyEngine(std::move(file_handler), std::move(line_handler)) {}
+                                        std::unique_ptr<assembly_engine::ICharacterStringLineHandler> line_handler,
+                                        std::unique_ptr<assembly_engine::IInstructionsAssemblerCore> instructions_assembler_core)
+            : AssemblyEngine(std::move(file_handler), std::move(line_handler), std::move(instructions_assembler_core)) {}
     };
 
     class AssemblyEngineTest : public ::testing::Test {
@@ -24,11 +26,14 @@ namespace assembly_engine_test {
         AssemblyEngineTest()
             : file_handler_mock{new mocks::FileHandlerMock()},
               character_string_line_handler_mock{new mocks::CharacterStringLineHandlerMock()},
+              instructions_assembler_core_mock{new mocks::InstructionsAssemblerCoreMock},
               assembly_engine_with_injected_mocks(std::unique_ptr<assembly_engine::IFileHandler>(file_handler_mock),
-                                                  std::unique_ptr<assembly_engine::ICharacterStringLineHandler>(character_string_line_handler_mock)) {}
+                                                  std::unique_ptr<assembly_engine::ICharacterStringLineHandler>(character_string_line_handler_mock),
+                                                  std::unique_ptr<assembly_engine::IInstructionsAssemblerCore>(instructions_assembler_core_mock)) {}
 
         mocks::FileHandlerMock* file_handler_mock;
         mocks::CharacterStringLineHandlerMock* character_string_line_handler_mock;
+        mocks::InstructionsAssemblerCoreMock* instructions_assembler_core_mock;
         AssemblyEngineWithInjectedMocks assembly_engine_with_injected_mocks;
     };
 

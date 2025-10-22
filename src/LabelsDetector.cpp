@@ -11,8 +11,8 @@
 #include "spdlog/spdlog.h"
 
 namespace assembly_engine {
-    LabelsDetector::LabelsDetector(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels,
-                                   std::vector<std::pair<int, std::string>>& label_references)
+    CodeAnalyzer::CodeAnalyzer(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels,
+                               std::vector<std::pair<int, std::string>>& label_references)
         : machine_code_(machine_code),
           labels_(labels),
           label_references_(label_references),
@@ -20,16 +20,16 @@ namespace assembly_engine {
           instructions_assembler_core_(std::make_unique<InstructionsAssemblerCore>(machine_code_, label_references_)) {}
 
     /* For tests purposes */
-    LabelsDetector::LabelsDetector(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels,
-                                   std::vector<std::pair<int, std::string>>& label_references, std::unique_ptr<ICharacterStringLineHandler> line_handle,
-                                   std::unique_ptr<IInstructionsAssemblerCore> instructions_assembler_core)
+    CodeAnalyzer::CodeAnalyzer(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels,
+                               std::vector<std::pair<int, std::string>>& label_references, std::unique_ptr<ICharacterStringLineHandler> line_handle,
+                               std::unique_ptr<IInstructionsAssemblerCore> instructions_assembler_core)
         : machine_code_(machine_code),
           labels_(labels),
           label_references_(label_references),
           line_handler_(std::move(line_handle)),
           instructions_assembler_core_(std::move(instructions_assembler_core)) {}
 
-    bool LabelsDetector::DetectLabels(std::ifstream& file, std::string& line) {
+    bool CodeAnalyzer::DetectLabels(std::ifstream& file, std::string& line) {
         int lineNumber = 0;
         while (std::getline(file, line)) {
             ++lineNumber;

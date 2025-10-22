@@ -32,6 +32,6 @@ namespace assembly_engine {
         std::map<std::string, uint16_t> labels_;
         std::vector<std::pair<int, std::string>> label_references_;
         std::unique_ptr<IInstructionsAssemblerCore> instructions_assembler_core_;
-        std::unique_ptr<LabelsDetector> labels_detector_;
+        std::unique_ptr<CodeAnalyzer> code_analyzer_;
     };
 }  // namespace assembly_engine

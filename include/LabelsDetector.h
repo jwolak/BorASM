@@ -9,14 +9,14 @@
 #include "InstructionsAssemblerCore.h"
 
 namespace assembly_engine {
-    class LabelsDetector {
+    class CodeAnalyzer {
       public:
-        LabelsDetector(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels, std::vector<std::pair<int, std::string>>& label_references);
+        CodeAnalyzer(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels, std::vector<std::pair<int, std::string>>& label_references);
         bool DetectLabels(std::ifstream& file, std::string& line);
 
       protected:
-        LabelsDetector(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels, std::vector<std::pair<int, std::string>>& label_references,
-                       std::unique_ptr<ICharacterStringLineHandler> line_handle, std::unique_ptr<IInstructionsAssemblerCore> instructions_assembler_core);
+        CodeAnalyzer(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels, std::vector<std::pair<int, std::string>>& label_references,
+                     std::unique_ptr<ICharacterStringLineHandler> line_handle, std::unique_ptr<IInstructionsAssemblerCore> instructions_assembler_core);
 
       private:
         std::vector<uint8_t>& machine_code_;

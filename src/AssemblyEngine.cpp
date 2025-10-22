@@ -21,6 +21,15 @@ namespace assembly_engine {
           label_references_{},
           instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machine_code_, label_references_)} {}
 
+    /* For testing purposes */
+    AssemblyEngine::AssemblyEngine(std::unique_ptr<IFileHandler> file_handler, std::unique_ptr<ICharacterStringLineHandler> line_handler)
+        : file_handler_{std::move(file_handler)},
+          line_handler_{std::move(line_handler)},
+          machine_code_{},
+          labels_{},
+          label_references_{},
+          instructions_assembler_core_{std::make_unique<InstructionsAssemblerCore>(machine_code_, label_references_)} {}
+
     bool AssemblyEngine::Assemble(const std::string& input_file, const std::string& output_file) {
         spdlog::trace("[AssemblyEngine] Assemble() called with input_file: {0}, output_file: {1} [{2}:{3}]", input_file, output_file, __FILENAME__, __LINE__);
 

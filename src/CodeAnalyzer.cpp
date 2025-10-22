@@ -1,4 +1,4 @@
-#include "LabelsDetector.h"
+#include "CodeAnalyzer.h"
 
 #include <fstream>
 #include <map>

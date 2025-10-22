@@ -8,10 +8,10 @@
 #include <vector>
 
 #include "CharacterStringLineHandler.h"
+#include "CodeAnalyzer.h"
 #include "FileHandler.h"
 #include "IAssemblyEngine.h"
 #include "InstructionsAssemblerCore.h"
-#include "LabelsDetector.h"
 
 namespace assembly_engine {
     class AssemblyEngine : public IAssemblyEngine {

@@ -131,7 +131,7 @@ set (SOURCE_LIST
     ${PROJECT_SRC_DIR}/FileHandler.cpp
     ${PROJECT_SRC_DIR}/CharacterStringLineHandler.cpp
     ${PROJECT_SRC_DIR}/InstructionsAssemblerCore.cpp
-    ${PROJECT_SRC_DIR}/LabelsDetector.cpp
+    ${PROJECT_SRC_DIR}/CodeAnalyzer.cpp
 )
 message(STATUS "\n *********** Source files list *********** \n")
 foreach(src_file IN LISTS SOURCE_LIST)

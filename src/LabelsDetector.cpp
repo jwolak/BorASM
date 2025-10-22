@@ -50,6 +50,7 @@ namespace assembly_engine {
                 spdlog::debug("[AssemblyEngine] Line: {0} [{1}:{2}] is a label", lineNumber, line, __FILENAME__, __LINE__);
                 std::string labelName = line.substr(0, line.length() - 1);
                 labels_[labelName] = machine_code_.size();
+                spdlog::debug("[AssemblyEngine] Detected label {0} at address {1} [{2}:{3}]", labelName, machine_code_.size(), __FILENAME__, __LINE__);
                 continue;
             }
 

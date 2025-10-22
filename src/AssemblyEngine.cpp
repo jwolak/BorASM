@@ -56,52 +56,11 @@ namespace assembly_engine {
         spdlog::trace("[AssemblyEngine] Starting assembly process... [{0}:{1}]", __FILENAME__, __LINE__);
         spdlog::debug("[AssemblyEngine] First pass - label detection... [{0}:{1}]", __FILENAME__, __LINE__);
 
-        // if (!labels_detector_->DetectLabels(file, line)) {
-        //     spdlog::error("[AssemblyEngine] Label detection failed [{0}:{1}]", __FILENAME__, __LINE__);
-        //     return false;
-        // }
-        while (std::getline(file, line)) {
-            ++lineNumber;
-            spdlog::debug("[AssemblyEngine] Processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-            line = line_handler_->CleanLineWhitespaces(line);
-            tools::PrintGreenOKMessage("Cleaned line " + std::to_string(lineNumber) + ": " + line);
-            line = line_handler_->RemoveLineComments(line);
-            tools::PrintGreenOKMessage("Removed comments from line " + std::to_string(lineNumber) + ": " + line);
-
-            spdlog::debug("[AssemblyEngine] Check if line {0}: {1} [{2}:{3}] is empty", lineNumber, line, __FILENAME__, __LINE__);
-            if (line.empty()) {
-                spdlog::debug("[AssemblyEngine] Line: {0} [{1}:{2}] is empty", lineNumber, line, __FILENAME__, __LINE__);
-                continue;
-            }
-
-            spdlog::debug("[AssemblyEngine] Check if line {0}: {1} [{2}:{3}] is a label", lineNumber, line, __FILENAME__, __LINE__);
-            if (line.back() == ':') {
-                spdlog::debug("[AssemblyEngine] Line: {0} [{1}:{2}] is a label", lineNumber, line, __FILENAME__, __LINE__);
-                std::string labelName = line.substr(0, line.length() - 1);
-                labels_[labelName] = machine_code_.size();
-                continue;
-            }
-
-            spdlog::debug("[AssemblyEngine] Tokenizing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-            std::vector<std::string> tokens = line_handler_->TokenizeLine(line);
-            spdlog::debug("[AssemblyEngine] Tokenized line {0}: {1} into {2} tokens [{3}:{4}]", lineNumber, line, tokens.size(), __FILENAME__, __LINE__);
-
-            spdlog::debug("[AssemblyEngine] Check if tokens are not empty for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-            if (!tokens.empty()) {
-                spdlog::debug("[AssemblyEngine] Tokens are not empty for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-                try {
-                    size_t size_before = machine_code_.size();
-                    spdlog::debug("[AssemblyEngine] Machine code size before assembling instruction: {0} [{1}:{2}]", size_before, __FILENAME__, __LINE__);
-                    instructions_assembler_core_->AssembleInstruction(tokens);
-                } catch (const std::exception& e) {
-                    spdlog::error("[AssemblyEngine] Error on line {0}: {1} [{2}:{3}]", lineNumber, e.what(), __FILENAME__, __LINE__);
-                    tools::PrintRedErrorMessage("Error on line " + std::to_string(lineNumber) + ": " + e.what());
-                    return false;
-                }
-            }
-            spdlog::debug("[AssemblyEngine] Finished processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-            tools::PrintGreenOKMessage("Finished processing line " + std::to_string(lineNumber) + ": " + line);
+        if (!labels_detector_->DetectLabels(file, line)) {
+            spdlog::error("[AssemblyEngine] Label detection failed [{0}:{1}]", __FILENAME__, __LINE__);
+            return false;
         }
+        spdlog::debug("[AssemblyEngine] Labels detected: {0} [{1}:{2}]", labels_.size(), __FILENAME__, __LINE__);
 
         // Reset for the second pass
         spdlog::trace("[AssemblyEngine] Reset file stream and internal states for second pass [{0}:{1}]", __FILENAME__, __LINE__);

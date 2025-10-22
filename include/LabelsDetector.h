@@ -19,9 +19,9 @@ namespace assembly_engine {
                        std::unique_ptr<ICharacterStringLineHandler> line_handle, std::unique_ptr<IInstructionsAssemblerCore> instructions_assembler_core);
 
       private:
-        std::vector<uint8_t> machine_code_;
-        std::map<std::string, uint16_t> labels_;
-        std::vector<std::pair<int, std::string>> label_references_;
+        std::vector<uint8_t>& machine_code_;
+        std::map<std::string, uint16_t>& labels_;
+        std::vector<std::pair<int, std::string>>& label_references_;
         std::unique_ptr<ICharacterStringLineHandler> line_handler_;
         std::unique_ptr<IInstructionsAssemblerCore> instructions_assembler_core_;
     };

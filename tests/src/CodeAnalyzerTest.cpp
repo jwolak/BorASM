@@ -38,82 +38,85 @@ namespace code_analyzer_test {
         CodeAnalyzerWithInjectedMocks code_analyzer_with_injected_mocks;
     };
 
-    TEST_F(CodeAnalyzerTest, DetectLabels_DetectsLabelAndSetsAddress) {
-        std::string temp_file = "temp_codeanalyzer_input1.asm";
+    TEST_F(CodeAnalyzerTest, Detect_Labels_In_Input_File_And_Detected_Label_Is_In_Labels_And_Label_Address_Is_Sets) {
+        std::string temp_file = "input1.asm";
         {
             std::ofstream out(temp_file);
             out << "loop:\nMOV A, B\n";
         }
         std::ifstream input_stream(temp_file);
-        std::string line;
-        EXPECT_CALL(*line_handler_mock_, CleanLineWhitespaces(_)).WillRepeatedly(::testing::Invoke([](const std::string& l) { return l; }));
-        EXPECT_CALL(*line_handler_mock_, RemoveLineComments(_)).WillRepeatedly(::testing::Invoke([](const std::string& l) { return l; }));
-        EXPECT_CALL(*line_handler_mock_, TokenizeLine(_)).WillRepeatedly(::testing::Invoke([](const std::string& l) {
-            if (l == "MOV A, B") return std::vector<std::string>{"MOV", "A", "B"};
-            return std::vector<std::string>{};
-        }));
+        std::string line_code;
+        EXPECT_CALL(*line_handler_mock_, CleanLineWhitespaces(_)).WillRepeatedly(::testing::Invoke([](const std::string& input_line) { return input_line; }));
+        EXPECT_CALL(*line_handler_mock_, RemoveLineComments(_)).WillRepeatedly(::testing::Invoke([](const std::string& input_line) { return input_line; }));
+        EXPECT_CALL(*line_handler_mock_, TokenizeLine(_)).WillRepeatedly(Return(std::vector<std::string>{"MOV", "A", "B"}));
         EXPECT_CALL(*instructions_assembler_core_mock_, AssembleInstruction(_)).WillOnce(::testing::Return());
-        EXPECT_TRUE(code_analyzer_with_injected_mocks.DetectLabels(input_stream, line));
+
+        EXPECT_TRUE(code_analyzer_with_injected_mocks.DetectLabels(input_stream, line_code));
         EXPECT_EQ(labels_.count("loop"), 1);
-        EXPECT_EQ(labels_["loop"], 0);
+        EXPECT_EQ(labels_["loop"], 0);  // address
+
         input_stream.close();
         std::remove(temp_file.c_str());
     }
 
     TEST_F(CodeAnalyzerTest, DetectLabels_ReturnsFalse_OnAssemblerException) {
-        std::string temp_file = "temp_codeanalyzer_input2.asm";
+        std::string temp_file = "input2.asm";
         {
             std::ofstream out(temp_file);
             out << "MOV A, B\n";
         }
         std::ifstream input_stream(temp_file);
-        std::string line;
-        EXPECT_CALL(*line_handler_mock_, CleanLineWhitespaces(_)).WillRepeatedly(::testing::Invoke([](const std::string& l) { return l; }));
-        EXPECT_CALL(*line_handler_mock_, RemoveLineComments(_)).WillRepeatedly(::testing::Invoke([](const std::string& l) { return l; }));
+        std::string line_code;
+        EXPECT_CALL(*line_handler_mock_, CleanLineWhitespaces(_)).WillRepeatedly(::testing::Invoke([](const std::string& input_line) { return input_line; }));
+        EXPECT_CALL(*line_handler_mock_, RemoveLineComments(_)).WillRepeatedly(::testing::Invoke([](const std::string& input_line) { return input_line; }));
         EXPECT_CALL(*line_handler_mock_, TokenizeLine(_)).WillRepeatedly(::testing::Return(std::vector<std::string>{"MOV", "A", "B"}));
+
         EXPECT_CALL(*instructions_assembler_core_mock_, AssembleInstruction(_)).WillOnce(::testing::Throw(std::runtime_error("error")));
-        EXPECT_FALSE(code_analyzer_with_injected_mocks.DetectLabels(input_stream, line));
+        EXPECT_FALSE(code_analyzer_with_injected_mocks.DetectLabels(input_stream, line_code));
+
         input_stream.close();
         std::remove(temp_file.c_str());
     }
 
     TEST_F(CodeAnalyzerTest, DetectLabels_IgnoresEmptyAndCommentLines) {
-        std::string temp_file = "temp_codeanalyzer_input3.asm";
+        std::string temp_file = "input3.asm";
         {
             std::ofstream out(temp_file);
             out << " ; komentarz\n\nloop:\n";
         }
         std::ifstream input_stream(temp_file);
-        std::string line;
-        EXPECT_CALL(*line_handler_mock_, CleanLineWhitespaces(_)).WillRepeatedly(::testing::Invoke([](const std::string& l) { return l; }));
-        EXPECT_CALL(*line_handler_mock_, RemoveLineComments(_)).WillRepeatedly(::testing::Invoke([](const std::string& l) {
-            if (l.find(';') != std::string::npos) return std::string{};
-            return l;
+        std::string line_code;
+        EXPECT_CALL(*line_handler_mock_, CleanLineWhitespaces(_)).WillRepeatedly(::testing::Invoke([](const std::string& input_line) { return input_line; }));
+        EXPECT_CALL(*line_handler_mock_, RemoveLineComments(_)).WillRepeatedly(::testing::Invoke([](const std::string& input_line) {
+            if (input_line.find(';') != std::string::npos) return std::string{};
+            return input_line;
         }));
         EXPECT_CALL(*line_handler_mock_, TokenizeLine(_)).WillRepeatedly(::testing::Return(std::vector<std::string>{}));
-        EXPECT_TRUE(code_analyzer_with_injected_mocks.DetectLabels(input_stream, line));
+
+        EXPECT_TRUE(code_analyzer_with_injected_mocks.DetectLabels(input_stream, line_code));
         EXPECT_EQ(labels_.count("loop"), 1);
+
         input_stream.close();
         std::remove(temp_file.c_str());
     }
 
     TEST_F(CodeAnalyzerTest, DetectLabels_DetectsLabelAndSetsAddress_WithFile) {
-        std::string temp_file = "temp_codeanalyzer_input.asm";
+        std::string temp_file = "input4.asm";
         {
             std::ofstream out(temp_file);
             out << "loop:\nMOV A, B\n";
         }
         std::ifstream input_file(temp_file);
-        std::string line;
-        EXPECT_CALL(*line_handler_mock_, CleanLineWhitespaces(_)).WillRepeatedly(::testing::Invoke([](const std::string& l) { return l; }));
-        EXPECT_CALL(*line_handler_mock_, RemoveLineComments(_)).WillRepeatedly(::testing::Invoke([](const std::string& l) { return l; }));
-        EXPECT_CALL(*line_handler_mock_, TokenizeLine(_)).WillRepeatedly(::testing::Invoke([](const std::string& l) {
-            if (l == "MOV A, B") return std::vector<std::string>{"MOV", "A", "B"};
+        std::string line_code;
+        EXPECT_CALL(*line_handler_mock_, CleanLineWhitespaces(_)).WillRepeatedly(::testing::Invoke([](const std::string& input_line) { return input_line; }));
+        EXPECT_CALL(*line_handler_mock_, RemoveLineComments(_)).WillRepeatedly(::testing::Invoke([](const std::string& input_line) { return input_line; }));
+        EXPECT_CALL(*line_handler_mock_, TokenizeLine(_)).WillRepeatedly(::testing::Invoke([](const std::string& input_line) {
+            if (input_line == "MOV A, B") return std::vector<std::string>{"MOV", "A", "B"};
             return std::vector<std::string>{};
         }));
         EXPECT_CALL(*instructions_assembler_core_mock_, AssembleInstruction(_)).WillOnce(::testing::Return());
 
-        EXPECT_TRUE(code_analyzer_with_injected_mocks.DetectLabels(input_file, line));
+        EXPECT_TRUE(code_analyzer_with_injected_mocks.DetectLabels(input_file, line_code));
         EXPECT_EQ(labels_.count("loop"), 1);
         EXPECT_EQ(labels_["loop"], 0);
         input_file.close();

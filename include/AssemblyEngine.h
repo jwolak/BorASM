@@ -22,7 +22,7 @@ namespace assembly_engine {
         bool SaveMachineCodeToFile(const std::string& output_file) const override;
 
       protected:
-        AssemblyEngine(std::unique_ptr<IFileHandler> file_handler, std::unique_ptr<ICodeAnalyzer> code_analyzer);
+        AssemblyEngine(std::unique_ptr<IFileHandler> file_handler, std::unique_ptr<ICodeAnalyzer> code_analyzer, std::vector<uint8_t> machine_code);
 
       private:
         std::unique_ptr<IFileHandler> file_handler_;

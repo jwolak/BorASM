@@ -21,8 +21,8 @@ namespace assembly_engine {
           code_analyzer_{std::make_unique<CodeAnalyzer>(machine_code_, labels_, label_references_)} {}
 
     /* For testing purposes */
-    AssemblyEngine::AssemblyEngine(std::unique_ptr<IFileHandler> file_handler, std::unique_ptr<ICodeAnalyzer> code_analyzer)
-        : file_handler_{std::move(file_handler)}, machine_code_{}, labels_{}, label_references_{}, code_analyzer_{std::move(code_analyzer)} {}
+    AssemblyEngine::AssemblyEngine(std::unique_ptr<IFileHandler> file_handler, std::unique_ptr<ICodeAnalyzer> code_analyzer, std::vector<uint8_t> machine_code)
+        : file_handler_{std::move(file_handler)}, machine_code_{machine_code}, labels_{}, label_references_{}, code_analyzer_{std::move(code_analyzer)} {}
 
     bool AssemblyEngine::Assemble(const std::string& input_file, const std::string& output_file) {
         spdlog::trace("[AssemblyEngine] Assemble() called with input_file: {0}, output_file: {1} [{2}:{3}]", input_file, output_file, __FILENAME__, __LINE__);
@@ -114,12 +114,6 @@ namespace assembly_engine {
 
         spdlog::debug("[AssemblyEngine] Get file to write stream [{0}:{1}]", __FILENAME__, __LINE__);
         std::ofstream& file = file_handler_->GetFileToWriteStream();
-
-        if (!file) {
-            tools::PrintRedErrorMessage("Output file stream is not valid.");
-            spdlog::error("[AssemblyEngine] Output file stream is not valid. [{0}:{1}]", __FILENAME__, __LINE__);
-            return false;
-        }
 
         for (uint8_t byte : machine_code_) {
             file << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << static_cast<int>(byte) << std::endl;

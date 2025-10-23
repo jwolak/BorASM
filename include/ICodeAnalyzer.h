@@ -1,8 +1,6 @@
 #pragma once
 
 #include <fstream>
-#include <map>
-#include <memory>
 #include <string>
 
 #include "CharacterStringLineHandler.h"

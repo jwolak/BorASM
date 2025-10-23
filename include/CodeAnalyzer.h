@@ -6,15 +6,16 @@
 #include <string>
 
 #include "CharacterStringLineHandler.h"
+#include "ICodeAnalyzer.h"
 #include "InstructionsAssemblerCore.h"
 
 namespace assembly_engine {
-    class CodeAnalyzer {
+    class CodeAnalyzer : public ICodeAnalyzer {
       public:
         CodeAnalyzer(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels, std::vector<std::pair<int, std::string>>& label_references);
-        bool DetectLabels(std::ifstream& file, std::string& line);
-        bool Tokenize(std::ifstream& file, std::string& line);
-        bool ResolveLabelReferences();
+        bool DetectLabels(std::ifstream& file, std::string& line) override;
+        bool Tokenize(std::ifstream& file, std::string& line) override;
+        bool ResolveLabelReferences() override;
 
       protected:
         CodeAnalyzer(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels, std::vector<std::pair<int, std::string>>& label_references,

@@ -1,9 +1,8 @@
 #include <gtest/gtest.h>
 
 #include "AssemblyEngine.h"
-#include "CharacterStringLineHandlerMock.h"
+#include "CodeAnalyzerMock.h"
 #include "FileHandlerMock.h"
-#include "InstructionsAssemblerCoreMock.h"
 
 namespace assembly_engine_test {
 
@@ -15,16 +14,21 @@ namespace assembly_engine_test {
 
     class AssemblyEngineWithInjectedMocks : public assembly_engine::AssemblyEngine {
       public:
-        AssemblyEngineWithInjectedMocks(std::unique_ptr<assembly_engine::IFileHandler> file_handler) : AssemblyEngine(std::move(file_handler)) {}
+        AssemblyEngineWithInjectedMocks(std::unique_ptr<assembly_engine::IFileHandler> file_handler,
+                                        std::unique_ptr<assembly_engine::ICodeAnalyzer> code_analyzer)
+            : AssemblyEngine(std::move(file_handler), std::move(code_analyzer)) {}
     };
 
     class AssemblyEngineTest : public ::testing::Test {
       public:
         AssemblyEngineTest()
             : file_handler_mock{new mocks::FileHandlerMock()},
-              assembly_engine_with_injected_mocks(std::unique_ptr<assembly_engine::IFileHandler>(file_handler_mock)) {}
+              code_analyzer_mock{new mocks::CodeAnalyzerMock()},
+              assembly_engine_with_injected_mocks(std::unique_ptr<assembly_engine::IFileHandler>(file_handler_mock),
+                                                  std::unique_ptr<assembly_engine::ICodeAnalyzer>(code_analyzer_mock)) {}
 
         mocks::FileHandlerMock* file_handler_mock;
+        mocks::CodeAnalyzerMock* code_analyzer_mock;
         AssemblyEngineWithInjectedMocks assembly_engine_with_injected_mocks;
     };
 

@@ -122,4 +122,39 @@ namespace code_analyzer_test {
         std::remove(temp_file.c_str());
     }
 
+    TEST_F(CodeAnalyzerTest, Tokenize_Is_Successfull_And_Returns_True) {
+        std::string temp_file = "tokenize.asm";
+        {
+            std::ofstream out(temp_file);
+            out << "MOV A, B\n";
+        }
+        std::ifstream input_stream(temp_file);
+        std::string line;
+        EXPECT_CALL(*line_handler_mock_, CleanLineWhitespaces(_)).WillRepeatedly(::testing::Invoke([](const std::string& l) { return l; }));
+        EXPECT_CALL(*line_handler_mock_, RemoveLineComments(_)).WillRepeatedly(::testing::Invoke([](const std::string& l) { return l; }));
+        EXPECT_CALL(*line_handler_mock_, TokenizeLine(_)).WillRepeatedly(::testing::Return(std::vector<std::string>{"MOV", "A", "B"}));
+        EXPECT_CALL(*instructions_assembler_core_mock_, AssembleInstruction(_)).WillOnce(::testing::Return());
+
+        EXPECT_TRUE(code_analyzer_with_injected_mocks.Tokenize(input_stream, line));
+
+        input_stream.close();
+        std::remove(temp_file.c_str());
+    }
+
+    TEST_F(CodeAnalyzerTest, Resolve_Label_References_Successful_And_Label_Reference_Added_And_Returns_True) {
+        labels_["loop"] = 5;
+        label_references_.push_back({0, "loop"});
+        machine_code_.resize(1);
+
+        EXPECT_TRUE(code_analyzer_with_injected_mocks.ResolveLabelReferences());
+        EXPECT_EQ(machine_code_[0], 5);
+    }
+
+    TEST_F(CodeAnalyzerTest, Try_Resolve_Label_References_But_Label_Is_Missing_And_Returns_False) {
+        label_references_.push_back({0, "missing_label"});
+        machine_code_.resize(1);
+
+        EXPECT_FALSE(code_analyzer_with_injected_mocks.ResolveLabelReferences());
+    }
+
 }  // namespace code_analyzer_test

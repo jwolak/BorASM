@@ -229,6 +229,121 @@ namespace instructions_assembler_core_test {
         EXPECT_EQ(machine_code[1], 0);            // LABEL address should be resolved to 0
     }
 
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JNZ_Mnemonic_With_Number_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JNZ", "100"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t jump_address = static_cast<uint8_t>(std::stoi(tokens[1]));
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("100")).WillOnce(::testing::Return(true));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("100")).WillOnce(::testing::Return(100));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], jump_address);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JNZ_Mnemonic_With_Label_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JNZ", "LABEL"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("LABEL")).WillOnce(::testing::Return(false));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("LABEL")).Times(0);
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], 0);            // LABEL address should be resolved to 0
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JC_Mnemonic_With_Number_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JC", "100"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t jump_address = static_cast<uint8_t>(std::stoi(tokens[1]));
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("100")).WillOnce(::testing::Return(true));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("100")).WillOnce(::testing::Return(100));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], jump_address);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JC_Mnemonic_With_Label_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JC", "LABEL"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("LABEL")).WillOnce(::testing::Return(false));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("LABEL")).Times(0);
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], 0);            // LABEL address should be resolved to 0
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JNC_Mnemonic_With_Number_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JNC", "100"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t jump_address = static_cast<uint8_t>(std::stoi(tokens[1]));
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("100")).WillOnce(::testing::Return(true));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("100")).WillOnce(::testing::Return(100));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], jump_address);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JNC_Mnemonic_With_Label_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JNC", "LABEL"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("LABEL")).WillOnce(::testing::Return(false));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("LABEL")).Times(0);
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], 0);            // LABEL address should be resolved to 0
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JN_Mnemonic_With_Number_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JN", "100"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t jump_address = static_cast<uint8_t>(std::stoi(tokens[1]));
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("100")).WillOnce(::testing::Return(true));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("100")).WillOnce(::testing::Return(100));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], jump_address);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JN_Mnemonic_With_Label_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JN", "LABEL"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("LABEL")).WillOnce(::testing::Return(false));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("LABEL")).Times(0);
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], 0);            // LABEL address should be resolved to 0
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JNN_Mnemonic_With_Number_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JNN", "100"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t jump_address = static_cast<uint8_t>(std::stoi(tokens[1]));
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("100")).WillOnce(::testing::Return(true));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("100")).WillOnce(::testing::Return(100));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], jump_address);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JNN_Mnemonic_With_Label_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JNN", "LABEL"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("LABEL")).WillOnce(::testing::Return(false));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("LABEL")).Times(0);
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], 0);            // LABEL address should be resolved to 0
+    }
+
     TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_SHL_Mnemonic_Successful_And_Machine_Code_Updated_And_True_Returned) {
         std::vector<std::string> tokens = {"SHL", "R0"};
         uint8_t opcode = cpu_data::opcodes[tokens[0]];

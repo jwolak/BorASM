@@ -13,6 +13,11 @@ namespace assembly_engine {
     InstructionsAssemblerCore::InstructionsAssemblerCore(std::vector<uint8_t>& machine_code, std::vector<std::pair<int, std::string>>& label_references)
         : machine_code_(machine_code), label_references_(label_references), character_string_line_handler_(std::make_unique<CharacterStringLineHandler>()) {}
 
+    /* For tests purposes */
+    InstructionsAssemblerCore::InstructionsAssemblerCore(std::vector<uint8_t>& machine_code, std::vector<std::pair<int, std::string>>& label_references,
+                                                         std::unique_ptr<ICharacterStringLineHandler> line_handler)
+        : machine_code_(machine_code), label_references_(label_references), character_string_line_handler_(std::move(line_handler)) {}
+
     bool InstructionsAssemblerCore::AssembleInstruction(const std::vector<std::string>& tokens) {
         spdlog::trace("[InstructionsAssemblerCore] AssembleInstruction() called with {0} tokens [{1}:{2}]", tokens.size(), __FILENAME__, __LINE__);
         tools::PrintGreenOKMessage("Assembling instruction...");

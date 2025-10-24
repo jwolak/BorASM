@@ -14,9 +14,13 @@ namespace assembly_engine {
         InstructionsAssemblerCore(std::vector<uint8_t>& machine_code, std::vector<std::pair<int, std::string>>& label_references);
         bool AssembleInstruction(const std::vector<std::string>& tokens) override;
 
+      protected:
+        InstructionsAssemblerCore(std::vector<uint8_t>& machine_code, std::vector<std::pair<int, std::string>>& label_references,
+                                  std::unique_ptr<ICharacterStringLineHandler> line_handler);
+
       private:
         std::vector<uint8_t>& machine_code_;
         std::vector<std::pair<int, std::string>>& label_references_;
-        std::unique_ptr<CharacterStringLineHandler> character_string_line_handler_;
+        std::unique_ptr<ICharacterStringLineHandler> character_string_line_handler_;
     };
 }  // namespace assembly_engine

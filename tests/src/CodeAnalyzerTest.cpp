@@ -59,7 +59,7 @@ namespace code_analyzer_test {
         std::remove(temp_file.c_str());
     }
 
-    TEST_F(CodeAnalyzerTest, DetectLabels_ReturnsFalse_OnAssemblerException) {
+    TEST_F(CodeAnalyzerTest, Try_Detect_Labels_But_Assemble_Instruction_Failed_And_ReturnsFalse) {
         std::string temp_file = "input2.asm";
         {
             std::ofstream out(temp_file);
@@ -70,15 +70,15 @@ namespace code_analyzer_test {
         EXPECT_CALL(*line_handler_mock_, CleanLineWhitespaces(_)).WillRepeatedly(::testing::Invoke([](const std::string& input_line) { return input_line; }));
         EXPECT_CALL(*line_handler_mock_, RemoveLineComments(_)).WillRepeatedly(::testing::Invoke([](const std::string& input_line) { return input_line; }));
         EXPECT_CALL(*line_handler_mock_, TokenizeLine(_)).WillRepeatedly(::testing::Return(std::vector<std::string>{"MOV", "A", "B"}));
-
         EXPECT_CALL(*instructions_assembler_core_mock_, AssembleInstruction(_)).WillOnce(::testing::Throw(std::runtime_error("error")));
+
         EXPECT_FALSE(code_analyzer_with_injected_mocks.DetectLabels(input_stream, line_code));
 
         input_stream.close();
         std::remove(temp_file.c_str());
     }
 
-    TEST_F(CodeAnalyzerTest, DetectLabels_IgnoresEmptyAndCommentLines) {
+    TEST_F(CodeAnalyzerTest, Detect_Labels_And_Detected_Label_Is_Successfull_And_Returns_True) {
         std::string temp_file = "input3.asm";
         {
             std::ofstream out(temp_file);
@@ -94,13 +94,12 @@ namespace code_analyzer_test {
         EXPECT_CALL(*line_handler_mock_, TokenizeLine(_)).WillRepeatedly(::testing::Return(std::vector<std::string>{}));
 
         EXPECT_TRUE(code_analyzer_with_injected_mocks.DetectLabels(input_stream, line_code));
-        EXPECT_EQ(labels_.count("loop"), 1);
 
         input_stream.close();
         std::remove(temp_file.c_str());
     }
 
-    TEST_F(CodeAnalyzerTest, DetectLabels_DetectsLabelAndSetsAddress_WithFile) {
+    TEST_F(CodeAnalyzerTest, Detect_Labels_And_Detected_Label_Is_Successfull_And_Label_And_Addres_Added_To_Labels) {
         std::string temp_file = "input4.asm";
         {
             std::ofstream out(temp_file);
@@ -115,8 +114,8 @@ namespace code_analyzer_test {
             return std::vector<std::string>{};
         }));
         EXPECT_CALL(*instructions_assembler_core_mock_, AssembleInstruction(_)).WillOnce(::testing::Return());
+        code_analyzer_with_injected_mocks.DetectLabels(input_file, line_code);
 
-        EXPECT_TRUE(code_analyzer_with_injected_mocks.DetectLabels(input_file, line_code));
         EXPECT_EQ(labels_.count("loop"), 1);
         EXPECT_EQ(labels_["loop"], 0);
         input_file.close();

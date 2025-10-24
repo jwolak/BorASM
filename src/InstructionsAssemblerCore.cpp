@@ -13,14 +13,16 @@ namespace assembly_engine {
     InstructionsAssemblerCore::InstructionsAssemblerCore(std::vector<uint8_t>& machine_code, std::vector<std::pair<int, std::string>>& label_references)
         : machine_code_(machine_code), label_references_(label_references), character_string_line_handler_(std::make_unique<CharacterStringLineHandler>()) {}
 
-    void InstructionsAssemblerCore::AssembleInstruction(const std::vector<std::string>& tokens) {
+    bool InstructionsAssemblerCore::AssembleInstruction(const std::vector<std::string>& tokens) {
         spdlog::trace("[InstructionsAssemblerCore] AssembleInstruction() called with {0} tokens [{1}:{2}]", tokens.size(), __FILENAME__, __LINE__);
         tools::PrintGreenOKMessage("Assembling instruction...");
 
         if (tokens.empty()) {
-            spdlog::debug("[InstructionsAssemblerCore] No tokens provided, skipping assembly [{0}:{1}]", __FILENAME__, __LINE__);
+            spdlog::debug("[InstructionsAssemblerCore] No tokens provided, skipping assembly. [{0}:{1}]", __FILENAME__, __LINE__);
             tools::PrintRedErrorMessage("No tokens provided, skipping assembly.");
-            return;
+            spdlog::debug("[InstructionsAssemblerCore] AssembleInstruction() finished with no action [{0}:{1}]", __FILENAME__, __LINE__);
+            spdlog::warn("[InstructionsAssemblerCore] Returning true... [{0}:{1}]", __FILENAME__, __LINE__);
+            return true;
         }
 
         std::string mnemonic = tokens[0];
@@ -32,7 +34,7 @@ namespace assembly_engine {
         if (cpu_data::opcodes.find(mnemonic) == cpu_data::opcodes.end()) {
             spdlog::debug("[InstructionsAssemblerCore] Invalid mnemonic: {0} [{1}:{2}]", mnemonic, __FILENAME__, __LINE__);
             tools::PrintRedErrorMessage("Unknown instruction: " + mnemonic);
-            throw std::runtime_error("Unknown instruction: " + mnemonic);
+            return false;
         }
 
         uint8_t opcode = cpu_data::opcodes[mnemonic];
@@ -43,7 +45,7 @@ namespace assembly_engine {
             spdlog::debug("[InstructionsAssemblerCore] HALT instruction found [{0}:{1}]", __FILENAME__, __LINE__);
             machine_code_.push_back(0xFF);
             spdlog::debug("[InstructionsAssemblerCore] HALT instruction assembled and added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
-            return;
+            return true;
         }
 
         // Jump instructions - always with immediate
@@ -52,7 +54,7 @@ namespace assembly_engine {
             if (tokens.size() < 2) {
                 spdlog::debug("[InstructionsAssemblerCore] Jump instruction requires address [{0}:{1}]", __FILENAME__, __LINE__);
                 tools::PrintRedErrorMessage("Jump instruction requires address");
-                throw std::runtime_error("Jump instruction requires address");
+                return false;
             }
 
             spdlog::debug("[InstructionsAssemblerCore] Assembling jump instruction [{0}:{1}]", __FILENAME__, __LINE__);
@@ -73,7 +75,7 @@ namespace assembly_engine {
             }
             spdlog::debug("[InstructionsAssemblerCore] Jump instruction assembled and added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
             tools::PrintGreenOKMessage("Jump instruction assembled successfully.");
-            return;
+            return true;
         }
 
         // Shift instructions (SHL, SHR) - only one register
@@ -81,13 +83,13 @@ namespace assembly_engine {
         if (mnemonic == "SHL" || mnemonic == "SHR") {
             if (tokens.size() < 2) {
                 spdlog::debug("[InstructionsAssemblerCore] Shift instruction requires register [{0}:{1}]", __FILENAME__, __LINE__);
-                throw std::runtime_error("Shift instruction requires register");
+                return false;
             }
 
             spdlog::debug("[InstructionsAssemblerCore] Assembling shift instruction [{0}:{1}]", __FILENAME__, __LINE__);
             if (cpu_data::registers.find(tokens[1]) == cpu_data::registers.end()) {
                 spdlog::debug("[InstructionsAssemblerCore] Invalid register: {0} [{1}:{2}]", tokens[1], __FILENAME__, __LINE__);
-                throw std::runtime_error("Invalid register: " + tokens[1]);
+                return false;
             }
             spdlog::debug("[InstructionsAssemblerCore] Shift instruction assembled successfully [{0}:{1}]", __FILENAME__, __LINE__);
             tools::PrintGreenOKMessage("Shift instruction assembled successfully.");
@@ -102,7 +104,7 @@ namespace assembly_engine {
             spdlog::debug("[InstructionsAssemblerCore] Shift instruction added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
 
             tools::PrintGreenOKMessage("Shift instruction added to machine code successfully.");
-            return;
+            return true;
         }
 
         // Other instructions - format: INSTR dst, src/imm
@@ -110,7 +112,7 @@ namespace assembly_engine {
         if (tokens.size() < 3) {
             spdlog::debug("[InstructionsAssemblerCore] Instruction requires destination and source [{0}:{1}]", __FILENAME__, __LINE__);
             tools::PrintRedErrorMessage("Instruction requires destination and source");
-            throw std::runtime_error("Instruction requires destination and source");
+            return false;
         }
 
         // Destination register
@@ -118,7 +120,7 @@ namespace assembly_engine {
         if (cpu_data::registers.find(tokens[1]) == cpu_data::registers.end()) {
             spdlog::debug("[InstructionsAssemblerCore] Invalid destination register: {0} [{1}:{2}]", tokens[1], __FILENAME__, __LINE__);
             tools::PrintRedErrorMessage("Invalid destination register: " + tokens[1]);
-            throw std::runtime_error("Invalid destination register: " + tokens[1]);
+            return false;
         }
         uint8_t destReg = cpu_data::registers[tokens[1]];
         spdlog::debug("[InstructionsAssemblerCore] Destination register {0} has code {1} [{2}:{3}]", tokens[1], static_cast<int>(destReg), __FILENAME__,
@@ -143,7 +145,7 @@ namespace assembly_engine {
             if (cpu_data::registers.find(tokens[2]) == cpu_data::registers.end()) {
                 spdlog::debug("[InstructionsAssemblerCore] Invalid source register: {0} [{1}:{2}]", tokens[2], __FILENAME__, __LINE__);
                 tools::PrintRedErrorMessage("Invalid source register: " + tokens[2]);
-                throw std::runtime_error("Invalid source register: " + tokens[2]);
+                return false;
             }
             uint8_t srcReg = cpu_data::registers[tokens[2]];
             spdlog::debug("[InstructionsAssemblerCore] Source register {0} has code {1} [{2}:{3}]", tokens[2], static_cast<int>(srcReg), __FILENAME__,
@@ -156,5 +158,6 @@ namespace assembly_engine {
 
         spdlog::debug("[InstructionsAssemblerCore] Finished processing instruction [{0}:{1}]", __FILENAME__, __LINE__);
         tools::PrintGreenOKMessage("Instruction assembled successfully.");
+        return true;
     }
 }  // namespace assembly_engine

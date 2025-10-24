@@ -12,7 +12,7 @@ namespace assembly_engine {
     class InstructionsAssemblerCore : public IInstructionsAssemblerCore {
       public:
         InstructionsAssemblerCore(std::vector<uint8_t>& machine_code, std::vector<std::pair<int, std::string>>& label_references);
-        void AssembleInstruction(const std::vector<std::string>& tokens) override;
+        bool AssembleInstruction(const std::vector<std::string>& tokens) override;
 
       private:
         std::vector<uint8_t>& machine_code_;

@@ -7,6 +7,6 @@ namespace assembly_engine {
     class IInstructionsAssemblerCore {
       public:
         virtual ~IInstructionsAssemblerCore() = default;
-        virtual void AssembleInstruction(const std::vector<std::string>& tokens) = 0;
+        virtual bool AssembleInstruction(const std::vector<std::string>& tokens) = 0;
     };
 }  // namespace assembly_engine

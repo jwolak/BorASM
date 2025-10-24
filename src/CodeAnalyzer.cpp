@@ -61,13 +61,11 @@ namespace assembly_engine {
             spdlog::debug("[CodeAnalyzer] Check if tokens are not empty for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
             if (!tokens.empty()) {
                 spdlog::debug("[CodeAnalyzer] Tokens are not empty for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
-                try {
-                    size_t size_before = machine_code_.size();
-                    spdlog::debug("[CodeAnalyzer] Machine code size before assembling instruction: {0} [{1}:{2}]", size_before, __FILENAME__, __LINE__);
-                    instructions_assembler_core_->AssembleInstruction(tokens);
-                } catch (const std::exception& e) {
-                    spdlog::error("[CodeAnalyzer] Error on line {0}: {1} [{2}:{3}]", lineNumber, e.what(), __FILENAME__, __LINE__);
-                    tools::PrintRedErrorMessage("Error on line " + std::to_string(lineNumber) + ": " + e.what());
+                size_t size_before = machine_code_.size();
+                spdlog::debug("[CodeAnalyzer] Machine code size before assembling instruction: {0} [{1}:{2}]", size_before, __FILENAME__, __LINE__);
+                if (!instructions_assembler_core_->AssembleInstruction(tokens)) {
+                    spdlog::error("[CodeAnalyzer] Error on line {0}: [{1}:{2}]", lineNumber, __FILENAME__, __LINE__);
+                    tools::PrintRedErrorMessage("Error on line " + std::to_string(lineNumber));
                     return false;
                 }
             }

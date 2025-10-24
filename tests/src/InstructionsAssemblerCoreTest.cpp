@@ -41,9 +41,10 @@ namespace instructions_assembler_core_test {
 
     TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_HALT_Mnemonic_Successful_And_Machine_Code_Updated_And_True_Returned) {
         std::vector<std::string> tokens = {"HALT"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
         ASSERT_EQ(machine_code.size(), 1);
-        EXPECT_EQ(machine_code[0], 0xFF);
+        EXPECT_EQ(machine_code[0], opcode);  // HALT opcode is 0xFF
     }
 
     TEST_F(InstructionsAssemblerCoreTest,
@@ -69,8 +70,8 @@ namespace instructions_assembler_core_test {
 
     TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_SHL_Mnemonic_Successful_And_Machine_Code_Updated_And_True_Returned) {
         std::vector<std::string> tokens = {"SHL", "R0"};
-        uint8_t reg = cpu_data::registers[tokens[1]];
         uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t reg = cpu_data::registers[tokens[1]];
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
         ASSERT_EQ(machine_code.size(), 1);
         EXPECT_EQ(machine_code[0], (opcode << 4) | (reg << 2));  // Assuming SHL R0 opcode is 0x20
@@ -78,8 +79,8 @@ namespace instructions_assembler_core_test {
 
     TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_SHR_Mnemonic_Successful_And_Machine_Code_Updated_And_True_Returned) {
         std::vector<std::string> tokens = {"SHR", "R0"};
-        uint8_t reg = cpu_data::registers[tokens[1]];
         uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t reg = cpu_data::registers[tokens[1]];
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
         ASSERT_EQ(machine_code.size(), 1);
         EXPECT_EQ(machine_code[0], (opcode << 4) | (reg << 2));  // Assuming SHR R0 opcode is 0x21

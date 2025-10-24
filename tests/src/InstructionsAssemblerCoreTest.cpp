@@ -54,7 +54,7 @@ namespace instructions_assembler_core_test {
         std::vector<std::string> tokens = {"ADD", "R0", "7"};
         uint8_t opcode = cpu_data::opcodes[tokens[0]];
         uint8_t reg1 = cpu_data::registers[tokens[1]];
-        uint8_t immediate = 7;  // Immediate value
+        uint8_t immediate = static_cast<uint8_t>(std::stoi(tokens[2]));  // Immediate value
         EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(true));
         EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber(tokens[2])).Times(1).WillOnce(::testing::Return(immediate));
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
@@ -78,7 +78,7 @@ namespace instructions_assembler_core_test {
         std::vector<std::string> tokens = {"SUB", "R0", "7"};
         uint8_t opcode = cpu_data::opcodes[tokens[0]];
         uint8_t reg1 = cpu_data::registers[tokens[1]];
-        uint8_t immediate = 7;  // Immediate value
+        uint8_t immediate = static_cast<uint8_t>(std::stoi(tokens[2]));  // Immediate value
         EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(true));
         EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber(tokens[2])).Times(1).WillOnce(::testing::Return(immediate));
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
@@ -102,7 +102,7 @@ namespace instructions_assembler_core_test {
         std::vector<std::string> tokens = {"AND", "R0", "7"};
         uint8_t opcode = cpu_data::opcodes[tokens[0]];
         uint8_t reg1 = cpu_data::registers[tokens[1]];
-        uint8_t immediate = 7;  // Immediate value
+        uint8_t immediate = static_cast<uint8_t>(std::stoi(tokens[2]));  // Immediate value
         EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(true));
         EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber(tokens[2])).Times(1).WillOnce(::testing::Return(immediate));
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
@@ -126,7 +126,7 @@ namespace instructions_assembler_core_test {
         std::vector<std::string> tokens = {"OR", "R0", "7"};
         uint8_t opcode = cpu_data::opcodes[tokens[0]];
         uint8_t reg1 = cpu_data::registers[tokens[1]];
-        uint8_t immediate = 7;  // Immediate value
+        uint8_t immediate = static_cast<uint8_t>(std::stoi(tokens[2]));  // Immediate value
         EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(true));
         EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber(tokens[2])).Times(1).WillOnce(::testing::Return(immediate));
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
@@ -150,7 +150,7 @@ namespace instructions_assembler_core_test {
         std::vector<std::string> tokens = {"XOR", "R0", "7"};
         uint8_t opcode = cpu_data::opcodes[tokens[0]];
         uint8_t reg1 = cpu_data::registers[tokens[1]];
-        uint8_t immediate = 7;  // Immediate value
+        uint8_t immediate = static_cast<uint8_t>(std::stoi(tokens[2]));  // Immediate value
         EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(true));
         EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber(tokens[2])).Times(1).WillOnce(::testing::Return(immediate));
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));

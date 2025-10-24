@@ -174,7 +174,7 @@ namespace instructions_assembler_core_test {
         std::vector<std::string> tokens = {"MOV", "R0", "7"};
         uint8_t opcode = cpu_data::opcodes[tokens[0]];
         uint8_t reg1 = cpu_data::registers[tokens[1]];
-        uint8_t immediate = 7;  // Immediate value
+        uint8_t immediate = static_cast<uint8_t>(std::stoi(tokens[2]));
         EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(true));
         EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber(tokens[2])).Times(1).WillOnce(::testing::Return(immediate));
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
@@ -183,25 +183,50 @@ namespace instructions_assembler_core_test {
         EXPECT_EQ(machine_code[1], immediate);
     }
 
-    TEST_F(InstructionsAssemblerCoreTest,
-           Assemble_Instruction_With_JUMP_Mnemonic_With_Number_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JMP_Mnemonic_With_Number_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
         std::vector<std::string> tokens = {"JMP", "100"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t jump_address = static_cast<uint8_t>(std::stoi(tokens[1]));
         EXPECT_CALL(*character_string_line_handler_mock, IsNumber("100")).WillOnce(::testing::Return(true));
         EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("100")).WillOnce(::testing::Return(100));
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
         ASSERT_EQ(machine_code.size(), 2);
-        EXPECT_EQ(machine_code[0], 0x08 << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
-        EXPECT_EQ(machine_code[1], 100);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], jump_address);
     }
 
-    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JUMP_Mnemonic_With_Label_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JMP_Mnemonic_With_Label_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
         std::vector<std::string> tokens = {"JMP", "LABEL"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
         EXPECT_CALL(*character_string_line_handler_mock, IsNumber("LABEL")).WillOnce(::testing::Return(false));
         EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("LABEL")).Times(0);
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
         ASSERT_EQ(machine_code.size(), 2);
-        EXPECT_EQ(machine_code[0], 0x08 << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
-        EXPECT_EQ(machine_code[1], 0);          // LABEL address should be resolved to 0
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], 0);            // LABEL address should be resolved to 0
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JZ_Mnemonic_With_Number_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JZ", "100"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t jump_address = static_cast<uint8_t>(std::stoi(tokens[1]));
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("100")).WillOnce(::testing::Return(true));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("100")).WillOnce(::testing::Return(100));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], jump_address);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JZ_Mnemonic_With_Label_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JZ", "LABEL"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("LABEL")).WillOnce(::testing::Return(false));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("LABEL")).Times(0);
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], opcode << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], 0);            // LABEL address should be resolved to 0
     }
 
     TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_SHL_Mnemonic_Successful_And_Machine_Code_Updated_And_True_Returned) {
@@ -222,14 +247,27 @@ namespace instructions_assembler_core_test {
         EXPECT_EQ(machine_code[0], (opcode << 4) | (reg << 2));  // Assuming SHR R0 opcode is 0x21
     }
 
-    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_CMP_Mnemonic_Successful_And_Machine_Code_Updated_And_True_Returned) {
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_CMP_Two_Registers_Mnemonic_Successful_And_Machine_Code_Updated_And_True_Returned) {
         std::vector<std::string> tokens = {"CMP", "R0", "R1"};
         uint8_t opcode = cpu_data::opcodes[tokens[0]];
         uint8_t reg1 = cpu_data::registers[tokens[1]];
         uint8_t reg2 = cpu_data::registers[tokens[2]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber(testing::_)).WillOnce(::testing::Return(false));
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
         ASSERT_EQ(machine_code.size(), 1);
         EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | reg2);  // Assuming CMP R0, R1 opcode is 0x30
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_CMP_With_Immediate_Mnemonic_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"CMP", "R0", "7"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t reg1 = cpu_data::registers[tokens[1]];
+        uint8_t immediate = static_cast<uint8_t>(std::stoi(tokens[2]));
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).WillOnce(::testing::Return(true));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber(tokens[2])).WillOnce(::testing::Return(7));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | immediate);
     }
 
     TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_HALT_Mnemonic_Successful_And_Machine_Code_Updated_And_True_Returned) {

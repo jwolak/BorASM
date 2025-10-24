@@ -109,7 +109,7 @@ namespace assembly_engine {
             }
             tools::PrintGreenAssemblingMessage("Register " + tokens[1] + " is valid.");
             spdlog::debug("[InstructionsAssemblerCore] Shift instruction assembled successfully [{0}:{1}]", __FILENAME__, __LINE__);
-            tools::PrintGreenOKMessage("Shift instruction assembled successfully.");
+            tools::PrintGreenAssemblingMessage("Shift instruction assembled successfully.");
 
             uint8_t reg = cpu_data::registers[tokens[1]];
             spdlog::debug("[InstructionsAssemblerCore] Register {0} has code {1} [{2}:{3}]", tokens[1], static_cast<int>(reg), __FILENAME__, __LINE__);

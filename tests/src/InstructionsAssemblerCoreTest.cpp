@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
 #include "CharacterStringLineHandlerMock.h"
+#include "CpuOperationCodes.h"
+#include "CpuRegisters.h"
 #include "InstructionsAssemblerCore.h"
 
 namespace instructions_assembler_core_test {
@@ -26,5 +28,61 @@ namespace instructions_assembler_core_test {
         mocks::CharacterStringLineHandlerMock* character_string_line_handler_mock;
         InstructionsAssemblerCoreWithInjectedMocks instructions_assembler_core_with_injected_mocks;
     };
+
+    TEST_F(InstructionsAssemblerCoreTest, Try_Assemble_Instruction_With_Empty_Tokens_And_Returns_True) {
+        std::vector<std::string> tokens;
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Try_Assemble_Instruction_With_Invalid_Mnemonic_And_Returns_False) {
+        std::vector<std::string> tokens = {"INVALID_MNEMONIC"};
+        EXPECT_FALSE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_HALT_Mnemonic_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"HALT"};
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 1);
+        EXPECT_EQ(machine_code[0], 0xFF);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest,
+           Assemble_Instruction_With_JUMP_Mnemonic_With_Number_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JMP", "100"};
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("100")).WillOnce(::testing::Return(true));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("100")).WillOnce(::testing::Return(100));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], 0x08 << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], 100);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_JUMP_Mnemonic_With_Label_As_Address_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"JMP", "LABEL"};
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber("LABEL")).WillOnce(::testing::Return(false));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber("LABEL")).Times(0);
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], 0x08 << 4);  // machine_code_.push_back(opcode << 4);  // Upper 4 bits = opcode
+        EXPECT_EQ(machine_code[1], 0);          // LABEL address should be resolved to 0
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_SHL_Mnemonic_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"SHL", "R0"};
+        uint8_t reg = cpu_data::registers[tokens[1]];
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 1);
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg << 2));  // Assuming SHL R0 opcode is 0x20
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_SHR_Mnemonic_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"SHR", "R0"};
+        uint8_t reg = cpu_data::registers[tokens[1]];
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 1);
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg << 2));  // Assuming SHR R0 opcode is 0x21
+    }
 
 }  // namespace instructions_assembler_core_test

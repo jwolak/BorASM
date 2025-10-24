@@ -127,55 +127,71 @@ namespace assembly_engine {
 
         // Other instructions - format: INSTR dst, src/imm
         spdlog::debug("[InstructionsAssemblerCore] Assembling general instruction [{0}:{1}]", __FILENAME__, __LINE__);
+        tools::PrintGreenAssemblingMessage("Assembling general instruction: [" + mnemonic + "]");
         if (tokens.size() < 3) {
             spdlog::debug("[InstructionsAssemblerCore] Instruction requires destination and source [{0}:{1}]", __FILENAME__, __LINE__);
-            tools::PrintRedErrorMessage("Instruction requires destination and source");
+            tools::PrintRedAssemblingMessage("Instruction requires destination and source");
             return false;
         }
 
         // Destination register
         spdlog::debug("[InstructionsAssemblerCore] Processing destination register: {0} [{1}:{2}]", tokens[1], __FILENAME__, __LINE__);
+        tools::PrintGreenAssemblingMessage("Processing destination register: " + tokens[1]);
         if (cpu_data::registers.find(tokens[1]) == cpu_data::registers.end()) {
             spdlog::debug("[InstructionsAssemblerCore] Invalid destination register: {0} [{1}:{2}]", tokens[1], __FILENAME__, __LINE__);
             tools::PrintRedErrorMessage("Invalid destination register: " + tokens[1]);
             return false;
         }
+        tools::PrintGreenAssemblingMessage("Destination register " + tokens[1] + " is valid.");
         uint8_t destReg = cpu_data::registers[tokens[1]];
+        tools::PrintGreenAssemblingMessage("Destination register " + tokens[1] + " has code " + std::to_string(static_cast<int>(destReg)) + ".");
         spdlog::debug("[InstructionsAssemblerCore] Destination register {0} has code {1} [{2}:{3}]", tokens[1], static_cast<int>(destReg), __FILENAME__,
                       __LINE__);
 
         // Source - register or immediate
         spdlog::debug("[InstructionsAssemblerCore] Processing source operand: {0} [{1}:{2}]", tokens[2], __FILENAME__, __LINE__);
+        tools::PrintGreenAssemblingMessage("Processing source operand: " + tokens[2]);
         if (character_string_line_handler_->IsNumber(tokens[2]) || tokens[2][0] == '#') {
             // Immediate value
             spdlog::debug("[InstructionsAssemblerCore] Source operand is an immediate value [{0}:{1}]", __FILENAME__, __LINE__);
+            tools::PrintGreenAssemblingMessage("Source operand is an immediate value: " + tokens[2]);
             uint8_t immediate = character_string_line_handler_->ConvertStringToNumber(tokens[2]);
             spdlog::debug("[InstructionsAssemblerCore] Immediate value: {0} [{1}:{2}]", static_cast<int>(immediate), __FILENAME__, __LINE__);
+            tools::PrintGreenAssemblingMessage("Immediate value: " + std::to_string(static_cast<int>(immediate)));
             uint8_t instruction = (opcode << 4) | (destReg << 2) | immediate;  // [4-bit opcode][2-bit dest][2-bit imm_flag]
             spdlog::debug("[InstructionsAssemblerCore] Instruction byte with immediate: {0} [{1}:{2}]", static_cast<int>(instruction), __FILENAME__, __LINE__);
+            tools::PrintGreenAssemblingMessage("Instruction byte with immediate: " + std::to_string(static_cast<int>(instruction)));
 
             machine_code_.push_back(instruction);
+            spdlog::debug("[InstructionsAssemblerCore] Instruction with immediate byte added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
             machine_code_.push_back(immediate);
+            tools::PrintGreenAssemblingMessage("Immediate value " + std::to_string(static_cast<int>(immediate)) + " added to machine code successfully.");
             spdlog::debug("[InstructionsAssemblerCore] Instruction with immediate added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
+
         } else {
             // Register to register
             spdlog::debug("[InstructionsAssemblerCore] Source operand is a register [{0}:{1}]", __FILENAME__, __LINE__);
+            tools::PrintGreenAssemblingMessage("Source operand is a register: " + tokens[2]);
             if (cpu_data::registers.find(tokens[2]) == cpu_data::registers.end()) {
                 spdlog::debug("[InstructionsAssemblerCore] Invalid source register: {0} [{1}:{2}]", tokens[2], __FILENAME__, __LINE__);
-                tools::PrintRedErrorMessage("Invalid source register: " + tokens[2]);
+                tools::PrintRedAssemblingMessage("Invalid source register: " + tokens[2]);
                 return false;
             }
             uint8_t srcReg = cpu_data::registers[tokens[2]];
+            tools::PrintGreenAssemblingMessage("Source register " + tokens[2] + " is valid.");
+            tools::PrintGreenAssemblingMessage("Source register " + tokens[2] + " has code " + std::to_string(static_cast<int>(srcReg)) + ".");
             spdlog::debug("[InstructionsAssemblerCore] Source register {0} has code {1} [{2}:{3}]", tokens[2], static_cast<int>(srcReg), __FILENAME__,
                           __LINE__);
             uint8_t instruction = (opcode << 4) | (destReg << 2) | srcReg;
             spdlog::debug("[InstructionsAssemblerCore] Instruction byte with register: {0} [{1}:{2}]", static_cast<int>(instruction), __FILENAME__, __LINE__);
+            tools::PrintGreenAssemblingMessage("Instruction byte with register: " + std::to_string(static_cast<int>(instruction)));
             machine_code_.push_back(instruction);
             spdlog::debug("[InstructionsAssemblerCore] Instruction with register added to machine code [{0}:{1}]", __FILENAME__, __LINE__);
+            tools::PrintGreenAssemblingMessage("Instruction with register added to machine code successfully.");
         }
 
         spdlog::debug("[InstructionsAssemblerCore] Finished processing instruction [{0}:{1}]", __FILENAME__, __LINE__);
-        tools::PrintGreenOKMessage("Instruction assembled successfully.");
+        tools::PrintGreenAssemblingMessage("Instruction assembled successfully.");
         return true;
     }
 }  // namespace assembly_engine

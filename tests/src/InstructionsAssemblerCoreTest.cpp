@@ -393,4 +393,38 @@ namespace instructions_assembler_core_test {
         EXPECT_EQ(machine_code[0], opcode);  // HALT opcode is 0xFF
     }
 
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_AND_Mnemonic_With_Two_Registers_A_B_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"AND", "A", "B"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t reg1 = cpu_data::registers[tokens[1]];
+        uint8_t reg2 = cpu_data::registers[tokens[2]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(false));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 1);
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | reg2);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest,
+           Assemble_Instruction_With_AND_Mnemonic_With_Two_Registers_R2_R3_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"AND", "R2", "R3"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t reg1 = cpu_data::registers[tokens[1]];
+        uint8_t reg2 = cpu_data::registers[tokens[2]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(false));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 1);
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | reg2);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_AND_Mnemonic_With_Two_Registers_C_D_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"AND", "C", "D"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t reg1 = cpu_data::registers[tokens[1]];
+        uint8_t reg2 = cpu_data::registers[tokens[2]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(false));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 1);
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | reg2);
+    }
+
 }  // namespace instructions_assembler_core_test

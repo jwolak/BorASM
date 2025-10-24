@@ -118,7 +118,7 @@ namespace instructions_assembler_core_test {
         EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(false));
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
         ASSERT_EQ(machine_code.size(), 1);
-        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | reg2);  // Assuming ADD R0, R1 opcode is 0x22
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | reg2);
     }
 
     TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_SUB_Mnemonic_With_One_Register_Successful_And_Machine_Code_Updated_And_True_Returned) {
@@ -130,7 +130,79 @@ namespace instructions_assembler_core_test {
         EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber(tokens[2])).Times(1).WillOnce(::testing::Return(immediate));
         EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
         ASSERT_EQ(machine_code.size(), 2);
-        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | immediate);  // Assuming ADD R0, R1 opcode is 0x22
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | immediate);
+        EXPECT_EQ(machine_code[1], immediate);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_AND_Mnemonic_With_Two_Registers_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"AND", "R0", "R1"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t reg1 = cpu_data::registers[tokens[1]];
+        uint8_t reg2 = cpu_data::registers[tokens[2]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(false));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 1);
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | reg2);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_AND_Mnemonic_With_One_Register_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"AND", "R0", "7"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t reg1 = cpu_data::registers[tokens[1]];
+        uint8_t immediate = 7;  // Immediate value
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(true));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber(tokens[2])).Times(1).WillOnce(::testing::Return(immediate));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | immediate);
+        EXPECT_EQ(machine_code[1], immediate);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_OR_Mnemonic_With_Two_Registers_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"OR", "R0", "R1"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t reg1 = cpu_data::registers[tokens[1]];
+        uint8_t reg2 = cpu_data::registers[tokens[2]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(false));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 1);
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | reg2);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_OR_Mnemonic_With_One_Register_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"OR", "R0", "7"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t reg1 = cpu_data::registers[tokens[1]];
+        uint8_t immediate = 7;  // Immediate value
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(true));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber(tokens[2])).Times(1).WillOnce(::testing::Return(immediate));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | immediate);
+        EXPECT_EQ(machine_code[1], immediate);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_XOR_Mnemonic_With_Two_Registers_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"XOR", "R0", "R1"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t reg1 = cpu_data::registers[tokens[1]];
+        uint8_t reg2 = cpu_data::registers[tokens[2]];
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(false));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 1);
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | reg2);
+    }
+
+    TEST_F(InstructionsAssemblerCoreTest, Assemble_Instruction_With_XOR_Mnemonic_With_One_Register_Successful_And_Machine_Code_Updated_And_True_Returned) {
+        std::vector<std::string> tokens = {"XOR", "R0", "7"};
+        uint8_t opcode = cpu_data::opcodes[tokens[0]];
+        uint8_t reg1 = cpu_data::registers[tokens[1]];
+        uint8_t immediate = 7;  // Immediate value
+        EXPECT_CALL(*character_string_line_handler_mock, IsNumber(tokens[2])).Times(1).WillOnce(::testing::Return(true));
+        EXPECT_CALL(*character_string_line_handler_mock, ConvertStringToNumber(tokens[2])).Times(1).WillOnce(::testing::Return(immediate));
+        EXPECT_TRUE(instructions_assembler_core_with_injected_mocks.AssembleInstruction(tokens));
+        ASSERT_EQ(machine_code.size(), 2);
+        EXPECT_EQ(machine_code[0], (opcode << 4) | (reg1 << 2) | immediate);
         EXPECT_EQ(machine_code[1], immediate);
     }
 

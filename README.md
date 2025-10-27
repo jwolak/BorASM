@@ -49,8 +49,6 @@ After building, use the produced binary to assemble `.asm` files:
 ./bin/BorASM <input.asm> <output.bin>
 ```
 
-`SaveMachineCodeToFile` writes machine code as hex lines; `PrintMachineCode` prints formatted machine bytes to stdout.
-
 ## Tests
 
 Run unit tests from the `build` directory (CMake adds a `tests` target):
@@ -61,19 +59,4 @@ ctest -j$(nproc)
 ```
 
 Or run the test binary directly in `tests/bin/` after building.
-
-## Contributing
-
-Contributions and issues are welcome. Short checklist for PRs:
-- Add/adjust unit tests for new behavior
-- Keep public interfaces stable in `include/`
-- Follow existing code style and use spdlog for logs when adding debug messages
-
-## License
-
-See the `LICENSE` file in the repository root.
-
----
-
-If you want, I can also add a short example `.asm` source and a small CI workflow to run the tests on push.
 

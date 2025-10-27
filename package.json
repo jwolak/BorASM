@@ -1,0 +1,41 @@
+{
+    "name": "BorASM",
+    "description": "BorASM - Advanced Assembly Language Processor",
+    "version": "0.1.0",
+    "author": "Janusz Wolak",
+    "license": "BSD-3-Clause",
+    "homepage": "https://github.com/jwolak/BorASM",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jwolak/BorASM.git"
+    },
+    "keywords": [
+        "assembly",
+        "compiler",
+        "processor",
+        "c++"
+    ],
+    "engines": {
+        "cmake": ">=3.10",
+        "gcc": ">=9.0",
+        "clang": ">=10.0"
+    },
+    "build": {
+        "type": "cmake",
+        "standard": "c++20",
+        "optimization": {
+            "debug": "-O0 -g3",
+            "release": "-O2 -DNDEBUG"
+        }
+    },
+    "dependencies": {
+        "spdlog": "1.15.0",
+        "gtest": "latest"
+    },
+    "scripts": {
+        "build": "./scripts/build_all.sh",
+        "test": "make run-tests",
+        "format": "./scripts/format_code.sh --all",
+        "clean": "./scripts/build_all.sh --clean all"
+    }
+}

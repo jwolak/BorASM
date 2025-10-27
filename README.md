@@ -9,10 +9,10 @@ Assembly compiler for Boruss CPU
 |____/ \___/|_| \_\/_/   \_\____/|_|  |_|
 
 Boruss CPU Assembler v1.0 
-Target: "Laibach" Core (8-bit RISC)
+Target: "Laibach" Core (8-bit RISC) (see: https://github.com/jwolak/BorussCPU-Laibach)
 ```
 
-A small educational assembler written in C++ for a custom toy CPU architecture. BorASM reads assembly source files, detects labels and references, and emits a compact hexadecimal machine-code representation. The project includes a small instruction set, unit tests (Google Test / Google Mock), and utilities for parsing and assembling source files.
+A small educational assembler written in C++ for an experimental RISC BorussCPU "Laibach" - see: https://github.com/jwolak/BorussCPU-Laibach. BorASM reads assembly source files, detects labels and references, and emits a compact hexadecimal machine-code representation. The project includes a small instruction set, unit tests (Google Test / Google Mock), and utilities for parsing and assembling source files.
 
 ## Features
 

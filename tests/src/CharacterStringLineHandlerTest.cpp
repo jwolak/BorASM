@@ -91,7 +91,7 @@ namespace character_string_line_handler_test {
         std::string line_to_tokenize = "MOV A, B";
         std::vector<std::string> tokens = character_string_line_handler.TokenizeLine(line_to_tokenize);
 
-        std::vector<std::string> expected_tokens = {"MOV", "A,", "B"};
+        std::vector<std::string> expected_tokens = {"MOV", "A", "B"};
         EXPECT_EQ(tokens, expected_tokens);
     }
 
@@ -99,7 +99,7 @@ namespace character_string_line_handler_test {
         std::string line_to_tokenize = "MOV    A,     B";
         std::vector<std::string> tokens = character_string_line_handler.TokenizeLine(line_to_tokenize);
 
-        std::vector<std::string> expected_tokens = {"MOV", "A,", "B"};
+        std::vector<std::string> expected_tokens = {"MOV", "A", "B"};
         EXPECT_EQ(tokens, expected_tokens);
     }
 
@@ -107,7 +107,7 @@ namespace character_string_line_handler_test {
         std::string line_to_tokenize = "MOV\tA,\tB";
         std::vector<std::string> tokens = character_string_line_handler.TokenizeLine(line_to_tokenize);
 
-        std::vector<std::string> expected_tokens = {"MOV", "A,", "B"};
+        std::vector<std::string> expected_tokens = {"MOV", "A", "B"};
         EXPECT_EQ(tokens, expected_tokens);
     }
 
@@ -129,7 +129,7 @@ namespace character_string_line_handler_test {
         std::string line_to_tokenize = "   MOV A, B   ";
         std::vector<std::string> tokens = character_string_line_handler.TokenizeLine(line_to_tokenize);
 
-        std::vector<std::string> expected_tokens = {"MOV", "A,", "B"};
+        std::vector<std::string> expected_tokens = {"MOV", "A", "B"};
         EXPECT_EQ(tokens, expected_tokens);
     }
 
@@ -137,7 +137,7 @@ namespace character_string_line_handler_test {
         std::string line_to_tokenize = "MOV\t   A,    B";
         std::vector<std::string> tokens = character_string_line_handler.TokenizeLine(line_to_tokenize);
 
-        std::vector<std::string> expected_tokens = {"MOV", "A,", "B"};
+        std::vector<std::string> expected_tokens = {"MOV", "A", "B"};
         EXPECT_EQ(tokens, expected_tokens);
     }
 
@@ -153,7 +153,7 @@ namespace character_string_line_handler_test {
         std::string line_to_tokenize = "MOV A, B; ADD #5";
         std::vector<std::string> tokens = character_string_line_handler.TokenizeLine(line_to_tokenize);
 
-        std::vector<std::string> expected_tokens = {"MOV", "A,", "B;", "ADD", "#5"};
+        std::vector<std::string> expected_tokens = {"MOV", "A", "B;", "ADD", "#5"};
         EXPECT_EQ(tokens, expected_tokens);
     }
 
@@ -169,7 +169,7 @@ namespace character_string_line_handler_test {
         std::string line_to_tokenize = "  MOV\tA, \nB  ";
         std::vector<std::string> tokens = character_string_line_handler.TokenizeLine(line_to_tokenize);
 
-        std::vector<std::string> expected_tokens = {"MOV", "A,", "B"};
+        std::vector<std::string> expected_tokens = {"MOV", "A", "B"};
         EXPECT_EQ(tokens, expected_tokens);
     }
 

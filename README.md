@@ -11,3 +11,69 @@ Assembly compiler for Boruss CPU
 Boruss CPU Assembler v1.0 
 Target: "Laibach" Core (8-bit RISC)
 ```
+
+A small educational assembler written in C++ for a custom toy CPU architecture. BorASM reads assembly source files, detects labels and references, and emits a compact hexadecimal machine-code representation. The project includes a small instruction set, unit tests (Google Test / Google Mock), and utilities for parsing and assembling source files.
+
+## Features
+
+- Two-pass assembly (label detection + code emission)
+- Support for immediate and register operands
+- Label references and resolution
+- Unit tests covering parsing, assembly core and file handling
+
+## Repository layout
+
+- `src/` — implementation (assembler core, line handler, file handler, CPU tables)
+- `include/` — public headers
+- `tests/` — unit tests (Google Test / Google Mock)
+- `scripts/` — helper scripts (build/test)
+- `CMakeLists.txt` — top-level CMake configuration
+
+## Build (Linux)
+
+Prerequisites: CMake, a C++17 compatible compiler, GoogleTest (recommended to build via CMake targets).
+
+Example (out-of-source):
+
+```bash
+mkdir -p build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build . -- -j$(nproc)
+```
+
+## Run
+
+After building, use the produced binary to assemble `.asm` files:
+
+```bash
+./bin/BorASM <input.asm> <output.bin>
+```
+
+`SaveMachineCodeToFile` writes machine code as hex lines; `PrintMachineCode` prints formatted machine bytes to stdout.
+
+## Tests
+
+Run unit tests from the `build` directory (CMake adds a `tests` target):
+
+```bash
+cmake --build . --target BorASM-Tests.x64
+ctest -j$(nproc)
+```
+
+Or run the test binary directly in `tests/bin/` after building.
+
+## Contributing
+
+Contributions and issues are welcome. Short checklist for PRs:
+- Add/adjust unit tests for new behavior
+- Keep public interfaces stable in `include/`
+- Follow existing code style and use spdlog for logs when adding debug messages
+
+## License
+
+See the `LICENSE` file in the repository root.
+
+---
+
+If you want, I can also add a short example `.asm` source and a small CI workflow to run the tests on push.
+

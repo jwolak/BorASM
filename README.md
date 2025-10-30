@@ -80,19 +80,25 @@ Output .hex
 
 ```
         |OPER|DATA|     |OPER|DATA|
-51       0101 0001       MOV    1
-01       0000 0001        -     1
+51       0101 0001       MOV   #1       ;MOV R0, #1 (MOV opcode = 0x05, R0 = 0, data type: immediate(#1); (0x05 << 4) | (0 << 2) | 1 = 0x51). Note: Data type can be immediate(#) or register.
+01       0000 0001              1       ;Immediate value: 0x01
+60       0110 0000       SHL    R0      ;SHL R0 (SHL opcode = 0x06, R0 = 0; (0x06 << 4) | (0 << 2) = 0x60)
 60       0110 0000       SHL    R0
 60       0110 0000       SHL    R0
 60       0110 0000       SHL    R0
-60       0110 0000       SHL    R0
+70       0111 0000       SHR    R0      ;SHR R0 (SHL opcode = 0x07, R0 = 0; (0x07 << 4) | (0 << 2) = 0x70)
 70       0111 0000       SHR    R0
 70       0111 0000       SHR    R0
 70       0111 0000       SHR    R0
-70       0111 0000       SHR    R0
-80       1000 0000       JMP    -
-02       0000 0010        -     2
+80       1000 0000       JMP    -      ;JMP loop (JMP opcode = 0x08, (0x08 << 4) = 0x80, label addess = 0x02)
+02       0000 0010        -     2      ;Label address (offset: 0x02 - the second instruction -> SHL R0)
 ```
+MOV is alias for:
+```
+XOR R0, R0              ;R0 cleared. Opcode '0x05' is 'XOR' for BorussCPU (not MOV)
+ADD R0, #immediate      ;Add immediate value to R0. Opcode '0x00' is 'ADD' for BorussCPU
+```
+[See source code for the ALU module: https://github.com/jwolak/BorussCPU-Laibach/blob/main/src/core/boruss_alu.v](https://github.com/jwolak/BorussCPU-Laibach/blob/main/src/core/boruss_alu.v)
 
 ## License
 

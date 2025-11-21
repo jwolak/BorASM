@@ -39,14 +39,17 @@ namespace cmd {
                     argument_parser_logic_->PrintHelp();
                     help_of_info_shown = true;
                     return false;
+
                 case 'v':
                     argument_parser_logic_->PrintVersionInfo();
                     help_of_info_shown = true;
                     return false;
+
                 case 'd':
                     argument_parser_logic_->EnableDebugMode();
                     tools::PrintYellowWarningMessage("Debug mode enabled.");
                     break;
+
                 case 'i':
                     cmd_arguments->input_file_path = argument_parser_logic_->GetInputFileName(optarg);
                     if (cmd_arguments->input_file_path == std::nullopt) {
@@ -56,6 +59,7 @@ namespace cmd {
                     tools::PrintGreenOKMessage("Input file name set to: " + *cmd_arguments->input_file_path);
                     input_set = true;
                     break;
+
                 case 'o':
                     cmd_arguments->output_file_path = argument_parser_logic_->GetOutputFileName(optarg);
                     if (cmd_arguments->output_file_path == std::nullopt) {
@@ -63,16 +67,24 @@ namespace cmd {
                         cmd_arguments->output_file_path = argument_parser_logic_->SetInputFileAsOutputFileName(*cmd_arguments->input_file_path);
                         tools::PrintYellowWarningMessage("Output file name set to input file name with .hex extension: " + *cmd_arguments->output_file_path);
                     }
+                    if (!argument_parser_logic_->CheckOutputFileNameIsNotSameAsInputFileName(*cmd_arguments->input_file_path,
+                                                                                             *cmd_arguments->output_file_path)) {
+                        tools::PrintRedErrorMessage("Output file name cannot be the same as input file name! Input source file will be lost!\n");
+                        return false;
+                    }
                     tools::PrintGreenOKMessage("Output file name set to: " + *cmd_arguments->output_file_path);
                     output_set = true;
                     break;
+
                 case 'l':
                     argument_parser_logic_->ListAvailableInstructions();
                     help_of_info_shown = true;
                     return false;
+
                 case '?':
                     tools::PrintRedErrorMessage("Unknown option or missing argument. Use -h or --help for help.\n");
                     break;
+
                 default:
                     break;
             }

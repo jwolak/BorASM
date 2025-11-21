@@ -16,5 +16,6 @@ namespace cmd {
         std::optional<std::string> GetOutputFileName(const char* optarg) const override;
         void ListAvailableInstructions() const override;
         std::string SetInputFileAsOutputFileName(const std::string& input_file_name) const;
+        bool CheckOutputFileNameIsNotSameAsInputFileName(const std::string& input_file_name, const std::string& output_file_name) const override;
     };
 }  // namespace cmd

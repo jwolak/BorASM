@@ -117,4 +117,15 @@ namespace cmd {
         spdlog::debug("[ArgumentsParserLogic] Output file name set to: " + output_name);
         return output_name;
     }
+
+    bool ArgumentsParserLogic::CheckOutputFileNameIsNotSameAsInputFileName(const std::string& input_file_name, const std::string& output_file_name) const {
+        spdlog::debug("[ArgumentsParserLogic] Checking if output file name is not the same as input file name");
+
+        if (input_file_name == output_file_name) {
+            spdlog::debug("[ArgumentsParserLogic] Output file name cannot be the same as input file name");
+            return false;
+        }
+        return true;
+    }
+
 }  // namespace cmd

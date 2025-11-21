@@ -56,7 +56,7 @@ namespace cmd {
         spdlog::debug("[ArgumentsParserLogic] Retrieving input file name");
 
         if (optarg) {
-            std::cout << "Input file name: " << optarg << std::endl;
+            tools::PrintWithGreenMarker("Input file", "Input file name provided: " + std::string(optarg));
             return std::string(optarg);
         }
         std::cerr << "[ERROR] Input file name argument is null" << std::endl;
@@ -67,7 +67,7 @@ namespace cmd {
         spdlog::debug("[ArgumentsParserLogic] Retrieving output file name");
 
         if (optarg) {
-            std::cout << "Output file name: " << optarg << std::endl;
+            tools::PrintWithGreenMarker("Output file", "Output file name provided: " + std::string(optarg));
             return std::string(optarg);
         }
         std::cerr << "[ERROR] Output file name argument is null" << std::endl;

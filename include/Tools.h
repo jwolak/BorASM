@@ -11,4 +11,5 @@ namespace tools {
     void PrintYellowWarningMessage(const std::string& message);
     void PrintGreenAssemblingMessage(const std::string& message);
     void PrintRedAssemblingMessage(const std::string& message);
+    void PrintWithGreenMarker(const std::string& marker, const std::string& message);
 }  // namespace tools

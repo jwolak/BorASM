@@ -13,5 +13,6 @@ namespace mocks {
         MOCK_CONST_METHOD1(GetInputFileName, std::optional<std::string>(const char* optarg));
         MOCK_CONST_METHOD1(GetOutputFileName, std::optional<std::string>(const char* optarg));
         MOCK_CONST_METHOD0(ListAvailableInstructions, void());
+        MOCK_CONST_METHOD1(SetInputFileAsOutputFileName, std::string(const std::string& input_file_name));
     };
 }  // namespace mocks

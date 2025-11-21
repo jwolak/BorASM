@@ -7,6 +7,11 @@
 #include "version.h"
 
 namespace cmd {
+    namespace {
+        constexpr const char* kInputFileExtension = ".asm";
+        constexpr const char* kOutputFileExtension = ".hex";
+    }  // namespace
+
     ArgumentsParserLogic::ArgumentsParserLogic() {}
 
     void ArgumentsParserLogic::PrintHelp() const {
@@ -98,5 +103,18 @@ namespace cmd {
         std::cout << "\nSpecial instructions:\n";
         std::cout << "  CMP   0x0F   Compare\n";
         std::cout << "  HALT  0xFF   Halt execution\n";
+    }
+
+    std::string ArgumentsParserLogic::SetInputFileAsOutputFileName(const std::string& input_file_name) const {
+        spdlog::debug("[ArgumentsParserLogic] Set input file name:" + input_file_name + " as output file name");
+
+        std::string output_name = input_file_name;
+        if (output_name.size() >= 4 && output_name.substr(output_name.size() - 4) == kInputFileExtension) {
+            output_name = output_name.substr(0, output_name.size() - 4);
+        }
+        output_name += kOutputFileExtension;
+
+        spdlog::debug("[ArgumentsParserLogic] Output file name set to: " + output_name);
+        return output_name;
     }
 }  // namespace cmd

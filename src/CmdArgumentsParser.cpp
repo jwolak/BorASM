@@ -19,7 +19,7 @@ namespace cmd {
     bool CmdArgumentsParser::Parse(std::shared_ptr<CmdArguments> cmd_arguments) {
         static struct option longopts[] = {
             {"help", no_argument, NULL, 'h'},        {"version", no_argument, NULL, 'v'},      {"debug", no_argument, NULL, 'd'},
-            {"input", required_argument, NULL, 'i'}, {"output", required_argument, NULL, 'o'}, {"list", no_argument, NULL, 'l'},
+            {"input", required_argument, NULL, 'i'}, {"output", optional_argument, NULL, 'o'}, {"list", no_argument, NULL, 'l'},
         };
 
         if (m_argc < 2) {
@@ -59,8 +59,9 @@ namespace cmd {
                 case 'o':
                     cmd_arguments->output_file_path = argument_parser_logic_->GetOutputFileName(optarg);
                     if (cmd_arguments->output_file_path == std::nullopt) {
-                        tools::PrintRedErrorMessage("Invalid output file name provided.\n");
-                        return false;
+                        tools::PrintYellowWarningMessage("Invalid output file name provided.\n");
+                        cmd_arguments->output_file_path = argument_parser_logic_->SetInputFileAsOutputFileName(*cmd_arguments->input_file_path);
+                        tools::PrintYellowWarningMessage("Output file name set to input file name with .hex extension: " + *cmd_arguments->output_file_path);
                     }
                     tools::PrintGreenOKMessage("Output file name set to: " + *cmd_arguments->output_file_path);
                     output_set = true;
@@ -77,9 +78,14 @@ namespace cmd {
             }
         }
 
-        if ((!input_set || !output_set) && !help_of_info_shown) {
+        if ((!input_set) && !help_of_info_shown) {
             tools::PrintRedErrorMessage("Both -i <input_file> and -o <output_file> options are required.\n");
             return false;
+        }
+
+        if ((!output_set) && !help_of_info_shown) {
+            cmd_arguments->output_file_path = argument_parser_logic_->SetInputFileAsOutputFileName(*cmd_arguments->input_file_path);
+            tools::PrintYellowWarningMessage("Output file name not provided. Set to input file name with .hex extension: " + *cmd_arguments->output_file_path);
         }
 
         tools::PrintGreenOKMessage("Command line arguments parsed successfully.");

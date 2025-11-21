@@ -13,5 +13,6 @@ namespace cmd {
         virtual std::optional<std::string> GetInputFileName(const char* optarg) const = 0;
         virtual std::optional<std::string> GetOutputFileName(const char* optarg) const = 0;
         virtual void ListAvailableInstructions() const = 0;
+        virtual std::string SetInputFileAsOutputFileName(const std::string& input_file_name) const = 0;
     };
 }  // namespace cmd

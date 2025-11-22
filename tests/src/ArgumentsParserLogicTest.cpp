@@ -120,4 +120,27 @@ namespace arguments_parser_logic_test {
         std::string output = testing::internal::GetCapturedStdout();
         EXPECT_EQ(output, GetExpectedInstructionsPrint());
     }
+
+    TEST_F(ArgumentsParserLogicTest, Set_Input_File_As_Output_File_Name_Returns_Correct_Output_File_Name) {
+        std::string input_file_name = "input_file_set_as_output.asm";
+        std::string expected_output_file_name = "input_file_set_as_output.hex";
+        std::string result = argument_parser_logic_.SetInputFileAsOutputFileName(input_file_name);
+
+        EXPECT_EQ(result, expected_output_file_name);
+    }
+
+    TEST_F(ArgumentsParserLogicTest, Check_Output_File_Name_Is_Not_Same_As_Input_File_Name_Returns_False_When_Same) {
+        std::string input_file_name = "input_file.asm";
+        std::string output_file_name = "input_file.asm";
+
+        EXPECT_FALSE(argument_parser_logic_.CheckOutputFileNameIsNotSameAsInputFileName(input_file_name, output_file_name));
+    }
+
+    TEST_F(ArgumentsParserLogicTest, Check_Output_File_Name_Is_Not_Same_As_Input_File_Name_Returns_True_When_Different) {
+        std::string input_file_name = "input_file.asm";
+        std::string output_file_name = "output_file.hex";
+
+        EXPECT_TRUE(argument_parser_logic_.CheckOutputFileNameIsNotSameAsInputFileName(input_file_name, output_file_name));
+    }
+
 }  // namespace arguments_parser_logic_test

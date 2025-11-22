@@ -6,4 +6,7 @@ namespace tools {
     void PrintYellowWarningMessage(const std::string& message) { std::cerr << "\033[0;33m[WARNING]\033[0m " << message << std::endl; }
     void PrintGreenAssemblingMessage(const std::string& message) { std::cout << "\033[0;32m[Assembling]\033[0m " << message << std::endl; }
     void PrintRedAssemblingMessage(const std::string& message) { std::cout << "\033[0;31m[Assembling ERROR]\033[0m " << message << std::endl; }
+    void PrintWithGreenMarker(const std::string& marker, const std::string& message) {
+        std::cout << "\033[0;32m[" << marker << "]\033[0m " << message << std::endl;
+    }
 }  // namespace tools

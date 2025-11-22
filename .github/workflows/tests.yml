@@ -1,0 +1,52 @@
+name: Unit Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake g++ libgtest-dev
+        
+    - name: Build GoogleTest
+      run: |
+        cd /usr/src/googletest
+        sudo cmake .
+        sudo cmake --build . --target install
+        
+    - name: Create build directory
+      run: mkdir -p build/debug
+      
+    - name: Configure CMake
+      run: |
+        cd build/debug
+        cmake ../.. -DCMAKE_BUILD_TYPE=Debug -DPROJECT_TESTS=ON
+        
+    - name: Build project
+      run: |
+        cd build/debug
+        cmake --build . -- -j$(nproc)
+        
+    - name: Run tests
+      run: |
+        cd build/debug/tests
+        ./bin/BorASM-Tests.x64 --gtest_output=xml:test-results.xml
+        
+    - name: Publish test results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: |
+          build/debug/tests/test-results.xml

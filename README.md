@@ -1,4 +1,7 @@
 # BorASM
+
+[![Unit Tests](https://github.com/jwolak/BorASM/actions/workflows/tests.yml/badge.svg)](https://github.com/jwolak/BorASM/actions/workflows/tests.yml)
+
 Assembly compiler for Boruss CPU "Laibach"
 
 ```

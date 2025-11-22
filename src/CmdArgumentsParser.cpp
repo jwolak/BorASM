@@ -61,6 +61,11 @@ namespace cmd {
                     break;
 
                 case 'o':
+                    if (!input_set) {
+                        tools::PrintRedErrorMessage("Input file must be set before setting output file.\n");
+                        return false;
+                    }
+
                     if (optarg != nullptr) {
                         cmd_arguments->output_file_path = argument_parser_logic_->GetOutputFileName(optarg);
                         if (cmd_arguments->output_file_path == std::nullopt) {
@@ -99,7 +104,7 @@ namespace cmd {
         }
 
         if ((!input_set) && !help_of_info_shown) {
-            tools::PrintRedErrorMessage("Both -i <input_file> and -o <output_file> options are required.\n");
+            tools::PrintRedErrorMessage("-i <input_file> is required.\n");
             return false;
         }
 

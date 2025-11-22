@@ -119,6 +119,8 @@ namespace cmd_arguments_parser_test {
             CmdArgumentsParserWithInjectedLogic(argc, const_cast<char**>(argv), std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
 
         EXPECT_CALL(*argument_parser_logic_mock, GetInputFileName(_)).Times(0);
+        EXPECT_CALL(*argument_parser_logic_mock, SetInputFileAsOutputFileName(_)).Times(0);
+        EXPECT_CALL(*argument_parser_logic_mock, CheckOutputFileNameIsNotSameAsInputFileName(_, _)).Times(0);
 
         EXPECT_FALSE(cmd_arguments_parser_with_injected_logic2.Parse(cmd_arguments));
     }

@@ -61,19 +61,27 @@ namespace cmd {
                     break;
 
                 case 'o':
-                    cmd_arguments->output_file_path = argument_parser_logic_->GetOutputFileName(optarg);
-                    if (cmd_arguments->output_file_path == std::nullopt) {
-                        tools::PrintYellowWarningMessage("Invalid output file name provided.\n");
+                    if (optarg != nullptr) {
+                        cmd_arguments->output_file_path = argument_parser_logic_->GetOutputFileName(optarg);
+                        if (cmd_arguments->output_file_path == std::nullopt) {
+                            tools::PrintYellowWarningMessage("Invalid output file name provided.\n");
+                            cmd_arguments->output_file_path = argument_parser_logic_->SetInputFileAsOutputFileName(*cmd_arguments->input_file_path);
+                            tools::PrintYellowWarningMessage("Output file name set to input file name with .hex extension: " +
+                                                             *cmd_arguments->output_file_path);
+                        }
+                        if (!argument_parser_logic_->CheckOutputFileNameIsNotSameAsInputFileName(*cmd_arguments->input_file_path,
+                                                                                                 *cmd_arguments->output_file_path)) {
+                            tools::PrintRedErrorMessage("Output file name cannot be the same as input file name! Input source file will be lost!\n");
+                            return false;
+                        }
+                        tools::PrintGreenOKMessage("Output file name set to: " + *cmd_arguments->output_file_path);
+                        output_set = true;
+                    } else {
                         cmd_arguments->output_file_path = argument_parser_logic_->SetInputFileAsOutputFileName(*cmd_arguments->input_file_path);
-                        tools::PrintYellowWarningMessage("Output file name set to input file name with .hex extension: " + *cmd_arguments->output_file_path);
+                        tools::PrintYellowWarningMessage("Output file name not provided. Set to input file name with .hex extension: " +
+                                                         *cmd_arguments->output_file_path);
+                        output_set = true;
                     }
-                    if (!argument_parser_logic_->CheckOutputFileNameIsNotSameAsInputFileName(*cmd_arguments->input_file_path,
-                                                                                             *cmd_arguments->output_file_path)) {
-                        tools::PrintRedErrorMessage("Output file name cannot be the same as input file name! Input source file will be lost!\n");
-                        return false;
-                    }
-                    tools::PrintGreenOKMessage("Output file name set to: " + *cmd_arguments->output_file_path);
-                    output_set = true;
                     break;
 
                 case 'l':

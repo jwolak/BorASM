@@ -67,50 +67,58 @@ namespace cmd_arguments_parser_test {
     }
 
     TEST_F(CmdArgumentsParserTest, Enable_Debug_Option_Should_Invoke_EnableDebugMode_And_Return_True) {
-        const char* argv[] = {"program", "--debug", "--input", kInputFileName, "--output", kOutputFileName};
+        std::string output_arg = std::string("--output=") + kOutputFileName;
+        const char* argv[] = {"program", "--debug", "--input", kInputFileName, output_arg.c_str()};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
             CmdArgumentsParserWithInjectedLogic(argc, const_cast<char**>(argv), std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
 
         EXPECT_CALL(*argument_parser_logic_mock, EnableDebugMode()).Times(1);
         EXPECT_CALL(*argument_parser_logic_mock, GetInputFileName(kInputFileName)).Times(1).WillOnce(testing::Return(kInputFileName));
-        EXPECT_CALL(*argument_parser_logic_mock, GetOutputFileName(kOutputFileName)).Times(1).WillOnce(testing::Return(kOutputFileName));
+        EXPECT_CALL(*argument_parser_logic_mock, GetOutputFileName(StrEq(kOutputFileName))).Times(1).WillOnce(testing::Return(kOutputFileName));
+        EXPECT_CALL(*argument_parser_logic_mock, CheckOutputFileNameIsNotSameAsInputFileName(StrEq(kInputFileName), StrEq(kOutputFileName)))
+            .Times(1)
+            .WillOnce(testing::Return(true));
 
         EXPECT_TRUE(cmd_arguments_parser_with_injected_logic2.Parse(cmd_arguments));
     }
 
     TEST_F(CmdArgumentsParserTest, Provide_Valid_Input_And_Output_Files_And_Return_True) {
-        const char* argv[] = {"program", "--input", kInputFileName, "--output", kOutputFileName};
+        std::string output_arg = std::string("--output=") + kOutputFileName;
+        const char* argv[] = {"program", "--input", kInputFileName, output_arg.c_str()};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
             CmdArgumentsParserWithInjectedLogic(argc, const_cast<char**>(argv), std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
 
         EXPECT_CALL(*argument_parser_logic_mock, GetInputFileName(kInputFileName)).Times(1).WillOnce(testing::Return(kInputFileName));
-        EXPECT_CALL(*argument_parser_logic_mock, GetOutputFileName(kOutputFileName)).Times(1).WillOnce(testing::Return(kOutputFileName));
+        EXPECT_CALL(*argument_parser_logic_mock, GetOutputFileName(StrEq(kOutputFileName))).Times(1).WillOnce(testing::Return(kOutputFileName));
+        EXPECT_CALL(*argument_parser_logic_mock, CheckOutputFileNameIsNotSameAsInputFileName(StrEq(kInputFileName), StrEq(kOutputFileName)))
+            .Times(1)
+            .WillOnce(testing::Return(true));
 
         EXPECT_TRUE(cmd_arguments_parser_with_injected_logic2.Parse(cmd_arguments));
     }
 
-    TEST_F(CmdArgumentsParserTest, Provide_Only_Input_File_And_Return_False) {
+    TEST_F(CmdArgumentsParserTest, Provide_Only_Input_File_And_Return_True_With_Default_Output) {
         const char* argv[] = {"program", "--input", kInputFileName};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
             CmdArgumentsParserWithInjectedLogic(argc, const_cast<char**>(argv), std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
 
         EXPECT_CALL(*argument_parser_logic_mock, GetInputFileName(kInputFileName)).Times(1).WillOnce(testing::Return(kInputFileName));
-        EXPECT_CALL(*argument_parser_logic_mock, GetOutputFileName(_)).Times(0);
+        EXPECT_CALL(*argument_parser_logic_mock, SetInputFileAsOutputFileName(kInputFileName)).Times(1).WillOnce(testing::Return("input.hex"));
 
-        EXPECT_FALSE(cmd_arguments_parser_with_injected_logic2.Parse(cmd_arguments));
+        EXPECT_TRUE(cmd_arguments_parser_with_injected_logic2.Parse(cmd_arguments));
     }
 
     TEST_F(CmdArgumentsParserTest, Provide_Only_Output_File_And_Return_False) {
-        const char* argv[] = {"program", "--output", kOutputFileName};
+        std::string output_arg = std::string("--output=") + kOutputFileName;
+        const char* argv[] = {"program", output_arg.c_str()};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
             CmdArgumentsParserWithInjectedLogic(argc, const_cast<char**>(argv), std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
 
         EXPECT_CALL(*argument_parser_logic_mock, GetInputFileName(_)).Times(0);
-        EXPECT_CALL(*argument_parser_logic_mock, GetOutputFileName(kOutputFileName)).Times(1).WillOnce(testing::Return(kOutputFileName));
 
         EXPECT_FALSE(cmd_arguments_parser_with_injected_logic2.Parse(cmd_arguments));
     }
@@ -126,13 +134,17 @@ namespace cmd_arguments_parser_test {
     }
 
     TEST_F(CmdArgumentsParserTest, Provide_Valid_Input_And_Output_Files_And_Values_In_CmdArguments_Are_Set) {
-        const char* argv[] = {"program", "--input", kInputFileName, "--output", kOutputFileName};
+        std::string output_arg = std::string("--output=") + kOutputFileName;
+        const char* argv[] = {"program", "--input", kInputFileName, output_arg.c_str()};
         int argc = sizeof(argv) / sizeof(argv[0]);
         CmdArgumentsParserWithInjectedLogic cmd_arguments_parser_with_injected_logic2 =
             CmdArgumentsParserWithInjectedLogic(argc, const_cast<char**>(argv), std::unique_ptr<cmd::IArgumentsParserLogic>(argument_parser_logic_mock));
 
         EXPECT_CALL(*argument_parser_logic_mock, GetInputFileName(kInputFileName)).Times(1).WillOnce(testing::Return(kInputFileName));
-        EXPECT_CALL(*argument_parser_logic_mock, GetOutputFileName(kOutputFileName)).Times(1).WillOnce(testing::Return(kOutputFileName));
+        EXPECT_CALL(*argument_parser_logic_mock, GetOutputFileName(StrEq(kOutputFileName))).Times(1).WillOnce(testing::Return(kOutputFileName));
+        EXPECT_CALL(*argument_parser_logic_mock, CheckOutputFileNameIsNotSameAsInputFileName(StrEq(kInputFileName), StrEq(kOutputFileName)))
+            .Times(1)
+            .WillOnce(testing::Return(true));
         cmd_arguments_parser_with_injected_logic2.Parse(cmd_arguments);
 
         EXPECT_EQ(cmd_arguments->input_file_path.value(), kInputFileName);

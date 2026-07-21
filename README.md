@@ -49,7 +49,7 @@ cmake --build . -- -j$(nproc)
 After building, use the produced binary to assemble `.asm` files:
 
 ```bash
-./bin/BorASM <input.asm> <output.bin>
+./bin/BorASM -i <input.asm> -o <output.bin>
 ```
 
 ## Tests

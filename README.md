@@ -49,7 +49,7 @@ cmake --build . -- -j$(nproc)
 After building, use the produced binary to assemble `.asm` files:
 
 ```bash
-./bin/BorASM <input.asm> <output.bin>
+./bin/BorASM -i <input.asm> -o <output.bin>
 ```
 
 ## Tests
@@ -102,6 +102,136 @@ XOR R0, R0              ;R0 cleared. Opcode '0x05' is 'XOR' for BorussCPU (not M
 ADD R0, #immediate      ;Add immediate value to R0. Opcode '0x00' is 'ADD' for BorussCPU
 ```
 [See source code for the ALU module: https://github.com/jwolak/BorussCPU-Laibach/blob/main/src/core/boruss_alu.v](https://github.com/jwolak/BorussCPU-Laibach/blob/main/src/core/boruss_alu.v)
+
+## Instruction Set Reference
+
+### Registers
+
+The Laibach CPU has 4 general-purpose 8-bit registers:
+
+| Register | Code | Description |
+|----------|------|-------------|
+| R0       | 0x00 | General purpose register 0 |
+| R1       | 0x01 | General purpose register 1 |
+| R2       | 0x02 | General purpose register 2 |
+| R3       | 0x03 | General purpose register 3 |
+
+### Operand Types
+
+- **Immediate**: A constant value prefixed with `#` (e.g., `#42`, `#0xFF`)
+- **Register**: A register name (e.g., `R0`, `R1`)
+
+### Instruction Encoding
+
+Each instruction is encoded as:
+- **Bits 7-4**: Opcode (4 bits)
+- **Bits 3-2**: Destination/Source Register (2 bits)
+- **Bits 1-0**: Operand Type (2 bits: 01 = immediate, 00 = register)
+
+If immediate value is used, the next byte contains the actual value.
+
+### Complete Opcode Table
+
+#### Arithmetic Instructions (0x00-0x07)
+
+| Mnemonic | Opcode | Syntax | Description |
+|----------|--------|--------|-------------|
+| ADD      | 0x00   | ADD Rd, Rs/imm | Add register or immediate to destination |
+| SUB      | 0x01   | SUB Rd, Rs/imm | Subtract register or immediate from destination |
+| AND      | 0x02   | AND Rd, Rs/imm | Bitwise AND |
+| OR       | 0x03   | OR Rd, Rs/imm  | Bitwise OR |
+| XOR      | 0x04   | XOR Rd, Rs/imm | Bitwise XOR (can be used to clear register) |
+| MOV      | 0x05   | MOV Rd, Rs/imm | Move/Copy value to destination |
+| SHL      | 0x06   | SHL Rd         | Shift Left (multiply by 2) |
+| SHR      | 0x07   | SHR Rd         | Shift Right (divide by 2) |
+
+**Examples:**
+```asm
+ADD R0, R1         ; R0 = R0 + R1
+ADD R0, #10        ; R0 = R0 + 10
+XOR R2, R2         ; Clear R2 (R2 = 0)
+SHL R0             ; R0 = R0 << 1 (multiply by 2)
+SHR R3, R3         ; R3 = R3 >> 1 (divide by 2)
+```
+
+#### Jump Instructions (0x08-0x0E)
+
+| Mnemonic | Opcode | Syntax | Description | Condition |
+|----------|--------|--------|-------------|-----------|
+| JMP      | 0x08   | JMP label | Jump unconditional | Always |
+| JZ       | 0x09   | JZ label  | Jump if Zero | ZF = 1 |
+| JNZ      | 0x0A   | JNZ label | Jump if Not Zero | ZF = 0 |
+| JC       | 0x0B   | JC label  | Jump if Carry | CF = 1 |
+| JNC      | 0x0C   | JNC label | Jump if Not Carry | CF = 0 |
+| JN       | 0x0D   | JN label  | Jump if Negative | NF = 1 |
+| JNN      | 0x0E   | JNN label | Jump if Not Negative | NF = 0 |
+
+**Examples:**
+```asm
+loop:
+    ADD R0, #1      ; Increment R0
+    JNZ loop        ; Jump if R0 is not zero
+    JMP end         ; Jump to end label
+
+end:
+    HALT            ; Stop
+```
+
+#### Special Instructions
+
+| Mnemonic | Opcode | Syntax | Description |
+|----------|--------|--------|-------------|
+| CMP      | 0x0F   | CMP Rd, Rs/imm | Compare (performs subtraction and sets flags) |
+| HALT     | 0xFF   | HALT | Halt CPU execution |
+
+**Examples:**
+```asm
+CMP R0, #5         ; Compare R0 with 5, set flags
+JZ zero_label      ; Jump if R0 equals 5
+```
+
+### Flag Bits (Set by arithmetic/compare operations)
+
+- **ZF** (Zero Flag): Set if result is 0
+- **CF** (Carry Flag): Set if overflow occurred
+- **NF** (Negative Flag): Set if result is negative (bit 7 = 1)
+
+### Assembly Syntax Rules
+
+1. **Labels**: Define with name followed by colon (e.g., `start:`, `loop:`)
+2. **Comments**: Use semicolon (`;`) for inline or line comments
+3. **Case-insensitive**: Mnemonics and register names are case-insensitive
+4. **Immediates**: Use `#` prefix for decimal (e.g., `#42`) or `#0x` for hex (e.g., `#0xFF`)
+
+### Practical Examples
+
+**Example 1: Simple Counter**
+```asm
+start:
+    MOV R0, #0      ; Initialize counter
+    MOV R1, #10     ; Load limit
+loop:
+    ADD R0, #1      ; Increment counter
+    CMP R0, R1      ; Compare with limit
+    JNZ loop        ; Continue if not equal
+    HALT
+```
+
+**Example 2: Bit Shifting (LED Knight Rider)**
+```asm
+    MOV R0, #1      ; Start with LED0 on
+shift_left:
+    SHL R0          ; Shift left
+    SHL R0
+    SHL R0
+    SHL R0          ; Now LED4 is on
+shift_right:
+    SHR R0          ; Shift right
+    SHR R0
+    SHR R0
+    SHR R0          ; Back to LED0
+    JMP shift_left  ; Repeat
+```
 
 ## License
 

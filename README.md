@@ -35,6 +35,11 @@ Experimental assembler written in C++ for an experimental RISC BorussCPU "Laibac
 ## Git hooks (auto patch version bump)
 
 The repository contains a `pre-commit` hook in `.githooks/pre-commit` that automatically increments the patch part of `version` in `package.json` on every commit.
+Additionally, a `commit-msg` hook in `.githooks/commit-msg` appends a chronological entry to `RELEASE_NOTES_HISTORY.txt` with:
+
+- commit time,
+- current version from `package.json`,
+- commit subject.
 
 Example:
 
@@ -57,6 +62,18 @@ Optional (if npm is available):
 
 ```bash
 npm run hooks:install
+```
+
+Rebuild the whole release notes history from existing commits:
+
+```bash
+./scripts/generate_release_history.sh
+```
+
+Optional (if npm is available):
+
+```bash
+npm run release-notes:generate
 ```
 
 ## Build (Linux)

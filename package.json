@@ -1,7 +1,7 @@
 {
     "name": "BorASM",
     "description": "BorASM - Advanced Assembly Language Processor",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "author": "Janusz Wolak",
     "license": "BSD-3-Clause",
     "homepage": "https://github.com/jwolak/BorASM",
@@ -36,6 +36,7 @@
         "build": "./scripts/build_all.sh",
         "test": "make run-tests",
         "hooks:install": "git config core.hooksPath .githooks",
+        "release-notes:generate": "./scripts/generate_release_history.sh",
         "format": "./scripts/format_code.sh --all",
         "clean": "./scripts/build_all.sh --clean all"
     }

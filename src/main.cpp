@@ -1,8 +1,3 @@
-/*
- *  Created on: 2025
- *      Author: Janusz Wolak
- */
-
 /*-
  * BSD 3-Clause License
  *
@@ -35,6 +30,7 @@
  *
  */
 
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 
@@ -45,18 +41,19 @@
 #include "version.h"
 
 int main(int argc, char* argv[]) {
-    auto cmd_arguments = std::make_shared<cmd::CmdArguments>();
+    std::shared_ptr<cmd::CmdArguments> cmd_arguments = std::make_shared<cmd::CmdArguments>();
     cmd::CmdArgumentsParser cmd_arguments_parser(argc, argv);
     if (!cmd_arguments_parser.Parse(cmd_arguments)) {
-        return 1;
+        tools::PrintRedErrorMessage("[BORASM]: Parse input arguments failed");
+        return EXIT_FAILURE;
     }
 
-    borasm::BorAsm bor_asm(cmd_arguments);
-    if (!bor_asm.StartProcessing()) {
-        tools::PrintRedErrorMessage("Assembling failed.");
-        return 1;
+    borasm::BorAsm borasm_obj(cmd_arguments);
+    if (!borasm_obj.StartProcessing()) {
+        tools::PrintRedErrorMessage("[BORASM]: Assembling failed.");
+        return EXIT_FAILURE;
     }
-    tools::PrintGreenOKMessage("Assembling completed successfully.");
 
-    return 0;
+    tools::PrintGreenOKMessage("[BORASM]: Assembling completed successfully.");
+    return EXIT_SUCCESS;
 }

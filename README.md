@@ -32,6 +32,33 @@ Experimental assembler written in C++ for an experimental RISC BorussCPU "Laibac
 - `scripts/` — helper scripts (build/test)
 - `CMakeLists.txt` — top-level CMake configuration
 
+## Git hooks (auto patch version bump)
+
+The repository contains a `pre-commit` hook in `.githooks/pre-commit` that automatically increments the patch part of `version` in `package.json` on every commit.
+
+Example:
+
+- `0.1.1` -> `0.1.2`
+- `0.1.2` -> `0.1.3`
+
+Enable hooks once after clone:
+
+```bash
+./scripts/install_hooks.sh
+```
+
+Equivalent Git command:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Optional (if npm is available):
+
+```bash
+npm run hooks:install
+```
+
 ## Build (Linux)
 
 Prerequisites: CMake, a C++17 compatible compiler, GoogleTest (recommended to build via CMake targets).

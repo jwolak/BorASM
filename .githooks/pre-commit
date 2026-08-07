@@ -1,0 +1,46 @@
+#!/usr/bin/env sh
+set -eu
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+PACKAGE_JSON="$REPO_ROOT/package.json"
+
+if [ ! -f "$PACKAGE_JSON" ]; then
+    exit 0
+fi
+
+CURRENT_VERSION="$(sed -n 's/^[[:space:]]*"version":[[:space:]]*"\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\)".*/\1/p' "$PACKAGE_JSON" | head -n 1)"
+
+if [ -z "$CURRENT_VERSION" ]; then
+    echo "Cannot find semantic version in $PACKAGE_JSON" >&2
+    exit 1
+fi
+
+IFS='.' read -r MAJOR MINOR PATCH <<EOF
+$CURRENT_VERSION
+EOF
+
+NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
+TMP_FILE="$(mktemp)"
+
+awk -v new_version="$NEW_VERSION" '
+BEGIN { replaced = 0 }
+{
+    if (!replaced && $0 ~ /^[[:space:]]*"version"[[:space:]]*:/) {
+        sub(/"[0-9]+\.[0-9]+\.[0-9]+"/, "\"" new_version "\"")
+        replaced = 1
+    }
+    print
+}
+END {
+    if (!replaced) {
+        exit 1
+    }
+}
+' "$PACKAGE_JSON" > "$TMP_FILE" || {
+    rm -f "$TMP_FILE"
+    echo "Failed to update version in $PACKAGE_JSON" >&2
+    exit 1
+}
+
+mv "$TMP_FILE" "$PACKAGE_JSON"
+git add "$PACKAGE_JSON"

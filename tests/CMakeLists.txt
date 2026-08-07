@@ -56,6 +56,7 @@ message(STATUS "Main project sources for testing: ${MAIN_PROJECT_SOURCES}")
 set(TEST_INCLUDE_DIRS
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/ThirdParty/logger/include
+    ${CMAKE_SOURCE_DIR}/ThirdParty/fmt/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/mocks
 )
@@ -71,12 +72,16 @@ endif()
 # Set up logger library path based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(TEST_LOGGER_LIBS_PATH ${CMAKE_SOURCE_DIR}/ThirdParty/logger/x64/Debug/libspdlogd.so.1.15)
+    set(TEST_FMT_LIBS_PATH ${CMAKE_SOURCE_DIR}/ThirdParty/fmt/x64/libfmt.a)
     set(TEST_COMPILER_FLAGS ${CXX_COMPILER_FLAGS_DEBUG})
     message(STATUS "${Blue}Tests using Debug logger: ${TEST_LOGGER_LIBS_PATH}${ColourReset}")
+    message(STATUS "${Blue}Tests using fmt: ${TEST_FMT_LIBS_PATH}${ColourReset}")
 else()
     set(TEST_LOGGER_LIBS_PATH ${CMAKE_SOURCE_DIR}/ThirdParty/logger/x64/Release/libspdlog.so.1.15)
+    set(TEST_FMT_LIBS_PATH ${CMAKE_SOURCE_DIR}/ThirdParty/fmt/x64/libfmt.a)
     set(TEST_COMPILER_FLAGS ${CXX_COMPILER_FLAGS_RELEASE})
     message(STATUS "${Blue}Tests using Release logger: ${TEST_LOGGER_LIBS_PATH}${ColourReset}")
+    message(STATUS "${Blue}Tests using fmt: ${TEST_FMT_LIBS_PATH}${ColourReset}")
 endif()
 
 #-------------------------------------------------------------------------------
@@ -101,6 +106,7 @@ if(TEST_SOURCES AND (GTEST_FOUND OR GTest_FOUND))
         gmock
         Threads::Threads
         ${TEST_LOGGER_LIBS_PATH}
+        ${TEST_FMT_LIBS_PATH}
         rt
     )
     

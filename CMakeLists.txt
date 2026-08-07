@@ -88,12 +88,16 @@ set (BUILD_DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Build type is: " ${CMAKE_BUILD_TYPE})
     set (LOGGER_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/logger/x64/Debug/libspdlogd.so.1.15)
+    set (FMT_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/fmt/x64/libfmt.a)
     message(STATUS "Linking to: " ${LOGGER_LIBS_PATH})
+    message(STATUS "Linking to: " ${FMT_LIBS_PATH})
 endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
     set (LOGGER_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/logger/x64/Release/libspdlog.so.1.15)
+    set (FMT_LIBS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/fmt/x64/libfmt.a)
     message(STATUS "Linking to: " ${LOGGER_LIBS_PATH})
+    message(STATUS "Linking to: " ${FMT_LIBS_PATH})
 endif()
 
 #------------------------------------------------------------------------------------------
@@ -110,6 +114,7 @@ include_directories(
 #-------------------------------------------------------------------------------
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/logger/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/fmt/include
 )
 
 #-------------------------------------------------------------------------------
@@ -146,7 +151,9 @@ message(STATUS "\n *********** End source files list *********** \n")
 #                                Project links directories
 #-------------------------------------------------------------------------------
 link_directories(${LOGGER_LIBS_PATH})
+link_directories(${FMT_LIBS_PATH})
 message(STATUS "link_directories: " ${LOGGER_LIBS_PATH})
+message(STATUS "link_directories: " ${FMT_LIBS_PATH})
 
 #-------------------------------------------------------------------------------
 #                                Project build
@@ -160,7 +167,7 @@ message(STATUS "Binary name: " ${OUTPUT_BINARY_NAME})
 #-------------------------------------------------------------------------------
 #                                Project links
 #-------------------------------------------------------------------------------
-target_link_libraries(${OUTPUT_BINARY_NAME} PUBLIC ${LOGGER_LIBS_PATH})
+target_link_libraries(${OUTPUT_BINARY_NAME} PUBLIC ${LOGGER_LIBS_PATH} ${FMT_LIBS_PATH})
 
 #-------------------------------------------------------------------------------
 #                                Project tests

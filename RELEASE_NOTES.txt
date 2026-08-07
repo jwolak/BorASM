@@ -150,3 +150,4 @@
 2026-08-07 14:05:58 +0200 | v0.1.7 | Update release notes file references to use RELEASE_NOTES.txt
 2026-08-07 14:24:35 +0200 | v0.1.8 | Add fmt library as ThirdParty
 2026-08-07 14:25:25 +0200 | v0.1.9 | Update .gitignore to include compiled static libraries with .a extension
+2026-08-07 14:36:12 +0200 | v0.1.10 | Add fmt library integration in CMake configuration for project and tests

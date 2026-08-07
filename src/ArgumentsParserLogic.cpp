@@ -1,5 +1,7 @@
 #include "ArgumentsParserLogic.h"
 
+#include <fmt/format.h>
+
 #include <iostream>
 
 #include "Tools.h"
@@ -10,6 +12,7 @@ namespace cmd {
     namespace {
         constexpr const char* kInputFileExtension = ".asm";
         constexpr const char* kOutputFileExtension = ".hex";
+        constexpr std::size_t kInputFileExtensionLength = 4;
     }  // namespace
 
     ArgumentsParserLogic::ArgumentsParserLogic() {}
@@ -17,29 +20,31 @@ namespace cmd {
     void ArgumentsParserLogic::PrintHelp() const {
         spdlog::debug("[ArgumentsParserLogic] Printing help information");
 
-        std::cout << "BorASM - Assembler CLI\n"
-                  << "Version: " << BorASM::Version::GetVersionString() << "\n"
-                  << "\nUsage:\n"
-                  << "  BorASM [options]\n"
-                  << "\nOptions:\n"
-                  << "  -h, --help                 Show this help message\n"
-                  << "  -v, --version              Show version information\n"
-                  << "  -D, --debug                Enable debug mode\n"
-                  << "  -i, --input <file>         Input assembly source file\n"
-                  << "  -o, --output <file>        Output file name\n"
-                  << "  -l, --list                 List all available instructions\n"
-                  << "\nExample:\n"
-                  << "  BorASM -i code.asm -o code.bin\n";
+        fmt::print(
+            "BorASM - Assembler CLI\n"
+            "Version: {}\n"
+            "\nUsage:\n"
+            "  BorASM [options]\n"
+            "\nOptions:\n"
+            "  -h, --help                 Show this help message\n"
+            "  -v, --version              Show version information\n"
+            "  -D, --debug                Enable debug mode\n"
+            "  -i, --input <file>         Input assembly source file\n"
+            "  -o, --output <file>        Output file name\n"
+            "  -l, --list                 List all available instructions\n"
+            "\nExample:\n"
+            "  BorASM -i code.asm -o code.bin\n",
+            BorASM::Version::GetVersionString());
     }
 
     void ArgumentsParserLogic::PrintVersionInfo() const {
         spdlog::debug("[ArgumentsParserLogic] Printing version information");
 
-        std::cout << "Version: " << BorASM::Version::GetVersionString() << std::endl;
-        std::cout << "Full Version: " << BorASM::Version::GetFullVersionString() << std::endl;
-        std::cout << "Complete Version: " << BorASM::Version::GetCompleteVersionInfo() << std::endl;
-        std::cout << "Build Type: " << BorASM::Version::BUILD_TYPE << std::endl;
-        std::cout << "Is version at least 0.1.0 ? " << (BorASM::Version::IsVersionAtLeast(0, 1, 0) ? "[Yes]" : "[No]") << std::endl;
+        fmt::print("Version: {}\n", BorASM::Version::GetVersionString());
+        fmt::print("Full Version: {}\n", BorASM::Version::GetFullVersionString());
+        fmt::print("Complete Version: {}\n", BorASM::Version::GetCompleteVersionInfo());
+        fmt::print("Build Type: {}\n", BorASM::Version::BUILD_TYPE);
+        fmt::print("Is version at least 0.1.0 ? {}\n", BorASM::Version::IsVersionAtLeast(0, 1, 0) ? "[Yes]" : "[No]");
     }
 
     bool ArgumentsParserLogic::EnableDebugMode() const {
@@ -52,7 +57,7 @@ namespace cmd {
             return false;
         }
 
-        spdlog::debug("[ArgumentsParserLogic] Debug mode activated [{0}:{1}]", __FILENAME__, __LINE__);
+        spdlog::debug(std::string("[ArgumentsParserLogic] Debug mode activated [") + __FILENAME__ + ":" + std::to_string(__LINE__) + "]");
         tools::PrintGreenOKMessage("Debug mode enabled successfully.");
         return true;
     }
@@ -65,6 +70,7 @@ namespace cmd {
             return std::string(optarg);
         }
         std::cerr << "[ERROR] Input file name argument is null" << std::endl;
+        tools::PrintRedErrorMessage("Input file name argument is null.");
         return std::nullopt;
     }
 
@@ -76,45 +82,47 @@ namespace cmd {
             return std::string(optarg);
         }
         std::cerr << "[ERROR] Output file name argument is null" << std::endl;
+        tools::PrintRedErrorMessage("Output file name argument is null.");
         return std::nullopt;
     }
 
     void ArgumentsParserLogic::ListAvailableInstructions() const {
-        std::cout << "Available instructions:\n";
-        std::cout << "\nArithmetic instructions (0x00-0x07):\n";
-        std::cout << "  ADD   0x00   Add:        ADD reg, reg/imm\n";
-        std::cout << "  SUB   0x01   Subtract:   SUB reg, reg/imm\n";
-        std::cout << "  AND   0x02   And:        AND reg, reg/imm\n";
-        std::cout << "  OR    0x03   Or:         OR reg, reg/imm\n";
-        std::cout << "  XOR   0x04   Xor:        XOR reg, reg/imm\n";
-        std::cout << "  MOV   0x05   Move:       MOV reg, reg/imm\n";
-        std::cout << "  SHL   0x06   Shift left: SHL reg, reg/imm\n";
-        std::cout << "  SHR   0x07   Shift right:SHR reg, reg/imm\n";
+        fmt::print("Available instructions:\n");
+        fmt::print("\nArithmetic instructions (0x00-0x07):\n");
+        fmt::print("  ADD   0x00   Add:        ADD reg, reg/imm\n");
+        fmt::print("  SUB   0x01   Subtract:   SUB reg, reg/imm\n");
+        fmt::print("  AND   0x02   And:        AND reg, reg/imm\n");
+        fmt::print("  OR    0x03   Or:         OR reg, reg/imm\n");
+        fmt::print("  XOR   0x04   Xor:        XOR reg, reg/imm\n");
+        fmt::print("  MOV   0x05   Move:       MOV reg, reg/imm\n");
+        fmt::print("  SHL   0x06   Shift left: SHL reg, reg/imm\n");
+        fmt::print("  SHR   0x07   Shift right:SHR reg, reg/imm\n");
 
-        std::cout << "\nJump instructions (0x08-0x0E):\n";
-        std::cout << "  JMP   0x08   Unconditional jump\n";
-        std::cout << "  JZ    0x09   Jump if zero\n";
-        std::cout << "  JNZ   0x0A   Jump if not zero\n";
-        std::cout << "  JC    0x0B   Jump if carry\n";
-        std::cout << "  JNC   0x0C   Jump if not carry\n";
-        std::cout << "  JN    0x0D   Jump if negative\n";
-        std::cout << "  JNN   0x0E   Jump if not negative\n";
+        fmt::print("\nJump instructions (0x08-0x0E):\n");
+        fmt::print("  JMP   0x08   Unconditional jump\n");
+        fmt::print("  JZ    0x09   Jump if zero\n");
+        fmt::print("  JNZ   0x0A   Jump if not zero\n");
+        fmt::print("  JC    0x0B   Jump if carry\n");
+        fmt::print("  JNC   0x0C   Jump if not carry\n");
+        fmt::print("  JN    0x0D   Jump if negative\n");
+        fmt::print("  JNN   0x0E   Jump if not negative\n");
 
-        std::cout << "\nSpecial instructions:\n";
-        std::cout << "  CMP   0x0F   Compare\n";
-        std::cout << "  HALT  0xFF   Halt execution\n";
+        fmt::print("\nSpecial instructions:\n");
+        fmt::print("  CMP   0x0F   Compare\n");
+        fmt::print("  HALT  0xFF   Halt execution\n");
     }
 
     std::string ArgumentsParserLogic::SetInputFileAsOutputFileName(const std::string& input_file_name) const {
         spdlog::debug("[ArgumentsParserLogic] Set input file name:" + input_file_name + " as output file name");
 
         std::string output_name = input_file_name;
-        if (output_name.size() >= 4 && output_name.substr(output_name.size() - 4) == kInputFileExtension) {
-            output_name = output_name.substr(0, output_name.size() - 4);
+        if (output_name.size() >= kInputFileExtensionLength && output_name.substr(output_name.size() - kInputFileExtensionLength) == kInputFileExtension) {
+            output_name = output_name.substr(0, output_name.size() - kInputFileExtensionLength);
         }
         output_name += kOutputFileExtension;
-
         spdlog::debug("[ArgumentsParserLogic] Output file name set to: " + output_name);
+
+        tools::PrintWithGreenMarker("Output file", "Output file name set to: " + output_name);
         return output_name;
     }
 
@@ -125,6 +133,8 @@ namespace cmd {
             spdlog::debug("[ArgumentsParserLogic] Output file name cannot be the same as input file name");
             return false;
         }
+
+        spdlog::debug("[ArgumentsParserLogic] Output file name is different from input file name");
         return true;
     }
 

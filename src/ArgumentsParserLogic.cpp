@@ -12,6 +12,7 @@ namespace cmd {
     namespace {
         constexpr const char* kInputFileExtension = ".asm";
         constexpr const char* kOutputFileExtension = ".hex";
+        constexpr std::size_t kInputFileExtensionLength = 4;
     }  // namespace
 
     ArgumentsParserLogic::ArgumentsParserLogic() {}
@@ -69,6 +70,7 @@ namespace cmd {
             return std::string(optarg);
         }
         std::cerr << "[ERROR] Input file name argument is null" << std::endl;
+        tools::PrintRedErrorMessage("Input file name argument is null.");
         return std::nullopt;
     }
 
@@ -80,6 +82,7 @@ namespace cmd {
             return std::string(optarg);
         }
         std::cerr << "[ERROR] Output file name argument is null" << std::endl;
+        tools::PrintRedErrorMessage("Output file name argument is null.");
         return std::nullopt;
     }
 
@@ -113,12 +116,13 @@ namespace cmd {
         spdlog::debug("[ArgumentsParserLogic] Set input file name:" + input_file_name + " as output file name");
 
         std::string output_name = input_file_name;
-        if (output_name.size() >= 4 && output_name.substr(output_name.size() - 4) == kInputFileExtension) {
-            output_name = output_name.substr(0, output_name.size() - 4);
+        if (output_name.size() >= kInputFileExtensionLength && output_name.substr(output_name.size() - kInputFileExtensionLength) == kInputFileExtension) {
+            output_name = output_name.substr(0, output_name.size() - kInputFileExtensionLength);
         }
         output_name += kOutputFileExtension;
-
         spdlog::debug("[ArgumentsParserLogic] Output file name set to: " + output_name);
+
+        tools::PrintWithGreenMarker("Output file", "Output file name set to: " + output_name);
         return output_name;
     }
 
@@ -129,6 +133,8 @@ namespace cmd {
             spdlog::debug("[ArgumentsParserLogic] Output file name cannot be the same as input file name");
             return false;
         }
+
+        spdlog::debug("[ArgumentsParserLogic] Output file name is different from input file name");
         return true;
     }
 

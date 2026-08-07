@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include <cstring>
 #include <string>
 
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)

@@ -151,3 +151,4 @@
 2026-08-07 14:24:35 +0200 | v0.1.8 | Add fmt library as ThirdParty
 2026-08-07 14:25:25 +0200 | v0.1.9 | Update .gitignore to include compiled static libraries with .a extension
 2026-08-07 14:36:12 +0200 | v0.1.10 | Add fmt library integration in CMake configuration for project and tests
+2026-08-07 14:44:52 +0200 | v0.1.11 | Refactor message printing functions to use fmt library for improved formatting

@@ -1,9 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-MSG_FILE="${1:-}"
-
-if [ -z "$MSG_FILE" ] || [ ! -f "$MSG_FILE" ]; then
+if [ "${BORASM_SKIP_RELEASE_NOTES:-0}" = "1" ]; then
     exit 0
 fi
 
@@ -22,7 +20,8 @@ if [ -z "$VERSION" ]; then
     exit 1
 fi
 
-SUBJECT="$(sed -e '/^[[:space:]]*#/d' -e '/^[[:space:]]*$/d' "$MSG_FILE" | head -n 1)"
+SUBJECT="$(git log -1 --pretty=%s)"
+TIMESTAMP="$(git log -1 --date=format:'%Y-%m-%d %H:%M:%S %z' --pretty=%ad)"
 
 if [ -z "$SUBJECT" ]; then
     SUBJECT="(no subject)"
@@ -36,6 +35,7 @@ if [ ! -f "$NOTES_FILE" ]; then
 EOF
 fi
 
-TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %z')"
 printf '%s | v%s | %s\n' "$TIMESTAMP" "$VERSION" "$SUBJECT" >> "$NOTES_FILE"
+
 git add "$NOTES_FILE"
+BORASM_SKIP_RELEASE_NOTES=1 git commit --amend --no-edit --no-verify >/dev/null

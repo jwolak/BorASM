@@ -7,7 +7,7 @@ fi
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 PACKAGE_JSON="$REPO_ROOT/package.json"
-NOTES_FILE="$REPO_ROOT/RELEASE_NOTES_HISTORY.txt"
+NOTES_FILE="$REPO_ROOT/RELEASE_NOTES.txt"
 
 if [ ! -f "$PACKAGE_JSON" ]; then
     exit 0

@@ -147,3 +147,4 @@
 2026-08-07 10:23:06 +0200 | v0.1.3 | Add pre-commit hook for automatic version bump and installation instructions
 2026-08-07 13:58:43 +0200 | v0.1.5 | Add commit-msg hook for automatic release notes generation and update README
 2026-08-07 14:03:29 +0200 | v0.1.6 | Add post-commit hook for automatic release notes generation and update README
+2026-08-07 14:05:58 +0200 | v0.1.7 | Update release notes file references to use RELEASE_NOTES.txt

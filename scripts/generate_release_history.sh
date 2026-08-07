@@ -2,7 +2,7 @@
 set -eu
 
 REPO_ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
-OUTPUT_FILE="$REPO_ROOT/RELEASE_NOTES_HISTORY.txt"
+OUTPUT_FILE="$REPO_ROOT/RELEASE_NOTES.txt"
 TMP_FILE="$(mktemp)"
 
 cat > "$TMP_FILE" <<'EOF'

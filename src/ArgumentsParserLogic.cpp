@@ -50,7 +50,7 @@ namespace cmd {
     bool ArgumentsParserLogic::EnableDebugMode() const {
         tools::PrintYellowWarningMessage("Enabling debug mode...");
         try {
-            CHANGE_LOG_LEVEL(equinox::logger::LogLevel::Debug);
+            CHANGE_LOG_LEVEL(equinox::level::LOG_LEVEL::debug);
         } catch (const std::exception& e) {
             std::cerr << "Error enabling debug mode: " << e.what() << std::endl;
             tools::PrintRedErrorMessage("Failed to enable debug mode.");

@@ -1,7 +1,7 @@
 {
     "name": "BorASM",
     "description": "BorASM - Advanced Assembly Language Processor",
-    "version": "0.1.14",
+    "version": "0.1.15",
     "author": "Janusz Wolak",
     "license": "BSD-3-Clause",
     "homepage": "https://github.com/jwolak/BorASM",

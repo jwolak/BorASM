@@ -1,7 +1,7 @@
 {
     "name": "BorASM",
     "description": "BorASM - Advanced Assembly Language Processor",
-    "version": "0.1.13",
+    "version": "0.1.19",
     "author": "Janusz Wolak",
     "license": "BSD-3-Clause",
     "homepage": "https://github.com/jwolak/BorASM",
@@ -29,7 +29,7 @@
         }
     },
     "dependencies": {
-        "spdlog": "1.15.0",
+        "equinox-logger": "2.2.84",
         "gtest": "latest"
     },
     "scripts": {

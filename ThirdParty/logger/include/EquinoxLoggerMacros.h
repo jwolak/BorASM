@@ -1,7 +1,7 @@
 /*-
  * BSD 3-Clause License
  *
- * Copyright (c) 2025, Janusz Wolak
+ * Copyright (c) 2026, Janusz Wolak
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,33 +30,32 @@
  *
  */
 
-#include <cstdlib>
-#include <iostream>
-#include <memory>
+#include "EquinoxLogger.h"
 
-#include "BorAsm.h"
-#include "CmdArguments.h"
-#include "CmdArgumentsParser.h"
-#include "Tools.h"
-#include "version.h"
-#include "EquinoxLogger.hpp"
+#if defined(NDEBUG)
+#define LOG_TRACE(...) \
+    do {               \
+    } while (0)
+#define LOG_DEBUG(...) \
+    do {               \
+    } while (0)
+#else
+#define LOG_TRACE(...) equinox::trace(__VA_ARGS__)
+#define LOG_DEBUG(...) equinox::debug(__VA_ARGS__)
+#endif
 
-int main(int argc, char* argv[]) {
-    SETUP_LOGGER(equinox::level::LOG_LEVEL::critical, std::string("BorASM"), equinox::logs_output::SINK::console_and_file, std::string("borasm.log"),
-                 3U * 1024U * 1024U, 5U);
-    std::shared_ptr<cmd::CmdArguments> cmd_arguments = std::make_shared<cmd::CmdArguments>();
-    cmd::CmdArgumentsParser cmd_arguments_parser(argc, argv);
-    if (!cmd_arguments_parser.Parse(cmd_arguments)) {
-        tools::PrintRedErrorMessage("[BORASM]: Parse input arguments failed");
-        return EXIT_FAILURE;
-    }
+#define LOG_ERROR(...)    equinox::error(__VA_ARGS__)
+#define LOG_WARNING(...)  equinox::warning(__VA_ARGS__)
+#define LOG_INFO(...)     equinox::info(__VA_ARGS__)
+#define LOG_CRITICAL(...) equinox::critical(__VA_ARGS__)
 
-    borasm::BorAsm borasm_obj(cmd_arguments);
-    if (!borasm_obj.StartProcessing()) {
-        tools::PrintRedErrorMessage("[BORASM]: Assembling failed.");
-        return EXIT_FAILURE;
-    }
+#define SETUP_LOGGER(logLevel, logPrefix, logsOutputSink, logFileName, maxLogFileSizeBytes, maxLogFiles) \
+    equinox::setup(logLevel, logPrefix, logsOutputSink, logFileName, maxLogFileSizeBytes, maxLogFiles)
 
-    tools::PrintGreenOKMessage("[BORASM]: Assembling completed successfully.");
-    return EXIT_SUCCESS;
-}
+#define SETUP_FROM_CONFIG_FILE(configFilePath) equinox::setupFromConfigFile(configFilePath)
+
+#define CHANGE_LOG_LEVEL(newLogLevel) equinox::changeLevel(newLogLevel)
+
+#define CHANGE_LOGS_SINK(newLogsOutputSink) equinox::changeLogsSink(newLogsOutputSink)
+
+#define FLUSH equinox::flush()

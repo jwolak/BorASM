@@ -154,3 +154,9 @@
 2026-08-07 14:44:52 +0200 | v0.1.11 | Refactor message printing functions to use fmt library for improved formatting
 2026-08-07 15:05:32 +0200 | v0.1.12 | Refactor help and version information printing to use fmt library for improved formatting
 2026-08-07 15:25:56 +0200 | v0.1.13 | Enhance error handling and output file name logic in ArgumentsParserLogic
+2026-09-03 17:33:34 +0200 | v0.1.14 | Remove spdlog library files and related components
+2026-09-03 17:36:44 +0200 | v0.1.15 | Migrate logger from spdlog to EquinoxLogger in CMake configuration
+2026-09-03 18:17:31 +0200 | v0.1.16 | Refactor logging to use EquinoxLogger instead of spdlog
+2026-09-03 18:34:53 +0200 | v0.1.17 | Update EquinoxLogger to version 2.2.85 and refactor logging implementation
+2026-09-03 18:44:35 +0200 | v0.1.18 | Update EquinoxLogger macros and increment version to 2.2.86
+2026-09-03 18:52:02 +0200 | v0.1.19 | Initialize logger setup in main function using EquinoxLogger

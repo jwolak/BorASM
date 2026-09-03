@@ -1,7 +1,7 @@
 /*-
  * BSD 3-Clause License
  *
- * Copyright (c) 2025, Janusz Wolak
+ * Copyright (c) 2026, Janusz Wolak
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,33 +30,7 @@
  *
  */
 
-#include <cstdlib>
-#include <iostream>
-#include <memory>
+#pragma once
 
-#include "BorAsm.h"
-#include "CmdArguments.h"
-#include "CmdArgumentsParser.h"
-#include "Tools.h"
-#include "version.h"
-#include "EquinoxLogger.hpp"
-
-int main(int argc, char* argv[]) {
-    SETUP_LOGGER(equinox::level::LOG_LEVEL::critical, std::string("BorASM"), equinox::logs_output::SINK::console_and_file, std::string("borasm.log"),
-                 3U * 1024U * 1024U, 5U);
-    std::shared_ptr<cmd::CmdArguments> cmd_arguments = std::make_shared<cmd::CmdArguments>();
-    cmd::CmdArgumentsParser cmd_arguments_parser(argc, argv);
-    if (!cmd_arguments_parser.Parse(cmd_arguments)) {
-        tools::PrintRedErrorMessage("[BORASM]: Parse input arguments failed");
-        return EXIT_FAILURE;
-    }
-
-    borasm::BorAsm borasm_obj(cmd_arguments);
-    if (!borasm_obj.StartProcessing()) {
-        tools::PrintRedErrorMessage("[BORASM]: Assembling failed.");
-        return EXIT_FAILURE;
-    }
-
-    tools::PrintGreenOKMessage("[BORASM]: Assembling completed successfully.");
-    return EXIT_SUCCESS;
-}
+#include "EquinoxLogger.h"
+#include "EquinoxLoggerMacros.h"

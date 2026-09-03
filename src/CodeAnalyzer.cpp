@@ -8,7 +8,7 @@
 #include "CharacterStringLineHandler.h"
 #include "InstructionsAssemblerCore.h"
 #include "Tools.h"
-#include "spdlog/spdlog.h"
+#include "EquinoxLogger.hpp"
 
 namespace assembly_engine {
     CodeAnalyzer::CodeAnalyzer(std::vector<uint8_t>& machine_code, std::map<std::string, uint16_t>& labels,
@@ -33,43 +33,43 @@ namespace assembly_engine {
         int lineNumber = 0;
         while (std::getline(file, line)) {
             ++lineNumber;
-            spdlog::debug("[CodeAnalyzer] Processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            LOG_DEBUG("[CodeAnalyzer] Processing line " + std::to_string(lineNumber) + ": " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
             line = line_handler_->CleanLineWhitespaces(line);
             tools::PrintGreenOKMessage("Cleaned line " + std::to_string(lineNumber) + ": " + line);
             line = line_handler_->RemoveLineComments(line);
             tools::PrintGreenOKMessage("Removed comments from line " + std::to_string(lineNumber) + ": " + line);
 
-            spdlog::debug("[CodeAnalyzer] Check if line {0}: {1} [{2}:{3}] is empty", lineNumber, line, __FILENAME__, __LINE__);
+            LOG_DEBUG("[CodeAnalyzer] Check if line " + std::to_string(lineNumber) + ": " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "] is empty");
             if (line.empty()) {
-                spdlog::debug("[CodeAnalyzer] Line: {0} [{1}:{2}] is empty", lineNumber, line, __FILENAME__, __LINE__);
+                LOG_DEBUG("[CodeAnalyzer] Line: " + std::to_string(lineNumber) + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "] is empty");
                 continue;
             }
 
-            spdlog::debug("[CodeAnalyzer] Check if line {0}: {1} [{2}:{3}] is a label", lineNumber, line, __FILENAME__, __LINE__);
+            LOG_DEBUG("[CodeAnalyzer] Check if line " + std::to_string(lineNumber) + ": " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "] is a label");
             if (line.back() == ':') {
-                spdlog::debug("[CodeAnalyzer] Line: {0} [{1}:{2}] is a label", lineNumber, line, __FILENAME__, __LINE__);
+                LOG_DEBUG("[CodeAnalyzer] Line: " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "] is a label");
                 std::string labelName = line.substr(0, line.length() - 1);
                 labels_[labelName] = machine_code_.size();
-                spdlog::debug("[CodeAnalyzer] Detected label {0} at address {1} [{2}:{3}]", labelName, machine_code_.size(), __FILENAME__, __LINE__);
+                LOG_DEBUG("[CodeAnalyzer] Detected label " + labelName + " at address " + std::to_string(machine_code_.size()) + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
                 continue;
             }
 
-            spdlog::debug("[CodeAnalyzer] Tokenizing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            LOG_DEBUG("[CodeAnalyzer] Tokenizing line " + std::to_string(lineNumber) + ": " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
             std::vector<std::string> tokens = line_handler_->TokenizeLine(line);
-            spdlog::debug("[CodeAnalyzer] Tokenized line {0}: {1} into {2} tokens [{3}:{4}]", lineNumber, line, tokens.size(), __FILENAME__, __LINE__);
+            LOG_DEBUG("[CodeAnalyzer] Tokenized line " + std::to_string(lineNumber) + ": " + line + " into " + std::to_string(tokens.size()) + " tokens [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
 
-            spdlog::debug("[CodeAnalyzer] Check if tokens are not empty for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            LOG_DEBUG("[CodeAnalyzer] Check if tokens are not empty for line " + std::to_string(lineNumber) + ": " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
             if (!tokens.empty()) {
-                spdlog::debug("[CodeAnalyzer] Tokens are not empty for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+                LOG_DEBUG("[CodeAnalyzer] Tokens are not empty for line " + std::to_string(lineNumber) + ": " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
                 size_t size_before = machine_code_.size();
-                spdlog::debug("[CodeAnalyzer] Machine code size before assembling instruction: {0} [{1}:{2}]", size_before, __FILENAME__, __LINE__);
+                LOG_DEBUG("[CodeAnalyzer] Machine code size before assembling instruction: " + std::to_string(size_before) + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
                 if (!instructions_assembler_core_->AssembleInstruction(tokens)) {
-                    spdlog::error("[CodeAnalyzer] Error on line {0}: [{1}:{2}]", lineNumber, __FILENAME__, __LINE__);
+                    LOG_ERROR("[CodeAnalyzer] Error on line " + std::to_string(lineNumber) + ": [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
                     tools::PrintRedErrorMessage("Error on line " + std::to_string(lineNumber));
                     return false;
                 }
             }
-            spdlog::debug("[CodeAnalyzer] Finished processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            LOG_DEBUG("[CodeAnalyzer] Finished processing line " + std::to_string(lineNumber) + ": " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
             tools::PrintGreenOKMessage("Finished processing line " + std::to_string(lineNumber) + ": " + line);
         }
 
@@ -80,31 +80,31 @@ namespace assembly_engine {
         int lineNumber = 0;
         while (std::getline(file, line)) {
             ++lineNumber;
-            spdlog::debug("[CodeAnalyzer] Processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            LOG_DEBUG("[CodeAnalyzer] Processing line " + std::to_string(lineNumber) + ": " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
             line = line_handler_->CleanLineWhitespaces(line);
             tools::PrintGreenOKMessage("Cleaned line " + std::to_string(lineNumber) + ": " + line);
             line = line_handler_->RemoveLineComments(line);
             tools::PrintGreenOKMessage("Removed comments from line " + std::to_string(lineNumber) + ": " + line);
 
-            spdlog::debug("[CodeAnalyzer] Check if line {0}: {1} [{2}:{3}] is empty or a label", lineNumber, line, __FILENAME__, __LINE__);
+            LOG_DEBUG("[CodeAnalyzer] Check if line " + std::to_string(lineNumber) + ": " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "] is empty or a label");
             if (line.empty() || line.back() == ':') {
-                spdlog::debug("[CodeAnalyzer] Line: {0} [{1}:{2}] is empty or a label", lineNumber, line, __FILENAME__, __LINE__);
+                LOG_DEBUG("[CodeAnalyzer] Line: " + std::to_string(lineNumber) + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "] is empty or a label");
                 continue;
             }
 
-            spdlog::debug("[CodeAnalyzer] Tokenizing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            LOG_DEBUG("[CodeAnalyzer] Tokenizing line " + std::to_string(lineNumber) + ": " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
             std::vector<std::string> tokens = line_handler_->TokenizeLine(line);
             if (!tokens.empty()) {
                 try {
-                    spdlog::debug("[CodeAnalyzer] Assembling instruction for line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+                    LOG_DEBUG("[CodeAnalyzer] Assembling instruction for line " + std::to_string(lineNumber) + ": " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
                     instructions_assembler_core_->AssembleInstruction(tokens);
                 } catch (const std::exception& e) {
-                    spdlog::error("[CodeAnalyzer] Error on line {0}: {1} [{2}:{3}]", lineNumber, e.what(), __FILENAME__, __LINE__);
+                    LOG_ERROR("[CodeAnalyzer] Error on line " + std::to_string(lineNumber) + ": " + e.what() + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
                     tools::PrintRedErrorMessage("Error on line " + std::to_string(lineNumber) + ": " + e.what());
                     return false;
                 }
             }
-            spdlog::debug("[CodeAnalyzer] Finished processing line {0}: {1} [{2}:{3}]", lineNumber, line, __FILENAME__, __LINE__);
+            LOG_DEBUG("[CodeAnalyzer] Finished processing line " + std::to_string(lineNumber) + ": " + line + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
             tools::PrintGreenOKMessage("Finished processing line " + std::to_string(lineNumber) + ": " + line);
         }
 
@@ -113,12 +113,12 @@ namespace assembly_engine {
 
     bool CodeAnalyzer::ResolveLabelReferences() {
         for (auto& ref : label_references_) {
-            spdlog::trace("[AssemblyEngine] Resolving label reference: {0} [{1}:{2}]", ref.second, __FILENAME__, __LINE__);
+            LOG_TRACE("[AssemblyEngine] Resolving label reference: " + ref.second + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
             if (labels_.find(ref.second) != labels_.end()) {
                 machine_code_[ref.first] = static_cast<uint8_t>(labels_[ref.second]);
-                spdlog::debug("[AssemblyEngine] Resolved label {0} to address {1} [{2}:{3}]", ref.second, labels_[ref.second], __FILENAME__, __LINE__);
+                LOG_DEBUG("[AssemblyEngine] Resolved label " + ref.second + " to address " + std::to_string(labels_[ref.second]) + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
             } else {
-                spdlog::error("[AssemblyEngine] Undefined label: {0} [{1}:{2}]", ref.second, __FILENAME__, __LINE__);
+                LOG_ERROR("[AssemblyEngine] Undefined label: " + ref.second + " [" + std::string(__FILENAME__) + ":" + std::to_string(__LINE__) + "]");
                 tools::PrintRedErrorMessage("Undefined label: " + ref.second);
                 return false;
             }

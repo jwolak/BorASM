@@ -39,8 +39,11 @@
 #include "CmdArgumentsParser.h"
 #include "Tools.h"
 #include "version.h"
+#include "EquinoxLogger.hpp"
 
 int main(int argc, char* argv[]) {
+    SETUP_LOGGER(equinox::level::LOG_LEVEL::critical, std::string("BorASM"), equinox::logs_output::SINK::console_and_file, std::string("borasm.log"),
+                 3U * 1024U * 1024U, 5U);
     std::shared_ptr<cmd::CmdArguments> cmd_arguments = std::make_shared<cmd::CmdArguments>();
     cmd::CmdArgumentsParser cmd_arguments_parser(argc, argv);
     if (!cmd_arguments_parser.Parse(cmd_arguments)) {

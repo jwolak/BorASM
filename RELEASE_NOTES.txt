@@ -156,3 +156,4 @@
 2026-08-07 15:25:56 +0200 | v0.1.13 | Enhance error handling and output file name logic in ArgumentsParserLogic
 2026-09-03 17:33:34 +0200 | v0.1.14 | Remove spdlog library files and related components
 2026-09-03 17:36:44 +0200 | v0.1.15 | Migrate logger from spdlog to EquinoxLogger in CMake configuration
+2026-09-03 18:17:31 +0200 | v0.1.16 | Refactor logging to use EquinoxLogger instead of spdlog

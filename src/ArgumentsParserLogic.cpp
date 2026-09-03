@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "Tools.h"
-#include "spdlog/spdlog.h"
+#include "EquinoxLogger.hpp"
 #include "version.h"
 
 namespace cmd {
@@ -18,7 +18,7 @@ namespace cmd {
     ArgumentsParserLogic::ArgumentsParserLogic() {}
 
     void ArgumentsParserLogic::PrintHelp() const {
-        spdlog::debug("[ArgumentsParserLogic] Printing help information");
+        LOG_DEBUG("[ArgumentsParserLogic] Printing help information");
 
         fmt::print(
             "BorASM - Assembler CLI\n"
@@ -38,7 +38,7 @@ namespace cmd {
     }
 
     void ArgumentsParserLogic::PrintVersionInfo() const {
-        spdlog::debug("[ArgumentsParserLogic] Printing version information");
+        LOG_DEBUG("[ArgumentsParserLogic] Printing version information");
 
         fmt::print("Version: {}\n", BorASM::Version::GetVersionString());
         fmt::print("Full Version: {}\n", BorASM::Version::GetFullVersionString());
@@ -50,20 +50,20 @@ namespace cmd {
     bool ArgumentsParserLogic::EnableDebugMode() const {
         tools::PrintYellowWarningMessage("Enabling debug mode...");
         try {
-            spdlog::set_level(spdlog::level::debug);
+            CHANGE_LOG_LEVEL(equinox::logger::LogLevel::Debug);
         } catch (const std::exception& e) {
             std::cerr << "Error enabling debug mode: " << e.what() << std::endl;
             tools::PrintRedErrorMessage("Failed to enable debug mode.");
             return false;
         }
 
-        spdlog::debug(std::string("[ArgumentsParserLogic] Debug mode activated [") + __FILENAME__ + ":" + std::to_string(__LINE__) + "]");
+        LOG_DEBUG(std::string("[ArgumentsParserLogic] Debug mode activated [") + __FILENAME__ + ":" + std::to_string(__LINE__) + "]");
         tools::PrintGreenOKMessage("Debug mode enabled successfully.");
         return true;
     }
 
     std::optional<std::string> ArgumentsParserLogic::GetInputFileName(const char* optarg) const {
-        spdlog::debug("[ArgumentsParserLogic] Retrieving input file name");
+        LOG_DEBUG("[ArgumentsParserLogic] Retrieving input file name");
 
         if (optarg) {
             tools::PrintWithGreenMarker("Input file", "Input file name provided: " + std::string(optarg));
@@ -75,7 +75,7 @@ namespace cmd {
     }
 
     std::optional<std::string> ArgumentsParserLogic::GetOutputFileName(const char* optarg) const {
-        spdlog::debug("[ArgumentsParserLogic] Retrieving output file name");
+        LOG_DEBUG("[ArgumentsParserLogic] Retrieving output file name");
 
         if (optarg) {
             tools::PrintWithGreenMarker("Output file", "Output file name provided: " + std::string(optarg));
@@ -113,28 +113,28 @@ namespace cmd {
     }
 
     std::string ArgumentsParserLogic::SetInputFileAsOutputFileName(const std::string& input_file_name) const {
-        spdlog::debug("[ArgumentsParserLogic] Set input file name:" + input_file_name + " as output file name");
+        LOG_DEBUG("[ArgumentsParserLogic] Set input file name:" + input_file_name + " as output file name");
 
         std::string output_name = input_file_name;
         if (output_name.size() >= kInputFileExtensionLength && output_name.substr(output_name.size() - kInputFileExtensionLength) == kInputFileExtension) {
             output_name = output_name.substr(0, output_name.size() - kInputFileExtensionLength);
         }
         output_name += kOutputFileExtension;
-        spdlog::debug("[ArgumentsParserLogic] Output file name set to: " + output_name);
+        LOG_DEBUG("[ArgumentsParserLogic] Output file name set to: " + output_name);
 
         tools::PrintWithGreenMarker("Output file", "Output file name set to: " + output_name);
         return output_name;
     }
 
     bool ArgumentsParserLogic::CheckOutputFileNameIsNotSameAsInputFileName(const std::string& input_file_name, const std::string& output_file_name) const {
-        spdlog::debug("[ArgumentsParserLogic] Checking if output file name is not the same as input file name");
+        LOG_DEBUG("[ArgumentsParserLogic] Checking if output file name is not the same as input file name");
 
         if (input_file_name == output_file_name) {
-            spdlog::debug("[ArgumentsParserLogic] Output file name cannot be the same as input file name");
+            LOG_DEBUG("[ArgumentsParserLogic] Output file name cannot be the same as input file name");
             return false;
         }
 
-        spdlog::debug("[ArgumentsParserLogic] Output file name is different from input file name");
+        LOG_DEBUG("[ArgumentsParserLogic] Output file name is different from input file name");
         return true;
     }
 
